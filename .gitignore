@@ -41,3 +41,6 @@ vignettes/*.pdf
 # Ignore R project file
 *.Rproj
 
+# Ignore Data folder
+Data/
+
