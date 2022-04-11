@@ -259,16 +259,74 @@ rm(list = ls())
 # T1 - Chapter 4: SQL Advanced ------------------------------------------
 # Link: rdbsql.rsquaredacademy.com/sql2.html
 
+# Any new libraries required?
+library(readr)
+
+# Read in data
+hr <- readr::read_csv(file = "Data/SQL Tutorial Data/hr-data.csv")
+
+# Open connection to database
+con <- DBI::dbConnect(RSQLite::SQLite(), ":memory:")
+
+# Copy data into database
+dplyr::copy_to(dest = con, df = hr)
+dbListTables(conn = con)
+
+# Look at it
+dbReadTable(conn = con, name = "hr")
 
 
+# Can SUM a column
+dbGetQuery(conn = con, statement = "SELECT SUM(SpecialProjectsCount)
+           FROM hr;")
 
+# Can also rename that column using "AS"
+dbGetQuery(con, "SELECT SUM(SpecialProjectsCount) AS SpecialProjectsTotal
+           FROM hr;")
 
+# Can sum within a condition as well
+dbGetQuery(con, "SELECT SUM(SpecialProjectsCount) AS SpecialProjectsTotal
+           FROM hr
+           WHERE GenderId == 0;")
 
+# Can also do averages with AVG
+dbGetQuery(con, "SELECT AVG(SpecialProjectsCount) AS MeanSpecialProjects
+           FROM hr;")
 
+# Or average conditionally with wildcards
+dbGetQuery(con, "SELECT AVG(SpecialProjectsCount) AS MeanSpecialProjects
+           FROM hr
+           WHERE Department LIKE 'Admin %';")
 
+# Can also find maximum (MAX)
+dbGetQuery(con, "SELECT MAX(SpecialProjectsCount) AS MaxSpecialProject
+           FROM hr
+           WHERE RecruitmentSource == 'Diversity Job Fair';")
 
+# Minimum is also an option (MIN)
+dbGetQuery(con, "SELECT MIN(SpecialProjectsCount) AS MinSpecialProject
+           FROM hr
+           WHERE NOT RecruitmentSource == 'Diversity Job Fair';")
 
-# Clear environment
+# Order output by a given column
+dbGetQuery(con, "SELECT *
+           FROM hr
+           WHERE RecruitmentSource IS NOT NULL
+           ORDER BY RecruitmentSource;")
+
+# And can swap the order to DESCending if desired
+dbGetQuery(con, "SELECT DISTINCT ManagerName, RecruitmentSource
+           FROM hr
+           WHERE RecruitmentSource IS NOT NULL
+           ORDER BY RecruitmentSource DESC;")
+
+# Can also perform operations (AVG, COUNT, MAX, etc.) within groups
+dbGetQuery(con, "SELECT SUM(SpecialProjectsCount) AS SpecialProjectsTotal, RecruitmentSource
+           FROM hr
+           GROUP BY RecruitmentSource;")
+
+# Disconnect and clear environment
+dbDisconnect(conn = con)
 rm(list = ls())
 
 # End -------------------------------------------------------------------
