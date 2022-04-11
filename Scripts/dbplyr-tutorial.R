@@ -165,11 +165,110 @@ rm(list = ls())
 # T1 - Chapter 3: SQL Basics --------------------------------------------
 # Link: rdbsql.rsquaredacademy.com/sqlbasics.html
 
+# Any new libraries required?
+library(readr)
 
+# Read in data
+ecom <- readr::read_csv(file = 'Data/SQL Tutorial Data/ecom.csv')
+
+# Open connection to database
+con <- DBI::dbConnect(RSQLite::SQLite(), ":memory:")
+
+# Copy data into database
+dplyr::copy_to(dest = con, df = ecom)
+
+# Check that it worked & look at data
+dbListTables(conn = con)
+dbGetQuery(conn = con, statement = "SELECT * FROM ecom LIMIT 5")
+
+# Look at a single column
+dbGetQuery(conn = con, statement = "SELECT device FROM ecom")
+
+# Can also select multiple columns
+dbGetQuery(conn = con, statement = "SELECT referrer, device, purchase FROM ecom")
+
+# An asterisk after SELECT grabs all of the columns
+dbGetQuery(conn = con, statement = "SELECT * FROM ecom;")
+
+# LIMIT reduces the number of rows returned to the specified integer
+dbGetQuery(conn = con, statement = "SELECT * FROM ecom LIMIT 1;")
+
+# Can also get only unique (i.e., distinct) entries
+dbGetQuery(conn = con,
+           statement = "SELECT DISTINCT referrer
+           FROM ecom;")
+
+# Or subset by conditions ("WHERE")
+dbGetQuery(conn = con,
+           statement = "SELECT *
+           FROM ecom
+           WHERE bouncers > 0;")
+
+# Can also use R syntax for 'exactly equal to'
+dbGetQuery(conn = con,
+           statement = "SELECT *
+           FROM ecom
+           WHERE referrer == 'Organic';")
+
+# Can also use AND, OR, or NOT
+## AND
+dbGetQuery(conn = con, statement = "SELECT *
+           FROM ecom
+           WHERE device == 'Desktop' AND referrer == 'Organic'
+           LIMIT 2;")
+## OR
+dbGetQuery(conn = con, statement = "SELECT *
+           FROM ecom
+           WHERE device == 'Desktop' OR device == 'Mobile';")
+## NOT
+dbGetQuery(conn = con, statement = "SELECT DISTINCT device
+           FROM ecom
+           WHERE NOT device == 'Desktop';")
+
+
+# Inclusively select BETWEEN a range of values
+dbGetQuery(conn = con, statement = "SELECT *
+           FROM ecom
+           WHERE bouncers BETWEEN 0 AND 1 AND device == 'Mobile';")
+
+# SQL's answer to "%in%" is "IN"
+dbGetQuery(conn = con, statement = "SELECT *
+           FROM ecom
+           WHERE device in ('Mobile', 'Desktop');")
+
+# Identify missing values ("IS NULL")
+## "IS NOT NULL" is also allowed
+dbGetQuery(conn = con, statement = "SELECT *
+           FROM ecom
+           WHERE device IS NULL;")
+
+# Can look for similar values with LIKE
+## LIKE + % = zero, one, or multiple characters
+## LIKE + _ = one character
+dbGetQuery(conn = con, statement = "SELECT *
+           FROM ecom
+           WHERE device LIKE 'M%';")
+dbGetQuery(conn = con, statement = "SELECT *
+           FROM ecom
+           WHERE bouncers LIKE '_';")
+
+# Disconnect and clear environment
+dbDisconnect(conn = con)
+rm(list = ls())
 
 # T1 - Chapter 4: SQL Advanced ------------------------------------------
 # Link: rdbsql.rsquaredacademy.com/sql2.html
 
 
+
+
+
+
+
+
+
+
+# Clear environment
+rm(list = ls())
 
 # End -------------------------------------------------------------------
