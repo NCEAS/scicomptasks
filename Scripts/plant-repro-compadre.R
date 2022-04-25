@@ -60,11 +60,11 @@ combo <- wg_spp %>%
     genus_has_data = dplyr::case_when(
       Genus %in% compadre_spp$Genus ~ "yes", T ~ '')) %>%
   # If the species has data, drop the congeners information
-  dplyr::mutate(congeners = dplyr::case_when(
+  dplyr::mutate(congeners_with_COMPADRE_data = dplyr::case_when(
     sp_has_data == "yes" ~ '', T ~ congeners)) %>%
   # Reorder the columns as desired
   dplyr::select(genus_spp, Genus, Species,
-                sp_has_data, genus_has_data, congeners)
+                sp_has_data, genus_has_data, congeners_with_COMPADRE_data)
 
 # How many?
 plyr::count(combo$sp_has_data)
