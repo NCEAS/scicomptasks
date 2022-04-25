@@ -19,7 +19,7 @@ load(file.path("Data", "COMPADRE_v.6.22.1.2.RData"))
 # Housekeeping ------------------------------------------------
 
 # Strip out species information
-spp <- compadre[["metadata"]] %>%
+compadre_spp <- compadre[["metadata"]] %>%
   dplyr::select(OrganismType, Genus, Species) %>%
   dplyr::filter(OrganismType == "Tree") %>%
   unique()
