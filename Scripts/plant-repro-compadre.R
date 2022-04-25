@@ -26,7 +26,7 @@ wg_raw <- read.csv(file.path("Data", "LTER_SEED_SPP_ATTRIBUTES_v1.csv"))
 compadre_spp <- compadre[["metadata"]] %>%
   dplyr::select(Genus, Species) %>%
   dplyr::mutate(genus_spp = paste(Genus, Species, sep = '-'),
-                has_data = 1) %>%
+                in_compadre = 1) %>%
   # dplyr::filter(OrganismType == "Tree") %>%
   unique()
 ## Working group list
@@ -55,20 +55,19 @@ combo <- wg_spp %>%
   # Bring the Genus/Species back in
   dplyr::left_join(y = wg_spp, by = "genus_spp") %>%
   # Figure out whether each species/genus has data
-  dplyr::mutate(sp_has_data = dplyr::case_when(
+  dplyr::mutate(sp_in_compadre = dplyr::case_when(
     genus_spp %in% compadre_spp$genus_spp ~ "yes", T ~ ''),
-    genus_has_data = dplyr::case_when(
+    genus_in_compadre = dplyr::case_when(
       Genus %in% compadre_spp$Genus ~ "yes", T ~ '')) %>%
   # If the species has data, drop the congeners information
-  dplyr::mutate(congeners_with_COMPADRE_data = dplyr::case_when(
-    sp_has_data == "yes" ~ '', T ~ congeners)) %>%
+  dplyr::mutate(congeners_in_compadre = dplyr::case_when(
+    sp_in_compadre == "yes" ~ '', T ~ congeners)) %>%
   # Reorder the columns as desired
-  dplyr::select(genus_spp, Genus, Species,
-                sp_has_data, genus_has_data, congeners_with_COMPADRE_data)
+  dplyr::select(genus_spp, Genus, Species, sp_in_compadre, genus_in_compadre, congeners_in_compadre)
 
 # How many?
-plyr::count(combo$sp_has_data)
-plyr::count(combo$genus_has_data)
+plyr::count(combo$sp_in_compadre)
+plyr::count(combo$genus_in_compadre)
 
 # Save this out
 write.csv(x = combo, row.names = F, file = file.path("Data", "PlantReproList_vs_COMPADRE.csv"))
