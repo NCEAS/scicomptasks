@@ -1,10 +1,11 @@
-# Export Model Outputs Function - Drought WG ---------------------------------
+# Export Model Outputs Function - Drought WG ---------------------
 
 # Load function
 ide_mod_export <- function(model_obj, model_type = "lmer",
                            output_path = getwd(),
                            output_name = paste0(model_type, "_", Sys.time(), "_model.csv"),
-                           est_dig = 2, se_dig = 2, df_dig = 2, t_dig = 2, p_dig = 4){
+                           est_dig = 2, se_dig = 2, df_dig = 2,
+                           t_dig = 2, p_dig = 4){
   # Argument description
   ## model_obj = output of `lmerTest::lmer()`, `stats::lm()`, `stats::nls()`, `stats::t.test()`
   ## output_path = file path to save file to

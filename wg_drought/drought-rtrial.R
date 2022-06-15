@@ -1,11 +1,12 @@
-# Drought WG Example R Workflow ---------------------------------------------
+# Drought WG Example R Workflow -------------------------------
 
 # Written by: Angel Chen & Nick J Lyon
 
 # Needed libraries
 library(tidyverse); library(janitor); library(lubridate); library(WorldFlora)
+
 # install.packages("devtools")
-devtools::install_github("NJLyon-Projects/helpR")
+devtools::install_github("njlyon0/helpR")
 
 # Clear environment
 rm(list = ls())
@@ -14,10 +15,10 @@ rm(list = ls())
 myWD <- getwd()
 myWD
 
-# Retrieve Raw Data ---------------------------------------------------------
+# Retrieve Raw Data ----------------------------------------
 
 # Identify every file in the folder
-raw_full <- dir("Data/drought wg/")
+raw_full <- dir(file.path("data", "drought wg"))
 
 # Identify all data types
 data_type <- c("biomass", "cover", "plan", "sites", "taxa", "treatments")
@@ -26,7 +27,7 @@ data_type <- c("biomass", "cover", "plan", "sites", "taxa", "treatments")
 raw_list <- list()
 
 # Set working directory to data folder (would be set to Dropbox folder)
-setwd("Data/drought wg/")
+setwd(file.path("data", "drought wg"))
 
 # For each data type...
 for(type in data_type) {
@@ -65,7 +66,7 @@ setwd(myWD)
 # Split out the taxa dataframe because it has different formatting
 taxa_v1 <- raw_list[["taxa"]]
 
-# Retrieve Site Codes -------------------------------------------------------
+# Retrieve Site Codes --------------------------------
 
 # Snag the site code lookup table 
 site_lookup <- read_csv(file = "./Data/drought wg/Site_Elev-Disturb.csv",
@@ -116,7 +117,7 @@ design_v1 <- plan_v1 %>%
   select(site_code, treatment_name, plot, first_appl) %>%
   unique()
 
-# Identify Days Since Start ------------------------------------------------
+# Identify Days Since Start ------------------------------------
 
 # Identify all dates in the dataframe
 raw_list_v2[names(raw_list_v2) == "biomass" | names(raw_list_v2) == "cover"] %>%
@@ -200,7 +201,7 @@ raw_list_v3[names(raw_list_v2) == "biomass" | names(raw_list_v2) == "cover"] %>%
 biomass_v1 <- as.data.frame(raw_list_v3[["biomass"]])
 cover_v1 <- as.data.frame(raw_list_v3[["cover"]])
 
-# Check Numeric Columns - Biomass & Cover ------------------------------------
+# Check Numeric Columns - Biomass & Cover ----------------------
 
 # Check for non-numbers in biomass "mass" column
 helpR::num_chk(data = biomass_v1, col = "mass")
@@ -220,7 +221,7 @@ helpR::num_chk(data = cover_v1, col = "cover")
 helpR::num_chk(data = cover_v1, col = "cover")
 cover_v1$cover <- as.numeric(cover_v1$cover)
 
-# Tidy Taxa Information - Biomass --------------------------------------------
+# Tidy Taxa Information - Biomass -------------------------------
 
 # Strip out the biomass data
 biomass_v2 <- biomass_v1 %>%
@@ -277,7 +278,7 @@ cover_v2 %>%
   select(taxa_data, genus, epithet) %>%
   unique()
 
-# Tidy Taxa Information - Taxa ------------------------------------------
+# Tidy Taxa Information - Taxa ---------------------------------
 
 # Check out taxa dataframe
 str(taxa_v1)
@@ -300,7 +301,7 @@ taxa_v2 %>%
   select(taxa_data, genus, epithet) %>%
   unique()
 
-# Wrangle WorldFlora Information ------------------------------------------
+# Wrangle WorldFlora Information -------------------------------
 
 # Download WorldFlora Data (done only once)
 # WFO.download(save.dir = file.path(myWD, 'Data', 'drought wg', 'WorldFlora'))
@@ -353,14 +354,20 @@ cover_v4 <- cover_v3 %>%
 # One last look :')
 names(cover_v4)
 
-# Export Tidy Data ----------------------------------------------------------
+# Export Tidy Data -------------------------------------
 
 # Write out "final" files
-write.csv(x = cover_v4, file = "./Data/drought_cover.csv", row.names = F)
-write.csv(x = biomass_v2, file = "./Data/drought_biomass.csv", row.names = F)
-write.csv(x = plan_v1, file = "./Data/drought_plan.csv", row.names = F)
-write.csv(x = trt_v1, file = "./Data/drought_treatment.csv", row.names = F)
-write.csv(x = taxa_v3, file = "./Data/drought_taxa.csv", row.names = F)
-write.csv(x = sites_v1, file = "./Data/drought_sites.csv", row.names = F)
+write.csv(x = cover_v4, row.names = F,
+          file = file.path("data", "drought_cover.csv"))
+write.csv(x = biomass_v2, row.names = F,
+          file = file.path("data", "drought_biomass.csv"))
+write.csv(x = plan_v1, row.names = F,
+          file = file.path("data", "drought_plan.csv"))
+write.csv(x = trt_v1, row.names = F,
+          file = file.path("data", "drought_treatment.csv"))
+write.csv(x = taxa_v3, row.names = F,
+          file = file.path("data", "drought_taxa.csv"))
+write.csv(x = sites_v1, row.names = F,
+          file = file.path("data", "drought_sites.csv"))
 
-# End -----------------------------------------------------------------------
+# End ----

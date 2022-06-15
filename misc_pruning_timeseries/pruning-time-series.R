@@ -17,7 +17,7 @@ rm(list = ls())
 library(tidyverse); library(cowplot)
 
 # Make a folder for saving plots to
-dir.create(path = "Plots", showWarnings = F)
+dir.create(path = "plots", showWarnings = F)
 
 # Simulate Time Series -----------------------------
 ## A = 0s at both start and end and one group in middle
@@ -139,6 +139,6 @@ test_df3 <- test_df2 %>%
 cowplot::plot_grid(raw_plt, id_plt, slim_plt, ncol = 3, nrow = 1)
 
 # Save it
-ggplot2::ggsave(filename = file.path("Plots", "series_pruning.tiff"),
+ggplot2::ggsave(filename = file.path("plots", "series_pruning.tiff"),
                 plot = last_plot(),
                 width = 12, height = 7, units = 'in')
