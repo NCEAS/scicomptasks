@@ -4,4 +4,4 @@
 
 **"dbplyr-tutorial.R"**
 
- - R script using a `dbplyr` tutorial taken from the [R, Databases & SQL](https://rdbsql.rsquaredacademy.com/index.html)
+- R script using a `dbplyr` tutorial taken from the [R, Databases & SQL](https://rdbsql.rsquaredacademy.com/index.html)
