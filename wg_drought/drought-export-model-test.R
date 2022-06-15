@@ -1,4 +1,4 @@
-# Create Model Output Function - Drought WG --------------------------------
+# Create Model Output Function - Drought WG ---------------------
 
 # Clear environment
 rm(list = ls())
@@ -6,10 +6,10 @@ rm(list = ls())
 # Load needed libraries
 library(lmerTest); library(tidyverse)
 
-# Fit Models --------------------------------------------------------------
+# Fit Models -----------
 
 # Acquire data
-data <- read.csv(file = "./Data/DataNick_Tables.csv")
+data <- read.csv(file = file.path("data", "DataNick_Tables.csv"))
 
 # Summarize it (for one of the tests)
 data_smz <- data %>%
@@ -29,7 +29,7 @@ mod_nls <- stats::nls(DS3 ~ b0 * b1 ** drtpct_map100, data = data,
 # Fit t-test
 mod_t <- stats::t.test(data_smz$mean_DS3, mu = 0, alternative = "less")
 
-# Extract Relevant Components ----------------------------------------------
+# Extract Relevant Components ----------------------------------
 
 # `lmer` Extract
 str(mod_mem)
@@ -95,7 +95,7 @@ t_ext
 # And remove everything but the models from the environment
 rm(list = setdiff(ls(), c("mod_mem", "mod_lm", "mod_nls", "mod_t")))
 
-# Design Function ----------------------------------------------------------
+# Design Function ----------------------------------------------
 
 # Custom function
 ide_mod_export <- function(model_obj, model_type = "lmer",
@@ -233,4 +233,4 @@ ide_mod_export(model_obj = mod_nls, model_type = "nls",
 ide_mod_export(model_obj = mod_t, model_type = "t.test",
                output_name = "Drought_t-test_Model.csv", p_dig = 12)
 
-# End ----------------------------------------------------------------------
+# End ----
