@@ -5,7 +5,7 @@
 # Prepare session
 library(magrittr)  # This script was created using Version 1.5
 
-WriteUniqueFieldValues <- function(.read_dir, .write_dir, .missing_code) {
+morpho_wiz <- function(.read_dir, .write_dir, .missing_code) {
   # Read columns in as character type. This prevents the coercion of blank cells in otherwise numeric data to NA.
   .csv_file <- read.csv(.read_dir,
                   stringsAsFactors = FALSE,

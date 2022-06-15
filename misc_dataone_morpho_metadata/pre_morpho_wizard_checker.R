@@ -36,9 +36,9 @@ gdata::keep(scripts_path, read_dir, write_dir, custom_code, sure = TRUE)
 # Use the Wizard Function -----------------
 
 # Source the function script
-source(file.path(scripts_path, "WriteUniqueFieldValues.R"))
+source(file.path(scripts_path, "pre_morpho_wizard_fxn.R"))
 
 # Call the function with the strings you defined above
-WriteUniqueFieldValues(.read_dir = read_dir,
-                       .write_dir = write_dir,
-                       .missing_code = custom_code)
+morpho_wiz(.read_dir = read_dir,
+           .write_dir = write_dir,
+           .missing_code = custom_code)
