@@ -11,9 +11,13 @@
 
 -   Shell script for updating the local mirrored repositories
 
+**"api_projects.py"**
 
+- Python script that clones a supplied repository (not 100% on this as I don't speak Python)
 
+**"get_issues.py"**
 
+- Python script that grabs the issues for a given repository (not 100% on this as I don't speak Python)
 
 **"adding_github_user.py"**
 
