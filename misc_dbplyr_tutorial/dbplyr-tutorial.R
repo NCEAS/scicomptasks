@@ -1,7 +1,6 @@
-## ----------------------------------------------------------------- ##
-                            # dbplyr Tutorial
-## ----------------------------------------------------------------- ##
-
+## -------------------------------------------------------- ##
+                      # dbplyr Tutorial
+## -------------------------------------------------------- ##
 # This contains a `dbplyr` tutorial
 
 # Load these libraries
@@ -10,9 +9,9 @@ library(tidyverse); library(DBI); library(RSQLite)
 # Clear environment
 rm(list = ls())
 
-# Tutorial #1: R, Databases & SQL ----------------------------------
+# Tutorial #1: R, Databases & SQL -----------------------
 
-# T1 - Chapter 1: DBI ----------------------------------------------
+# T1 - Chapter 1: DBI -----------------------------------
 # Link: rdbsql.rsquaredacademy.com/dbi.html
 
 # Connect 
@@ -115,7 +114,7 @@ dbDisconnect(con)
 # Clear environment
 rm(list = ls())
 
-# T1 - Chapter 2: dbplyr ---------------------------------------------------
+# T1 - Chapter 2: dbplyr -----------------------------------
 # Link: rdbsql.rsquaredacademy.com/dbplyr.html
 
 # Connect 
@@ -162,7 +161,7 @@ dbDisconnect(con)
 # Clear environment
 rm(list = ls())
 
-# T1 - Chapter 3: SQL Basics --------------------------------------------
+# T1 - Chapter 3: SQL Basics -----------------------------------
 # Link: rdbsql.rsquaredacademy.com/sqlbasics.html
 
 # Any new libraries required?
@@ -256,7 +255,7 @@ dbGetQuery(conn = con, statement = "SELECT *
 dbDisconnect(conn = con)
 rm(list = ls())
 
-# T1 - Chapter 4: SQL Advanced ------------------------------------------
+# T1 - Chapter 4: SQL Advanced -----------------------------------
 # Link: rdbsql.rsquaredacademy.com/sql2.html
 
 # Any new libraries required?
@@ -329,4 +328,4 @@ dbGetQuery(con, "SELECT SUM(SpecialProjectsCount) AS SpecialProjectsTotal, Recru
 dbDisconnect(conn = con)
 rm(list = ls())
 
-# End -------------------------------------------------------------------
+# End ----
