@@ -4,7 +4,6 @@
 
 "Morpho" refers to dataONE's metadata software **NOT** the 2022 NCEAS working group request for proposals of the same name. See [here](https://old.dataone.org/software-tools/morpho) for the Morpho these scripts are meant to deal with.
 
-
 ## Script explanation
 
 **"pre_morpho_wizard_fxn.R"**
