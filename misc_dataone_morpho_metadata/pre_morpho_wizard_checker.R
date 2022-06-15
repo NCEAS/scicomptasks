@@ -5,6 +5,17 @@
 # Load needed libraries
 library(gdata)
 
+# Script Instructions -----------------------
+
+# Use this script by following these instructions:
+
+# 1) Enter the path variables within the following section *using absolute paths
+# 2) Specify the custom code in the data used for missing values (UNLESS missing data are signified by empty cells and/or NAs)
+# 3) Source the pre-morpho wizard function script
+# 4) Run the pre-morpho wizard function on a directory containing your data
+# 5) Open those data in Excel and remove the junk columns manually
+# 6) Repeat steps 4-6 until no more issues are identified
+
 # Identify User-Dependent Variables ---------
 
 # Absolute path to folder containing this script and the function script
