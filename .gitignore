@@ -42,8 +42,9 @@ vignettes/*.pdf
 *.Rproj
 
 # Ignore certain folders
-Data/
-Plots/
+data/
+plots/
+task_export/
 
 # Ignore any knit files in the best practice manuals folder
 best_practice_manuals/*.pdf
