@@ -1,0 +1,3 @@
+"term","Estimate","SE","df","t","p"
+"(Intercept)",-0.37,0.06,99.12,-6.5,0
+"habitat.typeShrubland",0.1,0.11,95.27,0.94,0.3484
