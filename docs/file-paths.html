@@ -378,13 +378,13 @@ paths</strong> on NCEAS analytical server. When sharing code
 collaboratively (e.g., with GitHub) managing the difference between your
 folder structure and those of your colleagues can be tackled in a
 variety of ways. Failing to account for this can result in annoying
-errors where content are either not read in successfully or exported to
-the wrong folder. For content inside your working directory, we
-recommend to use relative paths. However sometimes you need to read
-files from folders that are outside your working directory, for example
-large datasets shared among your team members.</p>
+errors where content is either not read in successfully or is exported
+to the wrong folder. For content inside your working directory, we
+recommend using relative paths. However sometimes you need to read files
+from folders that are outside your working directory, for example large
+datasets shared among your team members.</p>
 <p>Below are our recommendations for file path management in a team
-context, we hope they help!</p>
+context; we hope they help!</p>
 <div id="preserve-file-paths-as-objects" class="section level2">
 <h2>1) Preserve File Paths as Objects</h2>
 <p>First and foremost, we recommend that you begin each script (just
@@ -407,7 +407,7 @@ my_path</code></pre>
 <pre><code>## [1] &quot;path/to/my/file&quot;</code></pre>
 <p>Note that while you could use <code>paste(..., sep = &#39;/&#39;)</code>
 instead, it does not account for the different slash between Mac and PC
-so `file.path() is preferable.</p>
+so <code>file.path()</code> is preferable.</p>
 </div>
 <div id="use-path-objects-when-readingwriting-data" class="section level2">
 <h2>3) Use Path Objects when Reading/Writing Data</h2>
@@ -422,7 +422,7 @@ for two examples:</p>
 my_raw_data &lt;- read.csv(file = file.path(my_path, &quot;raw_data.csv&quot;))
 
 # Export
-write.csv(x = data_obj, file = file.path(my_path, &quot;tidy_data.csv&quot;))</code></pre>
+write.csv(x = data_object, file = file.path(my_path, &quot;tidy_data.csv&quot;))</code></pre>
 </div>
 <div id="summary" class="section level2">
 <h2>Summary</h2>
