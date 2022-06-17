@@ -15,7 +15,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 <img src = "images/nceas-logo-wide.png" align = "right" width = "50%" />
 
-## Welcome!
+### Welcome!
 
 This webpage contains the collected best practice tips of the NCEAS Scientific Computing Support Team. More will be added over time and feel free to post [an issue](https://github.com/NCEAS/scicomptasks/issues) if you have a specific request for a chapter to add to this document.
 
@@ -27,7 +27,7 @@ This section contains our recommendations for handling **file paths** on NCEAS a
 
 Below are our recommendations for file path management in a team context; we hope they help!
 
-## 1) Preserve File Paths as Objects
+### 1) Preserve File Paths as Objects
 
 First and foremost, we recommend that you begin each script (just after loading your libraries) by saving all the paths to your files as objects. This makes it easy for each new user to remember that they might need to alter those objects so that data are read in and saved out to the appropriate places.
 
@@ -36,7 +36,7 @@ my_path <- "path/to/my/file/"
 my_path
 ```
 
-## 2) Use `file.path()` to Make Path Objects
+### 2) Use `file.path()` to Make Path Objects
 
 `file.path()` is a useful base R function that automatically accounts for the fact that Mac and PC operating systems use different slashes between folder names to indicate a path (one uses '/' and the other uses '\\')
 
@@ -47,7 +47,7 @@ my_path
 
 Note that while you could use `paste(..., sep = '/')` instead, it does not account for the different slash between Mac and PC so `file.path()` is preferable.
 
-## 3) Use Path Objects when Reading/Writing Data
+### 3) Use Path Objects when Reading/Writing Data
 
 Now that you've saved your paths as objects using `file.path()` to account for operating system differences, you should use them during import/export steps! To do this, just wrap the argument (i.e., part of the function) that deals with the file name/path in another call to `file.path()` with the object you created earlier and the name of the file to import/export. See below for two examples:
 
@@ -59,6 +59,6 @@ my_raw_data <- read.csv(file = file.path(my_path, "raw_data.csv"))
 write.csv(x = data_object, file = file.path(my_path, "tidy_data.csv"))
 ```
 
-## Summary
+### File Path Summary
 
 We strongly recommend preserving your file paths as objects at the start of your scripts (using `file.path()`) to ensure that your scripts can be shared as easily as possible among your team without issues due to user-specific folder names or computer operating system interrupting the work that you set out to do.
