@@ -6,13 +6,9 @@
 
 ## Script explanation
 
-**"pre_morpho_wizard_fxn.R"**
+**"pre_morpho_wizard_checker.R"**
 
-- R script containing a function for doing useful pre-processing before submitting to dataONE's Morpho wizard. "Useful pre-processing" includes:
+- R script invoking the pre_wizard function for doing useful pre-processing before submitting to dataONE's Morpho wizard. "Useful pre-processing" includes:
     - Identifies junk columns (i.e., columns without real entries that R reads in as "X.1"/"V1"/etc.)
     - Identifies type of numeric data
     - Flags the codes in data that indicate missing values
-
-**"pre_morpho_wizard_checker.R"**
-
-- R script invoking the pre_wizard function to demonstrate to users what it does
