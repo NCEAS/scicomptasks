@@ -13,8 +13,10 @@
 # Clear environment
 rm(list = ls())
 
-# Load needed libraries
-library(tidyverse); library(cowplot)
+# Load needed packages
+# install.packages("librarian")
+librarian::shelf(cowplot,
+                 tidyverse)
 
 # Make a folder for saving plots to
 dir.create(path = "plots", showWarnings = F)

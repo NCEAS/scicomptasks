@@ -10,8 +10,9 @@
 # Clear environment
 rm(list = ls())
 
-# Call packages
-library(tidyverse)
+# Load needed packages
+# install.packages("librarian")
+librarian::shelf(tidyverse)
 
 # Load COMPADRE data
 load(file.path("data", "COMPADRE_v.6.22.1.2.RData"))

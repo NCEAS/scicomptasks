@@ -3,9 +3,11 @@
 # Clear environment
 rm(list = ls())
 
-# Load needed libraries
-# devtools::install_github("NCEAS/scicomptools", force = TRUE)
-library(lmerTest); library(tidyverse); library(scicomptools)
+# Load needed packages
+# install.packages("librarian")
+librarian::shelf(lmerTest,
+                 NCEAS/scicomptools,
+                 tidyverse)
 
 # Fit Models -----------
 

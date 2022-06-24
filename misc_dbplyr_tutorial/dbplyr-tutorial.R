@@ -3,8 +3,11 @@
 ## -------------------------------------------------------- ##
 # This contains a `dbplyr` tutorial
 
-# Load these libraries
-library(tidyverse); library(DBI); library(RSQLite)
+# Load needed packages
+# install.packages("librarian")
+librarian::shelf(DBI,
+                 RSQLite,
+                 tidyverse)
 
 # Clear environment
 rm(list = ls())
@@ -14,7 +17,7 @@ rm(list = ls())
 # T1 - Chapter 1: DBI -----------------------------------
 # Link: rdbsql.rsquaredacademy.com/dbi.html
 
-# Connect 
+# Connect
 con <- dbConnect(RSQLite::SQLite(), ":memory:")
 
 # Summary of connection
@@ -117,7 +120,7 @@ rm(list = ls())
 # T1 - Chapter 2: dbplyr -----------------------------------
 # Link: rdbsql.rsquaredacademy.com/dbplyr.html
 
-# Connect 
+# Connect
 con <- dbConnect(RSQLite::SQLite(), ":memory:")
 
 # Copy mtcars to database

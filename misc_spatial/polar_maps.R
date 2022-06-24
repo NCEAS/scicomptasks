@@ -4,8 +4,10 @@
 
 # Housekeeping ------------------------------
 
-# Call needed libraries
-library(purrr); library(leaflet)
+# Load needed packages
+# install.packages("librarian")
+librarian::shelf(leaflet,
+                 purrr)
 
 # Define some key variables
 extent <- 11000000 + 9036842.762 + 667

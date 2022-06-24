@@ -2,11 +2,14 @@
 
 # Written by: Angel Chen & Nick J Lyon
 
-# Needed libraries
-library(tidyverse); library(janitor); library(lubridate); library(WorldFlora)
-
-# install.packages("devtools")
-devtools::install_github("njlyon0/helpR")
+# Load needed packages
+# install.packages("librarian")
+librarian::shelf(
+  janitor,
+  lubridate,
+  njlyon0/helpR,
+  tidyverse,
+  WorldFlora)
 
 # Clear environment
 rm(list = ls())
@@ -31,14 +34,14 @@ setwd(file.path("data", "drought wg"))
 
 # For each data type...
 for(type in data_type) {
-  
+
   # Identify files of that data type
   data_list <- as.list(raw_full[str_detect(string = raw_full, pattern = type)])
-  
+
   # Create index connecting integers to true filenames
   data_codes <- data.frame(filename = unlist(data_list)) %>%
     mutate(filecode = as.character(seq_along(filename)))
-  
+
   # Do the following for each data type:
   data_v1 <- data_list %>%
     # Read in data
@@ -56,7 +59,7 @@ for(type in data_type) {
     dplyr::mutate(filename = gsub(paste0("_", type), "", filename)) %>%
     # Remove rows that are entirely empty except filename
     filter(if_any(-filename, ~ nchar(.x) != 0))
-  
+
   # Assign it to a list with the name of the data type
   raw_list[[type]] <- data_v1 }
 
@@ -68,7 +71,7 @@ taxa_v1 <- raw_list[["taxa"]]
 
 # Retrieve Site Codes --------------------------------
 
-# Snag the site code lookup table 
+# Snag the site code lookup table
 site_lookup <- read_csv(file = "./Data/drought wg/Site_Elev-Disturb.csv",
                         show_col_types = F) %>%
   # While we're here, make the site names lowercase
@@ -342,7 +345,7 @@ cover_v4 <- cover_v3 %>%
   select(-ends_with('.y'), -taxa.x) %>%
   # Re-order/remove additional columns
   select(filename, site_name, site_code, plot, subplot, date_year,
-         first_treatment_year, first_appl_date, date_fix, 
+         first_treatment_year, first_appl_date, date_fix,
          n_treat_days, treatment_name, family, taxa_wfo,
          provenance, lifeform, lifespan) %>%
   # Re-name some of these columns
