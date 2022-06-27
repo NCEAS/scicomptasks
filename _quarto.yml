@@ -8,7 +8,7 @@ website:
   repo-actions: [issue]
   twitter-card: true
   navbar:
-    background: dark
+    background: primary
     left:
       - href: index.qmd
         text: Home
@@ -24,7 +24,9 @@ website:
 
 format:
   html:
-    theme: yeti
+    theme:
+       light: yeti
+       dark: cyborg
     css: styles.css
     toc: true
     link-external-newwindow: true
