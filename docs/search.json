@@ -1,5 +1,12 @@
 [
   {
+    "objectID": "pkgs.html",
+    "href": "pkgs.html",
+    "title": "R Package",
+    "section": "",
+    "text": "While much of the work we do is specific to a given working group or task, sometimes we realize afterwards that our functions have the potential to be useful beyond the scope for which they were initially written. To that end, we have created the R package scicomptools!\n\n\n\nThis package contains a diverse mix of functions for everything from repetitive data wrangling tasks to checking whether you have a token attached for GitHub. In addition, functions that we wrote that are deprecated (usually because their internal workings have been superseded by packages on CRAN) are removed from the package but retained in the GitHub repository in case they are useful to you! All functions–both live and deprecated–are summarized in the README on the GitHub repository so take a look!\n\n\n\nTo install the package in R, use the following:\n\n# install.packages(\"devtools\")\ndevtools::install_github(\"NCEAS/scicomptools\")"
+  },
+  {
     "objectID": "best_practices.html",
     "href": "best_practices.html",
     "title": "Best Practice Manuals",

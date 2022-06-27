@@ -12,6 +12,7 @@ website:
       - href: index.qmd
         text: Home
       - staff.qmd
+      - pkgs.qmd
       - best_practices.qmd
     right:
       - icon: github

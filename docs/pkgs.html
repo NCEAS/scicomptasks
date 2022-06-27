@@ -3,7 +3,7 @@
   <meta charset="utf-8">
   <meta name="generator" content="quarto-0.9.243">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-  <title>NCEAS Scientific Computing - Scientific Computing Support at NCEAS</title>
+  <title>NCEAS Scientific Computing - R Package</title>
   <style>
     code{white-space: pre-wrap;}
     span.smallcaps{font-variant: small-caps;}
@@ -11,6 +11,69 @@
     div.column{display: inline-block; vertical-align: top; width: 50%;}
     div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
     ul.task-list{list-style: none;}
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      {   }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+    code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+    code span.at { color: #7d9029; } /* Attribute */
+    code span.bn { color: #40a070; } /* BaseN */
+    code span.bu { } /* BuiltIn */
+    code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #4070a0; } /* Char */
+    code span.cn { color: #880000; } /* Constant */
+    code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+    code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+    code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+    code span.dt { color: #902000; } /* DataType */
+    code span.dv { color: #40a070; } /* DecVal */
+    code span.er { color: #ff0000; font-weight: bold; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #40a070; } /* Float */
+    code span.fu { color: #06287e; } /* Function */
+    code span.im { } /* Import */
+    code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+    code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+    code span.op { color: #666666; } /* Operator */
+    code span.ot { color: #007020; } /* Other */
+    code span.pp { color: #bc7a00; } /* Preprocessor */
+    code span.sc { color: #4070a0; } /* SpecialChar */
+    code span.ss { color: #bb6688; } /* SpecialString */
+    code span.st { color: #4070a0; } /* String */
+    code span.va { color: #19177c; } /* Variable */
+    code span.vs { color: #4070a0; } /* VerbatimString */
+    code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
   </style>
 
   <script src="site_libs/quarto-nav/quarto-nav.js"></script>
@@ -67,13 +130,13 @@
           <div class="collapse navbar-collapse" id="navbarCollapse">
             <ul class="navbar-nav navbar-nav-scroll me-auto">
   <li class="nav-item">
-    <a class="nav-link active" href="./index.html" aria-current="page">Home</a>
+    <a class="nav-link" href="./index.html">Home</a>
   </li>  
   <li class="nav-item">
     <a class="nav-link" href="./staff.html">Our Team</a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="./pkgs.html">R Package</a>
+    <a class="nav-link active" href="./pkgs.html" aria-current="page">R Package</a>
   </li>  
   <li class="nav-item">
     <a class="nav-link" href="./best_practices.html">Best Practice Manuals</a>
@@ -99,9 +162,11 @@
         <nav id="TOC" role="doc-toc">
 <h2 id="toc-title">On this page</h2>
 <ul>
-<li><a href="#what-we-do" id="toc-what-we-do" class="nav-link active" data-scroll-target="#what-we-do">What We Do</a>
+<li><a href="#scicomptools" id="toc-scicomptools" class="nav-link active" data-scroll-target="#scicomptools"><code>scicomptools</code></a>
 <ul class="collapse">
-<li><a href="#past-workshops" id="toc-past-workshops" class="nav-link" data-scroll-target="#past-workshops">Past Workshops</a></li>
+<li><a href="#package-explanation" id="toc-package-explanation" class="nav-link" data-scroll-target="#package-explanation">Package Explanation</a></li>
+<li><a href="#package-description" id="toc-package-description" class="nav-link" data-scroll-target="#package-description">Package Description</a></li>
+<li><a href="#installation-instructions" id="toc-installation-instructions" class="nav-link" data-scroll-target="#installation-instructions">Installation Instructions</a></li>
 </ul></li>
 </ul>
 <div class="toc-actions"><div><i class="bi bi-github"></i></div><div class="action-links"><p><a href="https://github.com/NCEAS/scicomptasks/issues/new" class="toc-action">Report an issue</a></p></div></div></nav>
@@ -110,22 +175,26 @@
 <main class="content" id="quarto-document-content">
 <header id="title-block-header" class="quarto-title-block default">
 
-<div class="quarto-title"><h1 class="title display-7">Scientific Computing Support at NCEAS</h1></div></header>
+<div class="quarto-title"><h1 class="title display-7">R Package</h1></div></header>
 
-<p><img src="images/nceas-logo-wide.png" align="right" width="50%"></p>
-<section id="what-we-do" class="level2">
-<h2 class="anchored" data-anchor-id="what-we-do">What We Do</h2>
-<p>We are a small (but mighty!) team of data scientists working at the National Center for Ecological Analysis and Synthesis (<a href="https://www.nceas.ucsb.edu/">NCEAS</a>). We primarily work with LTER (Long Term Ecological Research) Working Groups and provide all manner of data-adjacent assistance. This can include offering workshops on new skills or programs, helping you get set up on NCEAS’ server, acquiring data from third parties, or writing code to wrangle, analyze, or visualize the data your group has already collected. Depending on your team’s preferences, we can operate on a spectrum of independence ranging from complete self-sufficiency after initial definition of task scope to coding together with your team.</p>
-<p>Please feel free to take a look at our NCEAS information page <a href="https://www.nceas.ucsb.edu/programming-support">here</a> as well.</p>
-<section id="past-workshops" class="level3">
-<h3 class="anchored" data-anchor-id="past-workshops">Past Workshops</h3>
-<p>We have offered workshops in the past including the following:</p>
-<ul>
-<li><a href="https://pages.github.nceas.ucsb.edu/LTER/github-workshop/">Collaborative Coding with GitHub in RStudio</a>
-<ul>
-<li><a href="https://pages.github.nceas.ucsb.edu/njlyon/asm-2022_github-workshop/">A pared-down version of this workshop</a> was offered at the <a href="https://lternet.edu/2022-all-scientists-meeting/">2022 All Scientists’ Meeting</a></li>
-</ul></li>
-</ul>
+<section id="scicomptools" class="level2">
+<h2 class="anchored" data-anchor-id="scicomptools"><code>scicomptools</code></h2>
+<p><img src="images/scicomptools_hex.png" align="right" width="25%"></p>
+<section id="package-explanation" class="level3">
+<h3 class="anchored" data-anchor-id="package-explanation">Package Explanation</h3>
+<p>While much of the work we do is specific to a given working group or task, sometimes we realize afterwards that our functions have the potential to be useful beyond the scope for which they were initially written. To that end, we have created the R package <a href="https://github.com/NCEAS/scicomptools#readme"><code>scicomptools</code></a>!</p>
+</section>
+<section id="package-description" class="level3">
+<h3 class="anchored" data-anchor-id="package-description">Package Description</h3>
+<p>This package contains a diverse mix of functions for everything from repetitive data wrangling tasks to checking whether you have a token attached for GitHub. In addition, functions that we wrote that are deprecated (usually because their internal workings have been superseded by packages on CRAN) are removed from the package but retained in the GitHub repository in case they are useful to you! <strong>All functions–both live and deprecated–are summarized in the README on the <a href="https://github.com/NCEAS/scicomptools">GitHub repository</a> so take a look!</strong></p>
+</section>
+<section id="installation-instructions" class="level3">
+<h3 class="anchored" data-anchor-id="installation-instructions">Installation Instructions</h3>
+<p>To install the package in R, use the following:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># install.packages("devtools")</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>devtools<span class="sc">::</span><span class="fu">install_github</span>(<span class="st">"NCEAS/scicomptools"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
 
 
 
