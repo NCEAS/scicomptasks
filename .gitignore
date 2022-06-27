@@ -49,3 +49,5 @@ task_export/
 # Ignore any knit files in the best practice manuals folder
 best_practice_manuals/*.pdf
 best_practice_manuals/*.html
+
+/.quarto/

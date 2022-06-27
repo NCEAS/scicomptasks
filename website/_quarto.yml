@@ -1,0 +1,29 @@
+project:
+  type: website
+  output-dir: docs
+
+website:
+  title: "NCEAS Scientific Computing"
+  repo-url: https://github.com/NCEAS/scicomptasks
+  repo-actions: [issue]
+  navbar:
+    background: dark
+    left:
+      - href: index.qmd
+        text: Home
+      - staff.qmd
+      - best_practices.qmd
+    right:
+      - icon: github
+        href: https://github.com/NCEAS/scicomptasks
+  page-footer:
+    center: "Copyright 2022, NCEAS"
+    background: secondary
+
+format:
+  html:
+    theme: cosmo
+    css: styles.css
+    toc: true
+    link-external-newwindow: true
+    link-external-icon: false
