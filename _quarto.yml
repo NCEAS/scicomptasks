@@ -6,6 +6,7 @@ website:
   title: "NCEAS Scientific Computing"
   repo-url: https://github.com/NCEAS/scicomptasks
   repo-actions: [issue]
+  twitter-card: true
   navbar:
     background: dark
     left:
