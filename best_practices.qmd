@@ -8,7 +8,7 @@ This page contains the collected best practice tips of the NCEAS Scientific Comp
 
 Please feel free to reach out to our team (see [here](https://www.nceas.ucsb.edu/programming-support)) if you have any questions about this best practices manual and/or need help implementing some of this content.
 
-## File Paths
+## Best Practices: File Paths
 
 This section contains our recommendations for handling **file paths** on NCEAS analytical server. When sharing code collaboratively (e.g., with GitHub) managing the difference between your folder structure and those of your colleagues can be tackled in a variety of ways. Failing to account for this can result in annoying errors where content is either not read in successfully or is exported to the wrong folder. For content inside your working directory, we recommend using relative paths. However sometimes you need to read files from folders that are outside your working directory, for example large datasets shared among your team members.
 
