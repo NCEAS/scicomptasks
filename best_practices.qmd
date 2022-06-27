@@ -1,6 +1,7 @@
 ---
 title: "Best Practice Manuals"
 ---
+<img src = "images/nceas_logo_square.png" align = "right" width = "25%" />
 
 ### Welcome!
 

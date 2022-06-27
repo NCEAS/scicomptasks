@@ -25,10 +25,12 @@
   <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
   <script src="site_libs/quarto-html/anchor.min.js"></script>
   <link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
-  <link id="quarto-text-highlighting-styles" href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet">
+  <link class="quarto-color-scheme" id="quarto-text-highlighting-styles" href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet">
+  <link class="quarto-color-scheme quarto-color-alternate" rel="prefetch" id="quarto-text-highlighting-styles" href="site_libs/quarto-html/quarto-syntax-highlighting-dark.css">
   <script src="site_libs/bootstrap/bootstrap.min.js"></script>
   <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-  <link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet">
+  <link class="quarto-color-scheme" href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet">
+  <link class="quarto-color-scheme quarto-color-alternate" rel="prefetch" href="site_libs/bootstrap/bootstrap-dark.min.css">
   <script id="quarto-search-options" type="application/json">{
     "location": "navbar",
     "copy-button": false,
@@ -88,6 +90,9 @@
  </a>
   </li>  
 </ul>
+              <div class="quarto-toggle-container">
+                  <a href="" class="quarto-color-scheme-toggle nav-link" onclick="window.quartoToggleColorScheme(); return false;" title="Toggle dark mode"><i class="bi"></i></a>
+              </div>
               <div id="quarto-search" class="" title="Search"></div>
           </div> <!-- /navcollapse -->
       </div> <!-- /container-fluid -->
@@ -101,10 +106,7 @@
         <nav id="TOC" role="doc-toc">
 <h2 id="toc-title">On this page</h2>
 <ul>
-<li><a href="#what-we-do" id="toc-what-we-do" class="nav-link active" data-scroll-target="#what-we-do">What We Do</a>
-<ul class="collapse">
-<li><a href="#past-workshops" id="toc-past-workshops" class="nav-link" data-scroll-target="#past-workshops">Past Workshops</a></li>
-</ul></li>
+<li><a href="#what-we-do" id="toc-what-we-do" class="nav-link active" data-scroll-target="#what-we-do">What We Do</a></li>
 </ul>
 <div class="toc-actions"><div><i class="bi bi-github"></i></div><div class="action-links"><p><a href="https://github.com/NCEAS/scicomptasks/issues/new" class="toc-action">Report an issue</a></p></div></div></nav>
     </div>
@@ -114,28 +116,115 @@
 
 <div class="quarto-title"><h1 class="title display-7">Scientific Computing Support at NCEAS</h1></div></header>
 
-<p><img src="images/nceas-logo-wide.png" align="right" width="50%"></p>
-<section id="what-we-do" class="level2">
-<h2 class="anchored" data-anchor-id="what-we-do">What We Do</h2>
+<p><img src="images/nceas_logo_wide.png" align="right" width="50%"></p>
+<section id="what-we-do" class="level3">
+<h3 class="anchored" data-anchor-id="what-we-do">What We Do</h3>
 <p>We are a small (but mighty!) team of data scientists working at the National Center for Ecological Analysis and Synthesis (<a href="https://www.nceas.ucsb.edu/">NCEAS</a>). We primarily work with LTER (Long Term Ecological Research) Working Groups and provide all manner of data-adjacent assistance. This can include offering workshops on new skills or programs, helping you get set up on NCEAS’ server, acquiring data from third parties, or writing code to wrangle, analyze, or visualize the data your group has already collected. Depending on your team’s preferences, we can operate on a spectrum of independence ranging from complete self-sufficiency after initial definition of task scope to coding together with your team.</p>
 <p>Please feel free to take a look at our NCEAS information page <a href="https://www.nceas.ucsb.edu/programming-support">here</a> as well.</p>
-<section id="past-workshops" class="level3">
-<h3 class="anchored" data-anchor-id="past-workshops">Past Workshops</h3>
-<p>We have offered workshops in the past including the following:</p>
-<ul>
-<li><a href="https://pages.github.nceas.ucsb.edu/LTER/github-workshop/">Collaborative Coding with GitHub in RStudio</a>
-<ul>
-<li><a href="https://pages.github.nceas.ucsb.edu/njlyon/asm-2022_github-workshop/">A pared-down version of this workshop</a> was offered at the <a href="https://lternet.edu/2022-all-scientists-meeting/">2022 All Scientists’ Meeting</a></li>
-</ul></li>
-</ul>
 
 
 
-</section>
 </section>
 </main> <!-- /main -->
 <script type="application/javascript">
 window.document.addEventListener("DOMContentLoaded", function (event) {
+  const disableStylesheet = (stylesheets) => {
+    for (let i=0; i < stylesheets.length; i++) {
+      const stylesheet = stylesheets[i];
+      stylesheet.rel = 'prefetch';
+    }
+  }
+  const enableStylesheet = (stylesheets) => {
+    for (let i=0; i < stylesheets.length; i++) {
+      const stylesheet = stylesheets[i];
+      stylesheet.rel = 'stylesheet';
+    }
+  }
+  const manageTransitions = (selector, allowTransitions) => {
+    const els = window.document.querySelectorAll(selector);
+    for (let i=0; i < els.length; i++) {
+      const el = els[i];
+      if (allowTransitions) {
+        el.classList.remove('notransition');
+      } else {
+        el.classList.add('notransition');
+      }
+    }
+  }
+  const toggleColorMode = (alternate) => {
+    // Switch the stylesheets
+    const alternateStylesheets = window.document.querySelectorAll('link.quarto-color-scheme.quarto-color-alternate');
+    manageTransitions('#quarto-margin-sidebar .nav-link', false);
+    if (alternate) {
+      enableStylesheet(alternateStylesheets);
+    } else {
+      disableStylesheet(alternateStylesheets);
+    }
+    manageTransitions('#quarto-margin-sidebar .nav-link', true);
+    // Switch the toggles
+    const toggles = window.document.querySelectorAll('.quarto-color-scheme-toggle');
+    for (let i=0; i < toggles.length; i++) {
+      const toggle = toggles[i];
+      if (toggle) {
+        if (alternate) {
+          toggle.classList.add("alternate");     
+        } else {
+          toggle.classList.remove("alternate");
+        }
+      }
+    }
+  }
+  const isFileUrl = () => { 
+    return window.location.protocol === 'file:';
+  }
+  const hasAlternateSentinel = () => {  
+    let styleSentinel = getColorSchemeSentinel();
+    if (styleSentinel !== null) {
+      return styleSentinel === "alternate";
+    } else {
+      return false;
+    }
+  }
+  const setStyleSentinel = (alternate) => {
+    const value = alternate ? "alternate" : "default";
+    if (!isFileUrl()) {
+      window.localStorage.setItem("quarto-color-scheme", value);
+    } else {
+      localAlternateSentinel = value;
+    }
+  }
+  const getColorSchemeSentinel = () => {
+    if (!isFileUrl()) {
+      const storageValue = window.localStorage.getItem("quarto-color-scheme");
+      return storageValue != null ? storageValue : localAlternateSentinel;
+    } else {
+      return localAlternateSentinel;
+    }
+  }
+  let localAlternateSentinel = 'default';
+  // Dark / light mode switch
+  window.quartoToggleColorScheme = () => {
+    // Read the current dark / light value 
+    let toAlternate = !hasAlternateSentinel();
+    toggleColorMode(toAlternate);
+    setStyleSentinel(toAlternate);
+  };
+  // Ensure there is a toggle, if there isn't float one in the top right
+  if (window.document.querySelector('.quarto-color-scheme-toggle') === null) {
+    const a = window.document.createElement('a');
+    a.classList.add('top-right');
+    a.classList.add('quarto-color-scheme-toggle');
+    a.href = "";
+    a.onclick = function() { try { window.quartoToggleColorScheme(); } catch {} return false; };
+    const i = window.document.createElement("i");
+    i.classList.add('bi');
+    a.appendChild(i);
+    window.document.body.appendChild(a);
+  }
+  // Switch to dark mode if need be
+  if (hasAlternateSentinel()) {
+    toggleColorMode(true);
+  } 
   const icon = "";
   const anchorJS = new window.AnchorJS();
   anchorJS.options = {
