@@ -50,4 +50,9 @@ task_export/
 best_practice_manuals/*.pdf
 best_practice_manuals/*.html
 
+# Ignore quarto
 /.quarto/
+
+# Ignore PDFs in Silica folder
+wg_silica/*.pdf
+
