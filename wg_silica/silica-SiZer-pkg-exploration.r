@@ -221,7 +221,7 @@ abline(h=0.5) #plotting the bandwidth
 
 
 #so once we've done this, we look at graphs to see where slopes significantly change
-#(I wish model just spit out a number of x asix where slope changes so it wasn't so much "eyeballing")
+#(I wish model just spit out a number of x axis where slope changes so it wasn't so much "eyeballing")
 
 #then run linear regression for periods of significant positive or neg slopes to get rate of change
 #if date different for each site, is it possible to streamline this? must be! I hope!
