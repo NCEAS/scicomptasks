@@ -55,10 +55,124 @@ e2 <- SiZer::SiZer(x = priscu$Year, y = priscu$FNYield,
 plot(e2)
 abline(h = 0.5)
 
+# Practice Manipulating SiZer Object -----
+# Do a side-by-side plot of trendline with SiZer plot
+par(mfrow = c(1, 3))
+plot(priscu$Year, priscu$FNYield)
+plot(e, main = "1st Derivative")
+plot(e2, main = "2nd Derivative")
+par(mfrow = c(1, 1))
+
+# Check structureof SiZer Object
+str(e)
+
+# Strip slope values into dataframe
+sizer_slopes <- as.data.frame(e$slopes)
+## Increasing = 1, Possibly Zero = 0,
+## Decreasing = -1, Not Enough Data = 2
+
+# Columns are increasing x-axis (left to right)
+names(sizer_slopes) <- e$x.grid
+
+# Rows are increasing bandwidth (top to bottom)
+sizer_slopes$h_grid <- e$h.grid
+
+# Wrangle this a bit
+sizer_df <- sizer_slopes %>%
+  # Pivot to long format to make it a little easier to scan through
+  tidyr::pivot_longer(cols = -h_grid,
+                      names_to = "x_grid",
+                      values_to = "slope") %>%
+  # Drop all 'insufficient data' rows
+  dplyr::filter(slope != 2)
+
+# Examine output
+head(sizer_df)
+unique(sizer_df$slope)
+
+# Now time to identify state transitions (i.e, change in slope)
+sizer_df_v2 <- sizer_df %>%
+  # Within bandwidth levels (h_grid)
+  dplyr::group_by(h_grid) %>%
+  # Identify whether the next value is the same or different
+  dplyr::mutate(transition = dplyr::case_when(
+    # First identify start of each group
+    is.na(dplyr::lag(slope, n = 1)) ~ 'start',
+    # is.na(dplyr::lead(slope, n = 1)) ~ 'end',
+    # Now identify whether each value is the same as or different than previous
+    slope == dplyr::lag(slope, n = 1) ~ 'same',
+    slope != dplyr::lag(slope, n = 1) ~ 'change'
+    # slope == dplyr::lead(slope, n = 1) ~ 'no'
+  )) %>%
+  # Lets also identify what type of change the transition was
+  dplyr::mutate(change_type = dplyr::case_when(
+    transition == "change" & slope == 1 ~ 'zero-to-positive',
+    transition == "change" & slope == 0 ~ 'change-to-zero',
+    transition == "change" & slope == -1 ~ 'zero to negative')) %>%
+  # End by ungrouping (good practice)
+  dplyr::ungroup()
+
+# Take a look at what that yields
+as.data.frame(dplyr::filter(sizer_df_v2, h_grid == 2))
+
+# Filter to only those that indicate a state change
+sizer_transitions <- sizer_df_v2 %>%
+  dplyr::filter(transition == "change"
+                # Un-comment below if want to see value before change
+                # | dplyr::lead(transition, n = 1) == "change"
+                )
+
+# Look at one group of this now
+as.data.frame(dplyr::filter(sizer_transitions, h_grid == 2))
+
+# Let's create a plot
+ggplot(sizer_transitions, aes(x = x_grid, y = slope, color = h_grid)) +
+  geom_point() +
+  theme_classic() +
+  theme(axis.text.x = element_text(angle = 20, hjust = 1))
+
+# Let's test a method of summarizing across bandwidths
+sizer_test <- sizer_transitions %>%
+  # Group by change type
+  dplyr::group_by(change_type) %>%
+  # And average the x_grid value
+  dplyr::summarise(slope = dplyr::first(slope),
+                   mean_x = mean(as.numeric(x_grid), na.rm = T),
+                   sd_x = sd(as.numeric(x_grid), na.rm = T),
+                   se_x = sd_x / dplyr::n())
+
+# Check out output
+head(sizer_test)
+
+# Plot that
+ggplot(sizer_test, aes(x = mean_x, y = slope)) +
+  geom_point() +
+  geom_errorbarh(aes(xmin = mean_x - se_x, xmax = mean_x + se_x),
+                 height = 0.2) +
+  theme_classic() +
+  theme(axis.text.x = element_text(angle = 20, hjust = 1))
+
+# Now call the original plot of the trendline and add a line at these places
+ggplot(priscu, aes(x = Year, y = FNYield)) +
+  geom_point() +
+  geom_smooth(method = 'loess', formula = 'y ~ x', se = F) +
+  geom_vline(xintercept = sizer_test$mean_x) +
+  theme_classic() +
+  theme(axis.text.x = element_text(angle = 20, hjust = 1))
 
 
 
 
+
+
+
+
+
+
+# Polynomial Component ----
+
+# SiZer has an answer for locally-weighted polynomials as well
+?SiZer::locally.weighted.polynomial
 
 
 
