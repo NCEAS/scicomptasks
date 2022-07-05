@@ -10,6 +10,7 @@ Sometimes working group needs evolve and scripts that we have completed wind up 
 
 Given that this repository is meant to be a sort of "grab bag" of unrelated scripts organization is--understandably--an issue. To aid with this, we have adopted the following structure:
 
+- Content for the website is un-filed in the top-level repository folder. This is required for Quarto at this point but will be revised later
 -   All scripts are placed in a folder specific to either (A) the working group they were created for or if not applicable (B) their purpose
     -   These folders have the prefix "wg\_" or "misc\_" depending on which of these fits
 -   Each of these folders contains its own README.md file that includes a short (1-2 sentence) executive summary of *all* of the scripts in that folder
