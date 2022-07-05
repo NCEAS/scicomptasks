@@ -11,11 +11,11 @@ website:
   navbar:
     background: primary
     left:
-      - href: website_content/index.qmd
+      - href: index.qmd
         text: Home
-      - website_content/staff.qmd
-      - website_content/pkgs.qmd
-      - website_content/best_practices.qmd
+      - staff.qmd
+      - pkgs.qmd
+      - best_practices.qmd
     right:
       - icon: github
         href: https://github.com/NCEAS/scicomptasks
@@ -28,7 +28,7 @@ format:
     theme:
        light: yeti
        dark: cyborg
-    css: website_content/styles.css
+    css: styles.css
     toc: true
     link-external-newwindow: true
     link-external-icon: false
