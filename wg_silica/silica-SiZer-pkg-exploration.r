@@ -268,18 +268,22 @@ sizer_extract <- function(sizer_x = NULL, sizer_y = NULL, deriv = 1){
       transition == "change" & slope == 1 ~ 'change_to_positive',
       transition == "change" & slope == 0 ~ 'change_to_zero',
       transition == "change" & slope == -1 ~ 'change_to_negative')) %>%
+    # Account for if multiple of the same change happen in a curve
+    dplyr::group_by(h_grid, change_type) %>%
+    dplyr::mutate(change_count = seq_along(unique(x_grid))) %>%
     # Ungroup for subsequent operations
     dplyr::ungroup() %>%
     # Filter to retain only those rows that indicate a slope change
     dplyr::filter(transition == "change") %>%
     # Group by change type
-    dplyr::group_by(change_type) %>%
+    dplyr::group_by(change_count, change_type) %>%
     # And average the x_grid value
     dplyr::summarise(slope = dplyr::first(slope),
                      mean_x = mean(as.numeric(x_grid), na.rm = T),
                      sd_x = sd(as.numeric(x_grid), na.rm = T),
                      n_x = dplyr::n(),
-                     se_x = sd_x / n_x) %>%
+                     se_x = sd_x / n_x,
+                     .groups = 'keep') %>%
     # Ungroup
     dplyr::ungroup() %>%
     # Sort from lowest to highest X
@@ -312,10 +316,71 @@ ggplot(priscu, aes(x = Year, y = FNYield)) +
   geom_vline(xintercept = fxn_test$mean_x, color = 'orange') +
   theme_classic()
 
+# SiZer Loop Test ----
 
+# Now that we have a function, let's loop through it!
 
+# First create a folder to save experimental plots to
+dir.create(path = "plots", showWarnings = FALSE)
 
+# And clear the environment of everything except for the function
+rm(list = setdiff(ls(), "sizer_extract"))
 
+# Load the data again
+data <- readr::read_csv(file = file.path("wg_silica", "CryoData_forNick_6.29.22.csv"))
+
+# How many sites are there?
+unique(data$site)
+
+# Okay, now it's for loop time
+for(place in unique(data$site)) {
+# for(place in "Priscu Stream at B1"){ # testing loop head
+
+  # Subset the full data
+  site <- data %>%
+    dplyr::filter(site == place)
+
+  # Apply it to the function for the first derivative
+  first_drv <- sizer_extract(sizer_x = site$Year,
+                             sizer_y = site$FNYield, deriv = 1)
+
+  # And the second derivative
+  second_drv <- sizer_extract(sizer_x = site$Year,
+                              sizer_y = site$FNYield, deriv = 2)
+
+  # Now create a graph of each
+  ## First derivative
+  p <- ggplot(site, aes(x = Year, y = FNYield)) +
+    geom_point() +
+    geom_smooth(method = 'loess', formula = 'y ~ x',
+                se = F, color = 'black') +
+    geom_vline(xintercept = first_drv$mean_x, color = 'orange') +
+    theme_classic()
+  ## Second
+  q <- ggplot(site, aes(x = Year, y = FNYield)) +
+    geom_point() +
+    geom_smooth(method = 'loess', formula = 'y ~ x',
+                se = F, color = 'black') +
+    geom_vline(xintercept = second_drv$mean_x, color = 'orange') +
+    theme_classic()
+
+  # Add the positive to negative inflection point line if one exists
+  if(!all(is.na(first_drv$pos_to_neg))){
+    p <- p +
+      geom_vline(xintercept = first_drv$pos_to_neg, color = 'blue',
+                 na.rm = TRUE) }
+  if(!all(is.na(second_drv$pos_to_neg))){
+    q <- q +
+      geom_vline(xintercept = second_drv$pos_to_neg, color = 'blue',
+                 na.rm = TRUE) }
+
+  # Save both
+  ggplot2::ggsave(plot = p, filename = file.path("plots", paste0(place, "_first-drv_plot.png")), height = 5.06, width = 5.44)
+  ggplot2::ggsave(plot = q, filename = file.path("plots", paste0(place, "_second-drv_plot.png")), height = 5.06, width = 5.44)
+
+  # Return a success message
+  message("Breakpoints identified for site: ", place)
+}
 
 # Polynomial Component ----
 
