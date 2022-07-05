@@ -184,7 +184,7 @@ ggplot(priscu, aes(x = Year, y = FNYield)) +
 
 
 
-# Joanna Carey's Code ----
+# Joanna Carey's Code - SetUp ----
 
 ##Trying to get SiZer to work for Si cryo paper
 #first looking at annaul WRTDS Si model results
@@ -202,8 +202,7 @@ names(Priscu)
 plot(Priscu$Year, Priscu$FNYield)
 
 
-###==========================================
-#running Sizer
+# Joanna Carey's Code - Running SiZer ----
 #1st order derivative to look at where we have significant slope changes
 e<-SiZer(Priscu$Year, Priscu$FNYield, h=c(2,10), degree=1, derv=1, grid.length = 100)
 plot(e)
