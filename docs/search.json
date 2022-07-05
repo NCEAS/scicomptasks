@@ -1,56 +1,56 @@
 [
   {
-    "objectID": "pkgs.html",
-    "href": "pkgs.html",
+    "objectID": "website_content/pkgs.html",
+    "href": "website_content/pkgs.html",
     "title": "R Package",
     "section": "",
     "text": "While much of the work we do is specific to a given working group or task, sometimes we realize afterwards that our functions have the potential to be useful beyond the scope for which they were initially written. To that end, we have created the R package scicomptools!\n\n\n\nThis package contains a diverse mix of functions for everything from repetitive data wrangling tasks to checking whether you have a token attached for GitHub. In addition, functions that we wrote that are deprecated (usually because their internal workings have been superseded by packages on CRAN) are removed from the package but retained in the GitHub repository in case they are useful to you! All functions–both live and deprecated–are summarized in the README on the GitHub repository so take a look!\n\n\n\nTo install the package in R, use the following:\n\n# install.packages(\"devtools\")\ndevtools::install_github(\"NCEAS/scicomptools\")"
   },
   {
-    "objectID": "best_practices.html#best-practices-file-paths",
-    "href": "best_practices.html#best-practices-file-paths",
+    "objectID": "website_content/best_practices.html#best-practices-file-paths",
+    "href": "website_content/best_practices.html#best-practices-file-paths",
     "title": "Best Practice Manuals",
     "section": "Best Practices: File Paths",
     "text": "Best Practices: File Paths\nThis section contains our recommendations for handling file paths on NCEAS analytical server. When sharing code collaboratively (e.g., with GitHub) managing the difference between your folder structure and those of your colleagues can be tackled in a variety of ways. Failing to account for this can result in annoying errors where content is either not read in successfully or is exported to the wrong folder. For content inside your working directory, we recommend using relative paths. However sometimes you need to read files from folders that are outside your working directory, for example large datasets shared among your team members.\nBelow are our recommendations for file path management in a team context; we hope they help!\n\n1) Preserve File Paths as Objects\nFirst and foremost, we recommend that you begin each script (just after loading your libraries) by saving all the paths to your files as objects. This makes it easy for each new user to remember that they might need to alter those objects so that data are read in and saved out to the appropriate places.\n\nmy_path <- \"path/to/my/file/\"\nmy_path\n\n[1] \"path/to/my/file/\"\n\n\n\n\n2) Use file.path() to Make Path Objects\nfile.path() is a useful base R function that automatically accounts for the fact that Mac and PC operating systems use different slashes between folder names to indicate a path (one uses ‘/’ and the other uses ‘\\’)\n\nmy_path <- file.path(\"path\", \"to\", \"my\", \"file\")\nmy_path\n\n[1] \"path/to/my/file\"\n\n\nNote that while you could use paste(..., sep = '/') instead, it does not account for the different slash between Mac and PC so file.path() is preferable.\n\n\n3) Use Path Objects when Reading/Writing Data\nNow that you’ve saved your paths as objects using file.path() to account for operating system differences, you should use them during import/export steps! To do this, just wrap the argument (i.e., part of the function) that deals with the file name/path in another call to file.path() with the object you created earlier and the name of the file to import/export. See below for two examples:\n\n# Import\nmy_raw_data <- read.csv(file = file.path(my_path, \"raw_data.csv\"))\n\n# Export\nwrite.csv(x = data_object, file = file.path(my_path, \"tidy_data.csv\"))\n\n\n\nFile Path Summary\nWe strongly recommend preserving your file paths as objects at the start of your scripts (using file.path()) to ensure that your scripts can be shared as easily as possible among your team without issues due to user-specific folder names or computer operating system interrupting the work that you set out to do."
   },
   {
-    "objectID": "best_practices.html#best-practices-package-loading",
-    "href": "best_practices.html#best-practices-package-loading",
+    "objectID": "website_content/best_practices.html#best-practices-package-loading",
+    "href": "website_content/best_practices.html#best-practices-package-loading",
     "title": "Best Practice Manuals",
     "section": "Best Practices: Package Loading",
     "text": "Best Practices: Package Loading\nLoading packages / libraries in R can be cumbersome when working collaboratively because there is no guarantee that you all have the same packages installed. While you could comment-out an install.packages() line for every package you need for a given script, we recommend using the R package librarian to greatly simplify this process!\nlibrarian::shelf() accepts the names of all of the packages–either CRAN or GitHub–installs those that are missing in that particular R session and then attaches all of them. See below for an example:\nTo load packages typically you’d have something like the following in your script:\n\n## Install packages (if needed)\n# install.packages(\"tidyverse\")\n# install.packages(\"devtools\")\n# devtools::install_github(\"NCEAS/scicomptools\")\n\n# Load libraries\nlibrary(tidyverse); library(scicomptools)\n\nWith librarian::shelf() however this becomes much cleaner!\n\n# Install and load packages!\nlibrarian::shelf(tidyverse, NCEAS/scicomptools)\n\nWhen using librarian::shelf(), package names do not need to be quoted and GitHub packages can be installed without the additional steps of installing the devtools package and using devtools::install_github() instead of install.packages()."
   },
   {
-    "objectID": "index.html",
-    "href": "index.html",
+    "objectID": "website_content/index.html",
+    "href": "website_content/index.html",
     "title": "Scientific Computing Support at NCEAS",
     "section": "",
     "text": "What We Do\nWe are a small (but mighty!) team of data scientists working at the National Center for Ecological Analysis and Synthesis (NCEAS). We primarily work with LTER (Long Term Ecological Research) Working Groups and provide all manner of data-adjacent assistance. This can include offering workshops on new skills or programs, helping you get set up on NCEAS’ server, acquiring data from third parties, or writing code to wrangle, analyze, or visualize the data your group has already collected. Depending on your team’s preferences, we can operate on a spectrum of independence ranging from complete self-sufficiency after initial definition of task scope to coding together with your team.\nPlease feel free to take a look at our NCEAS information page here as well."
   },
   {
-    "objectID": "staff.html",
-    "href": "staff.html",
+    "objectID": "website_content/staff.html",
+    "href": "website_content/staff.html",
     "title": "Our Team",
     "section": "",
     "text": "Because we live in an era where we may only meet in person sporadically, we felt it would be nice to introduce ourselves here to help you put a face to the emails / Slack messages / GitHub issues we exchange going forward!"
   },
   {
-    "objectID": "staff.html#julien-brun",
-    "href": "staff.html#julien-brun",
+    "objectID": "website_content/staff.html#julien-brun",
+    "href": "website_content/staff.html#julien-brun",
     "title": "Our Team",
     "section": "Julien Brun",
     "text": "Julien Brun\nbrunj7.github.io –  brunj7 –  @brunj7\n\nAs a senior data scientist, the core of Julien’s work is to understand the data and computing challenges researchers are facing and help them to translate these challenges into solvable tasks. Julien advises and mentors on how to clean, structure, combine, and analyze their heterogeneous data sets, as well as scaling up their analysis while promoting open and reproducible data science principles.\nJulien is also a Lecturer in the Master in Environmental Data Science program at Bren School of Environmental Science and Management at UC Santa Barbara, where he teaches “good enough” practices in reproducible and collaborative data science."
   },
   {
-    "objectID": "staff.html#angel-chen",
-    "href": "staff.html#angel-chen",
+    "objectID": "website_content/staff.html#angel-chen",
+    "href": "website_content/staff.html#angel-chen",
     "title": "Our Team",
     "section": "Angel Chen",
     "text": "Angel Chen\n angelchen7\n\nAngel supports LTER synthesis working groups by developing data pipelines and reproducible analytical workflows to integrate various sources of data. Angel previously worked as a data curator for the Arctic Data Center, helping researchers archive and store their data. Angel recently completed a B.S. in statistics & data science at the University of California, Santa Barbara."
   },
   {
-    "objectID": "staff.html#nick-lyon",
-    "href": "staff.html#nick-lyon",
+    "objectID": "website_content/staff.html#nick-lyon",
+    "href": "website_content/staff.html#nick-lyon",
     "title": "Our Team",
     "section": "Nick Lyon",
     "text": "Nick Lyon\nnjlyon0.github.io –  njlyon0 –  @scilyon\n\nNick focuses on supporting LTER synthesis working groups in the acquisition and management prerequisite to analysis and visualization. Nick is a trained restoration ecologist focusing on interacting communities of plants and insects and has extensive experience taking “raw” field-collected data and readying it for hypothesis testing in a rigorous, transparent way. Nick completed his MS in Ecology and Evolutionary Biology at Iowa State University"

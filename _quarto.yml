@@ -1,5 +1,6 @@
 project:
   type: website
+  execute-dir: project
   output-dir: docs
 
 website:
@@ -10,11 +11,11 @@ website:
   navbar:
     background: primary
     left:
-      - href: index.qmd
+      - href: website_content/index.qmd
         text: Home
-      - staff.qmd
-      - pkgs.qmd
-      - best_practices.qmd
+      - website_content/staff.qmd
+      - website_content/pkgs.qmd
+      - website_content/best_practices.qmd
     right:
       - icon: github
         href: https://github.com/NCEAS/scicomptasks
@@ -27,7 +28,7 @@ format:
     theme:
        light: yeti
        dark: cyborg
-    css: styles.css
+    css: website_content/styles.css
     toc: true
     link-external-newwindow: true
     link-external-icon: false
