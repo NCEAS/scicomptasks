@@ -354,60 +354,6 @@ for(place in unique(data$site)) {
   message("Breakpoints identified for site: ", place)
 }
 
-# SiZer Loop without Export ----
-
-# And clear the environment of everything except for the function
-rm(list = setdiff(ls(), "sizer_extract"))
-
-# Load the data again
-data <- readr::read_csv(file = file.path("wg_silica", "CryoData_forNick_6.29.22.csv"))
-
-# How many sites are there?
-unique(data$site)
-
-# Okay, now it's for loop time
-for(place in "Ob") {
-
-  # Subset the full data
-  site <- data %>%
-    dplyr::filter(site == place)
-
-  # Apply it to the function for the first derivative
-  first_drv <- sizer_extract(sizer_x = site$Year,
-                             sizer_y = site$FNYield,
-                             deriv = 1, bandwidth = c(2, 8))
-
-  # Use the actual function
-  e <- SiZer::SiZer(x = site$Year, y = site$FNYield,
-                    h = c(2, 8), degree = 1,
-                    derv = 1, grid.length = 100)
-
-  # Now create a graph of each
-  ## First derivative
-  p <- ggplot(site, aes(x = Year, y = FNYield)) +
-    geom_point() +
-    geom_smooth(method = 'loess', formula = 'y ~ x',
-                se = F, color = 'black') +
-    geom_vline(xintercept = first_drv$mean_x, color = 'orange') +
-    theme_classic()
-
-  # Add the positive to negative inflection point line(s) if one exists
-  if(!all(is.na(first_drv$pos_to_neg))){
-    p <- p +
-      geom_vline(xintercept = first_drv$pos_to_neg, color = 'blue',
-                 na.rm = TRUE) }
-
-  # Add *negative to positive* inflection point line(s) if one exists
-  if(!all(is.na(first_drv$neg_to_pos))){
-    p <- p +
-      geom_vline(xintercept = first_drv$neg_to_pos, color = 'red',
-                 na.rm = TRUE) }
-}
-
-# Create side by side plots
-plot(e, main = "1st Derivative")
-p
-
 # Polynomial Component ----
 
 # SiZer has an answer for locally-weighted polynomials as well
