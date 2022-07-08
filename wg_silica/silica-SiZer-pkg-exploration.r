@@ -8,7 +8,7 @@
 
 # Load libraries
 # install.packages("librarian")
-librarian::shelf(tidyverse, SiZer)
+librarian::shelf(tidyverse, SiZer, cowplot)
 
 # Clear environment
 rm(list = ls())
@@ -173,7 +173,6 @@ ggplot(priscu, aes(x = Year, y = FNYield)) +
   # Clean up the theme
   theme_classic()
 
-
 # Make a simpler version as well
 ggplot(priscu, aes(x = Year, y = FNYield)) +
   geom_point() +
@@ -286,6 +285,10 @@ sizer_extract <- function(sizer_x = NULL, sizer_y = NULL, deriv = 1){
                      .groups = 'keep') %>%
     # Ungroup
     dplyr::ungroup() %>%
+    # DANGER ZONE (vvv) ----
+    # Filter out lines that don't show up a lot
+    dplyr::filter(n_x > 10) %>%
+    # DANGER ZONE (^^^) ----
     # Sort from lowest to highest X
     dplyr::arrange(mean_x) %>%
     # Calculate distance to next one
@@ -295,7 +298,12 @@ sizer_extract <- function(sizer_x = NULL, sizer_y = NULL, deriv = 1){
       pos_to_neg = ifelse(change_type == "change_to_zero" &
                             dplyr::lead(change_type) == "change_to_negative",
                           yes = (mean_x + (dist_to_next / 2)),
-                          no = NA) ) %>%
+                          no = NA),
+      neg_to_pos = ifelse(change_type == "change_to_zero" &
+                            dplyr::lead(change_type) == "change_to_positive",
+                          yes = (mean_x + (dist_to_next / 2)),
+                          no = NA)
+      ) %>%
       # Make it a dataframe
       as.data.frame()
 
@@ -364,7 +372,7 @@ for(place in unique(data$site)) {
     geom_vline(xintercept = second_drv$mean_x, color = 'orange') +
     theme_classic()
 
-  # Add the positive to negative inflection point line if one exists
+  # Add the positive to negative inflection point line(s) if one exists
   if(!all(is.na(first_drv$pos_to_neg))){
     p <- p +
       geom_vline(xintercept = first_drv$pos_to_neg, color = 'blue',
@@ -374,6 +382,16 @@ for(place in unique(data$site)) {
       geom_vline(xintercept = second_drv$pos_to_neg, color = 'blue',
                  na.rm = TRUE) }
 
+  # Add *negative to positive* inflection point line(s) if one exists
+  if(!all(is.na(first_drv$neg_to_pos))){
+    p <- p +
+      geom_vline(xintercept = first_drv$neg_to_pos, color = 'red',
+                 na.rm = TRUE) }
+  if(!all(is.na(second_drv$neg_to_pos))){
+    q <- q +
+      geom_vline(xintercept = second_drv$neg_to_pos, color = 'red',
+                 na.rm = TRUE) }
+
   # Save both
   ggplot2::ggsave(plot = p, filename = file.path("plots", paste0(place, "_first-drv_plot.png")), height = 5.06, width = 5.44)
   ggplot2::ggsave(plot = q, filename = file.path("plots", paste0(place, "_second-drv_plot.png")), height = 5.06, width = 5.44)
@@ -381,6 +399,75 @@ for(place in unique(data$site)) {
   # Return a success message
   message("Breakpoints identified for site: ", place)
 }
+
+# SiZer Loop without Export ----
+
+# And clear the environment of everything except for the function
+rm(list = setdiff(ls(), "sizer_extract"))
+
+# Load the data again
+data <- readr::read_csv(file = file.path("wg_silica", "CryoData_forNick_6.29.22.csv"))
+
+# How many sites are there?
+unique(data$site)
+
+# Okay, now it's for loop time
+for(place in "Ob") {
+
+  # Subset the full data
+  site <- data %>%
+    dplyr::filter(site == place)
+
+  # Apply it to the function for the first derivative
+  first_drv <- sizer_extract(sizer_x = site$Year,
+                             sizer_y = site$FNYield, deriv = 1)
+
+  # And the second derivative
+  second_drv <- sizer_extract(sizer_x = site$Year,
+                              sizer_y = site$FNYield, deriv = 2)
+
+  # Now create a graph of each
+  ## First derivative
+  p <- ggplot(site, aes(x = Year, y = FNYield)) +
+    geom_point() +
+    geom_smooth(method = 'loess', formula = 'y ~ x',
+                se = F, color = 'black') +
+    geom_vline(xintercept = first_drv$mean_x, color = 'orange') +
+    theme_classic()
+  ## Second
+  q <- ggplot(site, aes(x = Year, y = FNYield)) +
+    geom_point() +
+    geom_smooth(method = 'loess', formula = 'y ~ x',
+                se = F, color = 'black') +
+    geom_vline(xintercept = second_drv$mean_x, color = 'orange') +
+    theme_classic()
+
+  # Add the positive to negative inflection point line(s) if one exists
+  if(!all(is.na(first_drv$pos_to_neg))){
+    p <- p +
+      geom_vline(xintercept = first_drv$pos_to_neg, color = 'blue',
+                 na.rm = TRUE) }
+  if(!all(is.na(second_drv$pos_to_neg))){
+    q <- q +
+      geom_vline(xintercept = second_drv$pos_to_neg, color = 'blue',
+                 na.rm = TRUE) }
+
+  # Add *negative to positive* inflection point line(s) if one exists
+  if(!all(is.na(first_drv$neg_to_pos))){
+    p <- p +
+      geom_vline(xintercept = first_drv$neg_to_pos, color = 'red',
+                 na.rm = TRUE) }
+  if(!all(is.na(second_drv$neg_to_pos))){
+    q <- q +
+      geom_vline(xintercept = second_drv$neg_to_pos, color = 'red',
+                 na.rm = TRUE) }
+
+  # Return a success message
+  message("Breakpoints identified for site: ", place)
+}
+
+# Plot the two graphs side by side
+cowplot::plot_grid(p, q, nrow = 1)
 
 # Polynomial Component ----
 
