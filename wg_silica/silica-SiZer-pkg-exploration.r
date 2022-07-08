@@ -63,7 +63,7 @@ plot(e, main = "1st Derivative")
 plot(e2, main = "2nd Derivative")
 par(mfrow = c(1, 1))
 
-# Check structureof SiZer Object
+# Check structure of SiZer Object
 str(e)
 
 # Strip slope values into dataframe
@@ -213,7 +213,8 @@ ggplot(priscu, aes(x = Year, y = FNYield)) +
 # SiZer Extract Function ----
 
 # Create a function to streamline the above
-sizer_extract <- function(sizer_x = NULL, sizer_y = NULL, deriv = 1){
+sizer_extract <- function(sizer_x = NULL, sizer_y = NULL,
+                          deriv = 1, bandwidth = c(2, 10)){
   ## Argument explanation
   # sizer_x = data$column specification of x-axis of trend line
   # sizer_y = data$column specification of y-axis
@@ -230,11 +231,11 @@ sizer_extract <- function(sizer_x = NULL, sizer_y = NULL, deriv = 1){
   # Identify inflection points (for either derivative)
   if(as.numeric(deriv) == 1){
     sizer_mod <- SiZer::SiZer(x = sizer_x, y = sizer_y,
-                              h = c(2, 10), degree = 1,
+                              h = bandwidth, degree = 1,
                               derv = 1, grid.length = 100) }
   if(as.numeric(deriv) == 2){
     sizer_mod <- SiZer::SiZer(x = sizer_x, y = sizer_y,
-                              h = c(2, 10), degree = 2,
+                              h = bandwidth, degree = 2,
                               derv = 2, grid.length = 50) }
 
   # Strip out the relevant information
@@ -349,12 +350,12 @@ for(place in unique(data$site)) {
     dplyr::filter(site == place)
 
   # Apply it to the function for the first derivative
-  first_drv <- sizer_extract(sizer_x = site$Year,
-                             sizer_y = site$FNYield, deriv = 1)
+  first_drv <- sizer_extract(sizer_x = site$Year, sizer_y = site$FNYield,
+                             deriv = 1, bandwidth = c(2, 10))
 
   # And the second derivative
-  second_drv <- sizer_extract(sizer_x = site$Year,
-                              sizer_y = site$FNYield, deriv = 2)
+  second_drv <- sizer_extract(sizer_x = site$Year, sizer_y = site$FNYield,
+                              deriv = 2, bandwidth = c(2, 10))
 
   # Now create a graph of each
   ## First derivative
@@ -420,11 +421,13 @@ for(place in "Ob") {
 
   # Apply it to the function for the first derivative
   first_drv <- sizer_extract(sizer_x = site$Year,
-                             sizer_y = site$FNYield, deriv = 1)
+                             sizer_y = site$FNYield,
+                             deriv = 1, bandwidth = c(2, 8))
 
-  # And the second derivative
-  second_drv <- sizer_extract(sizer_x = site$Year,
-                              sizer_y = site$FNYield, deriv = 2)
+  # Use the actual function
+  e <- SiZer::SiZer(x = site$Year, y = site$FNYield,
+                    h = c(2, 8), degree = 1,
+                    derv = 1, grid.length = 100)
 
   # Now create a graph of each
   ## First derivative
@@ -434,22 +437,11 @@ for(place in "Ob") {
                 se = F, color = 'black') +
     geom_vline(xintercept = first_drv$mean_x, color = 'orange') +
     theme_classic()
-  ## Second
-  q <- ggplot(site, aes(x = Year, y = FNYield)) +
-    geom_point() +
-    geom_smooth(method = 'loess', formula = 'y ~ x',
-                se = F, color = 'black') +
-    geom_vline(xintercept = second_drv$mean_x, color = 'orange') +
-    theme_classic()
 
   # Add the positive to negative inflection point line(s) if one exists
   if(!all(is.na(first_drv$pos_to_neg))){
     p <- p +
       geom_vline(xintercept = first_drv$pos_to_neg, color = 'blue',
-                 na.rm = TRUE) }
-  if(!all(is.na(second_drv$pos_to_neg))){
-    q <- q +
-      geom_vline(xintercept = second_drv$pos_to_neg, color = 'blue',
                  na.rm = TRUE) }
 
   # Add *negative to positive* inflection point line(s) if one exists
@@ -457,17 +449,11 @@ for(place in "Ob") {
     p <- p +
       geom_vline(xintercept = first_drv$neg_to_pos, color = 'red',
                  na.rm = TRUE) }
-  if(!all(is.na(second_drv$neg_to_pos))){
-    q <- q +
-      geom_vline(xintercept = second_drv$neg_to_pos, color = 'red',
-                 na.rm = TRUE) }
-
-  # Return a success message
-  message("Breakpoints identified for site: ", place)
 }
 
-# Plot the two graphs side by side
-cowplot::plot_grid(p, q, nrow = 1)
+# Create side by side plots
+plot(e, main = "1st Derivative")
+p
 
 # Polynomial Component ----
 
