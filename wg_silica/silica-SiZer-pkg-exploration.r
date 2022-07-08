@@ -125,12 +125,6 @@ sizer_transitions <- sizer_df_v2 %>%
 # Look at one group of this now
 as.data.frame(dplyr::filter(sizer_transitions, h_grid == 2))
 
-# Let's create a plot
-ggplot(sizer_transitions, aes(x = x_grid, y = slope, color = h_grid)) +
-  geom_point() +
-  theme_classic() +
-  theme(axis.text.x = element_text(angle = 20, hjust = 1))
-
 # Let's test a method of summarizing across bandwidths
 sizer_test <- sizer_transitions %>%
   # Group by change type
@@ -144,14 +138,6 @@ sizer_test <- sizer_transitions %>%
 
 # Check out output
 head(sizer_test)
-
-# Plot that
-ggplot(sizer_test, aes(x = mean_x, y = slope)) +
-  geom_point() +
-  geom_errorbarh(aes(xmin = mean_x - se_x, xmax = mean_x + se_x),
-                 height = 0.2) +
-  theme_classic() +
-  theme(axis.text.x = element_text(angle = 20, hjust = 1))
 
 # Now call the original plot of the trendline and add a line at these places
 ## Graph the yield data
@@ -213,35 +199,20 @@ ggplot(priscu, aes(x = Year, y = FNYield)) +
 # SiZer Extract Function ----
 
 # Create a function to streamline the above
-sizer_extract <- function(sizer_x = NULL, sizer_y = NULL,
-                          deriv = 1, bandwidth = c(2, 10)){
-  ## Argument explanation
-  # sizer_x = data$column specification of x-axis of trend line
-  # sizer_y = data$column specification of y-axis
-  # deriv = (numeric) specification of derivative for `SiZer::SiZer`
+sizer_extract <- function(sizer_object = NULL){
 
-  # Error out if arguments aren't specified
-  if(is.null(sizer_x) | is.null(sizer_y))
-    stop("All arguments must be specified")
+  # Error out if object isn't provided or isn't a SiZer object
+  if(is.null(sizer_object) | class(sizer_object) != "SiZer")
+    stop("`sizer_object` must be provided and must be class 'SiZer'")
 
-  # Error out for unsupported derivative
-  if(!as.numeric(deriv) %in% c(1, 2))
-    stop("Unsupported derivative! Must be either 1 or 2")
+  # Strip slopes into a dataframe
+  sizer_raw <- as.data.frame(sizer_object$slopes)
 
-  # Identify inflection points (for either derivative)
-  if(as.numeric(deriv) == 1){
-    sizer_mod <- SiZer::SiZer(x = sizer_x, y = sizer_y,
-                              h = bandwidth, degree = 1,
-                              derv = 1, grid.length = 100) }
-  if(as.numeric(deriv) == 2){
-    sizer_mod <- SiZer::SiZer(x = sizer_x, y = sizer_y,
-                              h = bandwidth, degree = 2,
-                              derv = 2, grid.length = 50) }
+  # Make column names the x-axis increments
+  names(sizer_raw) <- sizer_object$x.grid
 
-  # Strip out the relevant information
-  sizer_raw <- as.data.frame(sizer_mod$slopes)
-  names(sizer_raw) <- sizer_mod$x.grid
-  sizer_raw$h_grid <- sizer_mod$h.grid
+  # Add the bandwidths evaluated
+  sizer_raw$h_grid <- sizer_object$h.grid
 
   # Perform necessary wrangling
   sizer_data <- sizer_raw %>%
@@ -286,10 +257,8 @@ sizer_extract <- function(sizer_x = NULL, sizer_y = NULL,
                      .groups = 'keep') %>%
     # Ungroup
     dplyr::ungroup() %>%
-    # DANGER ZONE (vvv) ----
     # Filter out lines that don't show up a lot
     dplyr::filter(n_x > 10) %>%
-    # DANGER ZONE (^^^) ----
     # Sort from lowest to highest X
     dplyr::arrange(mean_x) %>%
     # Calculate distance to next one
@@ -304,19 +273,19 @@ sizer_extract <- function(sizer_x = NULL, sizer_y = NULL,
                             dplyr::lead(change_type) == "change_to_positive",
                           yes = (mean_x + (dist_to_next / 2)),
                           no = NA)
-      ) %>%
-      # Make it a dataframe
-      as.data.frame()
+    ) %>%
+    # Make it a dataframe
+    as.data.frame()
 
   # Return that data object
-    return(sizer_data)
+  return(sizer_data)
 }
 
 # Test the function
-fxn_test <- sizer_extract(sizer_x = priscu$Year, sizer_y = priscu$FNYield, deriv = 1)
+fxn_test <- sizer_extract(sizer_object = e)
 fxn_test
 
-# Create the demo plot
+# Create the demo plot (should be identical to previous plot)
 ggplot(priscu, aes(x = Year, y = FNYield)) +
   geom_point() +
   geom_smooth(method = 'loess', formula = 'y ~ x',
@@ -349,13 +318,13 @@ for(place in unique(data$site)) {
   site <- data %>%
     dplyr::filter(site == place)
 
-  # Apply it to the function for the first derivative
-  first_drv <- sizer_extract(sizer_x = site$Year, sizer_y = site$FNYield,
-                             deriv = 1, bandwidth = c(2, 10))
+  # Run SiZer on that subset
+  sizer_raw <- SiZer::SiZer(x = site$Year, y = site$FNYield,
+                    h = c(2, 10), degree = 1,
+                    derv = 1, grid.length = 100)
 
-  # And the second derivative
-  second_drv <- sizer_extract(sizer_x = site$Year, sizer_y = site$FNYield,
-                              deriv = 2, bandwidth = c(2, 10))
+  # Apply it to the function for the first derivative
+  sizer_tidy <- sizer_extract(sizer_object = sizer_raw)
 
   # Now create a graph of each
   ## First derivative
@@ -363,39 +332,23 @@ for(place in unique(data$site)) {
     geom_point() +
     geom_smooth(method = 'loess', formula = 'y ~ x',
                 se = F, color = 'black') +
-    geom_vline(xintercept = first_drv$mean_x, color = 'orange') +
-    theme_classic()
-  ## Second
-  q <- ggplot(site, aes(x = Year, y = FNYield)) +
-    geom_point() +
-    geom_smooth(method = 'loess', formula = 'y ~ x',
-                se = F, color = 'black') +
-    geom_vline(xintercept = second_drv$mean_x, color = 'orange') +
+    geom_vline(xintercept = sizer_tidy$mean_x, color = 'orange') +
     theme_classic()
 
   # Add the positive to negative inflection point line(s) if one exists
-  if(!all(is.na(first_drv$pos_to_neg))){
+  if(!all(is.na(sizer_tidy$pos_to_neg))){
     p <- p +
-      geom_vline(xintercept = first_drv$pos_to_neg, color = 'blue',
-                 na.rm = TRUE) }
-  if(!all(is.na(second_drv$pos_to_neg))){
-    q <- q +
-      geom_vline(xintercept = second_drv$pos_to_neg, color = 'blue',
+      geom_vline(xintercept = sizer_tidy$pos_to_neg, color = 'blue',
                  na.rm = TRUE) }
 
   # Add *negative to positive* inflection point line(s) if one exists
-  if(!all(is.na(first_drv$neg_to_pos))){
+  if(!all(is.na(sizer_tidy$neg_to_pos))){
     p <- p +
-      geom_vline(xintercept = first_drv$neg_to_pos, color = 'red',
-                 na.rm = TRUE) }
-  if(!all(is.na(second_drv$neg_to_pos))){
-    q <- q +
-      geom_vline(xintercept = second_drv$neg_to_pos, color = 'red',
+      geom_vline(xintercept = sizer_tidy$neg_to_pos, color = 'red',
                  na.rm = TRUE) }
 
   # Save both
-  ggplot2::ggsave(plot = p, filename = file.path("plots", paste0(place, "_first-drv_plot.png")), height = 5.06, width = 5.44)
-  ggplot2::ggsave(plot = q, filename = file.path("plots", paste0(place, "_second-drv_plot.png")), height = 5.06, width = 5.44)
+  ggplot2::ggsave(plot = p, filename = file.path("plots", paste0(place, "_plot.png")), height = 5.06, width = 5.44)
 
   # Return a success message
   message("Breakpoints identified for site: ", place)
