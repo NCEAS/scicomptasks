@@ -176,8 +176,9 @@ sizer_aggregate <- function(sizer_object = NULL){
       neg_to_pos = ifelse(change_type == "change_to_zero" &
                             dplyr::lead(change_type) == "change_to_positive",
                           yes = (mean_x + (dist_to_next / 2)),
-                          no = NA)
-    ) %>%
+                          no = NA) ) %>%
+    # Remove 'dist to next' column
+    dplyr::select(-dist_to_next) %>%
     # Make it a dataframe
     as.data.frame()
   
@@ -186,15 +187,80 @@ sizer_aggregate <- function(sizer_object = NULL){
 }
 
 # Function No. 3 - Identify Inflection Points for ONE Bandwidth ----
-sizer_slice <- function(sizer_object = NULL){
+sizer_slice <- function(sizer_object = NULL, bandwidth = NULL){
   
   # Error out if object isn't provided or isn't a SiZer object
   if(is.null(sizer_object) | class(sizer_object) != "SiZer")
     stop("`sizer_object` must be provided and must be class 'SiZer'")
   
-  # ...
+  # Error out if bandwidth isn't provided
+  if(is.null(bandwidth)) stop("`bandwidth` must be provided")
   
-}
+  # If bandwidth is not a number, coerce it into being one
+  if(!is.numeric(bandwidth)){
+    bandwidth <- suppressWarnings(as.numeric(bandwidth)) }
+  
+  # Error out if coersion to numeric deleted bandwidth
+  if(is.na(bandwidth))
+    stop("`bandwidth` must be numeric (or coercible to numeric)")
+  
+  # Strip SiZer object content into dataframe
+  sizer_raw <- as.data.frame(sizer_object)
+  
+  # Error out if bandwidth is not included in original sizer_object
+  if(bandwidth < base::min(sizer_raw$h) | bandwidth > base::max(sizer_raw$h))
+    stop("`bandwidth` is not included in range of bandwidths specified in `SiZer::SiZer` call. Change `bandwidth` or add desired bandwidth to `SiZer::SiZer` call.")
+  
+  # Perform necessary wrangling
+  sizer_data <- sizer_raw %>%
+    # Rename columns
+    dplyr::rename(x_grid = x, h_grid = h, slope = class) %>%
+    # Drop all 'insufficient data' rows
+    dplyr::filter(slope != "insufficient data") %>%
+    # Find the bandwidth closest to the user-specified value
+    dplyr::filter(base::abs(h_grid - bandwidth) == base::min(base::abs(h_grid - bandwidth))) %>%
+    # Group within the single bandwidth
+    dplyr::group_by(h_grid) %>%
+    # Identify whether the next value is the same or different
+    dplyr::mutate(transition = dplyr::case_when(
+      # First identify start of each group
+      is.na(dplyr::lag(slope, n = 1)) ~ 'start',
+      # Now identify whether each value is the same as or different than previous
+      slope == dplyr::lag(slope, n = 1) ~ 'same',
+      slope != dplyr::lag(slope, n = 1) ~ 'change'
+    )) %>%
+    # Filter to retain only those rows that indicate a slope change
+    dplyr::filter(transition == "change") %>%
+    # Lets also identify what type of change the transition was
+    dplyr::mutate(change_type = dplyr::case_when(
+      transition == "change" & slope == "increasing" ~ 'change_to_positive',
+      transition == "change" & slope == "flat" ~ 'change_to_zero',
+      transition == "change" & slope == "decreasing" ~ 'change_to_negative')) %>%
+    # Account for if multiple of the same change happen in a curve
+    dplyr::group_by(h_grid, change_type) %>%
+    dplyr::mutate(change_count = seq_along(unique(x_grid))) %>%
+    # Ungroup for subsequent operations
+    dplyr::ungroup() %>%
+    # Calculate distance to next one
+    dplyr::mutate(dist_to_next = dplyr::lead(x = x_grid) - x_grid) %>%
+    # Add half the distance between +/0 and 0/- to +/0 to get +/- inflection point
+    dplyr::mutate(
+      pos_to_neg = ifelse(change_type == "change_to_zero" &
+                            dplyr::lead(change_type) == "change_to_negative",
+                          yes = (x_grid + (dist_to_next / 2)),
+                          no = NA),
+      neg_to_pos = ifelse(change_type == "change_to_zero" &
+                            dplyr::lead(change_type) == "change_to_positive",
+                          yes = (x_grid + (dist_to_next / 2)),
+                          no = NA) ) %>%
+    # Remove 'dist to next' column
+    dplyr::select(-dist_to_next) %>%
+    # Make it a dataframe
+    as.data.frame()
+  
+  # Return that object
+  return(sizer_data) 
+  }
 
 # Function No. 4 - SiZer Base Plot ---------------------------------
 sizer_plot <- function(sizer_object = NULL,
@@ -210,5 +276,62 @@ sizer_plot <- function(sizer_object = NULL,
   # Add horizontal lines at bandwidths of interest
   for(band in bandwidth_vec){ abline(h = log10(band)) }
 }
+
+# Function No. 5 - SiZer ggplot ------------------------------------
+sizer_ggplot <- function(raw_data = NULL, x = NULL, y = NULL,
+                         sizer_data = NULL){
+  
+  # Error out if these aren't provided
+  if(is.null(raw_data) | is.null(sizer_data) |
+     is.null(x) | is.null(y))
+    stop("All arguments must be provided.")
+  
+  # Error out if the data are not both dataframes
+  if(class(raw_data) != "data.frame" |
+     class(sizer_data) != "data.frame") 
+    stop("Both the raw data and the extracted SiZer data must be data frames")
+  
+  # Error out if the column names are not characters 
+  if(!is.character(x) | !is.character(y))
+    stop("The x and y columns must be specified as characters")
+  
+  # Error out if the column names are not in the data object
+  if(!x %in% names(raw_data) | !y %in% names(raw_data))
+    stop("`x` and `y` are not names in the provided `raw_data` object")
+  
+  # Now make the actual plot
+  p <- ggplot(data = raw_data, aes_string(x = x, y = y)) +
+    geom_point() +
+    geom_smooth(method = 'loess', formula = 'y ~ x', 
+                se = F, color = 'black') +
+    # Including SiZer-identified inflection points
+    geom_vline(xintercept = sizer_data$mean_x, color = 'orange',
+               linetype = 2, na.rm = TRUE) +
+    geom_vline(xintercept = sizer_data$x_grid, color = 'orange',
+               linetype = 2, na.rm = TRUE) +
+    # And a theme
+    theme_classic()
+  
+ 
+  # Add the positive to negative inflection point line(s) if one exists
+  if(!base::all(is.na(sizer_data$pos_to_neg))){
+    p <- p +
+      geom_vline(xintercept = sizer_data$pos_to_neg, color = 'blue',
+                 na.rm = TRUE) }
+  
+  # Add *negative to positive* inflection point line(s) if one exists
+  if(!base::all(is.na(sizer_data$neg_to_pos))){
+    p <- p +
+      geom_vline(xintercept = sizer_data$neg_to_pos, color = 'red',
+                 na.rm = TRUE) }
+  
+  # Return the plot
+  return(p)
+}
+
+
+
+
+
 
 # End ----
