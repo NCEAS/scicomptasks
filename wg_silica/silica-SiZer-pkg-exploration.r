@@ -205,23 +205,15 @@ sizer_extract <- function(sizer_object = NULL){
   if(is.null(sizer_object) | class(sizer_object) != "SiZer")
     stop("`sizer_object` must be provided and must be class 'SiZer'")
 
-  # Strip slopes into a dataframe
-  sizer_raw <- as.data.frame(sizer_object$slopes)
-
-  # Make column names the x-axis increments
-  names(sizer_raw) <- sizer_object$x.grid
-
-  # Add the bandwidths evaluated
-  sizer_raw$h_grid <- sizer_object$h.grid
+  # Strip SiZer object content into dataframe
+  sizer_raw <- as.data.frame(sizer_object)
 
   # Perform necessary wrangling
   sizer_data <- sizer_raw %>%
-    # Pivot to long format to make it a little easier to scan through
-    tidyr::pivot_longer(cols = -h_grid,
-                        names_to = "x_grid",
-                        values_to = "slope") %>%
+    # Rename columns
+    dplyr::rename(x_grid = x, h_grid = h, slope = class) %>%
     # Drop all 'insufficient data' rows
-    dplyr::filter(slope != 2) %>%
+    dplyr::filter(slope != "insufficient data") %>%
     # Within bandwidth levels (h_grid)
     dplyr::group_by(h_grid) %>%
     # Identify whether the next value is the same or different
@@ -236,9 +228,9 @@ sizer_extract <- function(sizer_object = NULL){
     )) %>%
     # Lets also identify what type of change the transition was
     dplyr::mutate(change_type = dplyr::case_when(
-      transition == "change" & slope == 1 ~ 'change_to_positive',
-      transition == "change" & slope == 0 ~ 'change_to_zero',
-      transition == "change" & slope == -1 ~ 'change_to_negative')) %>%
+      transition == "change" & slope == "increasing" ~ 'change_to_positive',
+      transition == "change" & slope == "flat" ~ 'change_to_zero',
+      transition == "change" & slope == "decreasing" ~ 'change_to_negative')) %>%
     # Account for if multiple of the same change happen in a curve
     dplyr::group_by(h_grid, change_type) %>%
     dplyr::mutate(change_count = seq_along(unique(x_grid))) %>%
