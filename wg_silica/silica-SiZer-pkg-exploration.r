@@ -19,20 +19,20 @@ rm(list = ls())
 data <- readr::read_csv(file = file.path("wg_silica", "CryoData_forNick_6.29.22.csv"))
 
 # Subset data to look at a single site
-priscu <- data %>%
-  dplyr::filter(site == "Priscu Stream at B1")
+example_site <- data %>%
+  dplyr::filter(site == "ALBION")
 
 # Examine names
-names(priscu)
+names(example_site)
 
 # Exploratory plot
-plot(priscu$Year, priscu$FNYield)
+plot(example_site$Year, example_site$FNYield)
 
 # Using SiZer ----
 ## SiZer == _Si_gnificantly _Zer_o
 
 # Create 1st order derivative to identify slope changes
-e <- SiZer::SiZer(x = priscu$Year, y = priscu$FNYield,
+e <- SiZer::SiZer(x = example_site$Year, y = example_site$FNYield,
                   h = c(2, 10), degree = 1,
                   derv = 1, grid.length = 100)
 
@@ -47,7 +47,7 @@ abline(h = 0.5)
 
 # Do 2nd order derivative to find an inflection point
 ## Where this shifts from + to - (or vice versa) is inflection point
-e2 <- SiZer::SiZer(x = priscu$Year, y = priscu$FNYield,
+e2 <- SiZer::SiZer(x = example_site$Year, y = example_site$FNYield,
                    h = c(2, 10), degree = 2,
                    derv = 2, grid.length = 50)
 
@@ -58,7 +58,7 @@ abline(h = 0.5)
 # Extract Needed Data from SiZer Object -----
 # Do a side-by-side plot of trendline with SiZer plot
 par(mfrow = c(1, 3))
-plot(priscu$Year, priscu$FNYield)
+plot(example_site$Year, example_site$FNYield)
 plot(e, main = "1st Derivative")
 plot(e2, main = "2nd Derivative")
 par(mfrow = c(1, 1))
@@ -141,7 +141,7 @@ head(sizer_test)
 
 # Now call the original plot of the trendline and add a line at these places
 ## Graph the yield data
-ggplot(priscu, aes(x = Year, y = FNYield)) +
+ggplot(example_site, aes(x = Year, y = FNYield)) +
   geom_point() +
   geom_smooth(method = 'loess', formula = 'y ~ x', se = F, color = 'black') +
   # Add an orange line for the lower SE of each inflection point
@@ -160,7 +160,7 @@ ggplot(priscu, aes(x = Year, y = FNYield)) +
   theme_classic()
 
 # Make a simpler version as well
-ggplot(priscu, aes(x = Year, y = FNYield)) +
+ggplot(example_site, aes(x = Year, y = FNYield)) +
   geom_point() +
   geom_smooth(method = 'loess', formula = 'y ~ x',
               se = F, color = 'black') +
@@ -188,7 +188,7 @@ sizer_singular <- sizer_test %>%
 sizer_singular
 
 # Graph it
-ggplot(priscu, aes(x = Year, y = FNYield)) +
+ggplot(example_site, aes(x = Year, y = FNYield)) +
   geom_point() +
   geom_smooth(method = 'loess', formula = 'y ~ x',
               se = F, color = 'black') +
@@ -226,6 +226,8 @@ sizer_extract <- function(sizer_object = NULL){
       slope != dplyr::lag(slope, n = 1) ~ 'change'
       # slope == dplyr::lead(slope, n = 1) ~ 'no'
     )) %>%
+    # Filter to retain only those rows that indicate a slope change
+    dplyr::filter(transition == "change") %>%
     # Lets also identify what type of change the transition was
     dplyr::mutate(change_type = dplyr::case_when(
       transition == "change" & slope == "increasing" ~ 'change_to_positive',
@@ -236,22 +238,37 @@ sizer_extract <- function(sizer_object = NULL){
     dplyr::mutate(change_count = seq_along(unique(x_grid))) %>%
     # Ungroup for subsequent operations
     dplyr::ungroup() %>%
-    # Filter to retain only those rows that indicate a slope change
-    dplyr::filter(transition == "change") %>%
     # Group by change type
     dplyr::group_by(change_count, change_type) %>%
     # And average the x_grid value
     dplyr::summarise(slope = dplyr::first(slope),
-                     mean_x = mean(as.numeric(x_grid), na.rm = T),
-                     sd_x = sd(as.numeric(x_grid), na.rm = T),
-                     n_x = dplyr::n(),
-                     se_x = sd_x / n_x,
+                     mean_x_v1 = mean(as.numeric(x_grid), na.rm = T),
+                     sd_x_v1 = sd(as.numeric(x_grid), na.rm = T),
+                     n_x_v1 = dplyr::n(),
+                     se_x_v1 = sd_x_v1 / n_x_v1,
                      .groups = 'keep') %>%
     # Ungroup
     dplyr::ungroup() %>%
-    # Filter out lines that don't show up a lot
-    dplyr::filter(n_x > 10) %>%
     # Sort from lowest to highest X
+    dplyr::arrange(mean_x_v1) %>%
+    # Handle the same "change" occurring twice
+    ## Identify these cases
+    dplyr::mutate(diagnostic = cumsum(ifelse(slope != dplyr::lag(slope) | base::is.na(dplyr::lag(slope)), yes = 1, no = 0))) %>%
+    ## Group by that diagnostic and the change type
+    dplyr::group_by(change_type, diagnostic) %>%
+    ## Summarize
+    dplyr::summarise(change_count = dplyr::first(change_count),
+                     slope = dplyr::first(slope),
+                     mean_x = mean(as.numeric(mean_x_v1), na.rm = T),
+                     sd_x = mean(as.numeric(sd_x_v1)),
+                     n_x = sum(n_x_v1, na.rm = T),
+                     se_x = mean(as.numeric(se_x_v1)),
+                     .groups = 'keep') %>%
+    ## Ungroup
+    dplyr::ungroup() %>%
+    ## Remove the diagnostic column
+    dplyr::select(-diagnostic) %>%
+    # Sort from lowest to highest X (again)
     dplyr::arrange(mean_x) %>%
     # Calculate distance to next one
     dplyr::mutate(dist_to_next = dplyr::lead(x = mean_x) - mean_x) %>%
@@ -278,12 +295,16 @@ fxn_test <- sizer_extract(sizer_object = e)
 fxn_test
 
 # Create the demo plot (should be identical to previous plot)
-ggplot(priscu, aes(x = Year, y = FNYield)) +
+ggplot(example_site, aes(x = Year, y = FNYield)) +
   geom_point() +
   geom_smooth(method = 'loess', formula = 'y ~ x',
               se = F, color = 'black') +
-  geom_vline(xintercept = fxn_test$pos_to_neg, color = 'blue') +
-  geom_vline(xintercept = fxn_test$mean_x, color = 'orange') +
+  geom_vline(xintercept = fxn_test$pos_to_neg, color = 'blue',
+             na.rm = TRUE) +
+  geom_vline(xintercept = fxn_test$neg_to_pos, color = 'red',
+             na.rm = TRUE) +
+  geom_vline(xintercept = fxn_test$mean_x, color = 'orange',
+             linetype = 2, na.rm = TRUE) +
   theme_classic()
 
 # SiZer Loop Test ----
@@ -304,7 +325,7 @@ unique(data$site)
 
 # Okay, now it's for loop time
 for(place in unique(data$site)) {
-# for(place in "Priscu Stream at B1"){ # testing loop head
+# for(place in "ALBION"){ # testing loop head
 
   # Subset the full data
   site <- data %>%
@@ -319,12 +340,12 @@ for(place in unique(data$site)) {
   sizer_tidy <- sizer_extract(sizer_object = sizer_raw)
 
   # Now create a graph of each
-  ## First derivative
   p <- ggplot(site, aes(x = Year, y = FNYield)) +
     geom_point() +
     geom_smooth(method = 'loess', formula = 'y ~ x',
                 se = F, color = 'black') +
-    geom_vline(xintercept = sizer_tidy$mean_x, color = 'orange') +
+    geom_vline(xintercept = sizer_tidy$mean_x, color = 'orange',
+               linetype = 2) +
     theme_classic()
 
   # Add the positive to negative inflection point line(s) if one exists

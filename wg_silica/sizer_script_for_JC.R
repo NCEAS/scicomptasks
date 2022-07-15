@@ -24,28 +24,20 @@ dir.create(path = export_folder_name, showWarnings = FALSE)
 
 # Run this to be able to use the function later
 sizer_extract <- function(sizer_object = NULL){
-
+  
   # Error out if object isn't provided or isn't a SiZer object
   if(is.null(sizer_object) | class(sizer_object) != "SiZer")
     stop("`sizer_object` must be provided and must be class 'SiZer'")
-
-  # Strip slopes into a dataframe
-  sizer_raw <- as.data.frame(sizer_object$slopes)
-
-  # Make column names the x-axis increments
-  names(sizer_raw) <- sizer_object$x.grid
-
-  # Add the bandwidths evaluated
-  sizer_raw$h_grid <- sizer_object$h.grid
-
+  
+  # Strip SiZer object content into dataframe
+  sizer_raw <- as.data.frame(sizer_object)
+  
   # Perform necessary wrangling
   sizer_data <- sizer_raw %>%
-    # Pivot to long format to make it a little easier to scan through
-    tidyr::pivot_longer(cols = -h_grid,
-                        names_to = "x_grid",
-                        values_to = "slope") %>%
+    # Rename columns
+    dplyr::rename(x_grid = x, h_grid = h, slope = class) %>%
     # Drop all 'insufficient data' rows
-    dplyr::filter(slope != 2) %>%
+    dplyr::filter(slope != "insufficient data") %>%
     # Within bandwidth levels (h_grid)
     dplyr::group_by(h_grid) %>%
     # Identify whether the next value is the same or different
@@ -58,32 +50,49 @@ sizer_extract <- function(sizer_object = NULL){
       slope != dplyr::lag(slope, n = 1) ~ 'change'
       # slope == dplyr::lead(slope, n = 1) ~ 'no'
     )) %>%
+    # Filter to retain only those rows that indicate a slope change
+    dplyr::filter(transition == "change") %>%
     # Lets also identify what type of change the transition was
     dplyr::mutate(change_type = dplyr::case_when(
-      transition == "change" & slope == 1 ~ 'change_to_positive',
-      transition == "change" & slope == 0 ~ 'change_to_zero',
-      transition == "change" & slope == -1 ~ 'change_to_negative')) %>%
+      transition == "change" & slope == "increasing" ~ 'change_to_positive',
+      transition == "change" & slope == "flat" ~ 'change_to_zero',
+      transition == "change" & slope == "decreasing" ~ 'change_to_negative')) %>%
     # Account for if multiple of the same change happen in a curve
     dplyr::group_by(h_grid, change_type) %>%
     dplyr::mutate(change_count = seq_along(unique(x_grid))) %>%
     # Ungroup for subsequent operations
     dplyr::ungroup() %>%
-    # Filter to retain only those rows that indicate a slope change
-    dplyr::filter(transition == "change") %>%
     # Group by change type
     dplyr::group_by(change_count, change_type) %>%
     # And average the x_grid value
     dplyr::summarise(slope = dplyr::first(slope),
-                     mean_x = mean(as.numeric(x_grid), na.rm = T),
-                     sd_x = sd(as.numeric(x_grid), na.rm = T),
-                     n_x = dplyr::n(),
-                     se_x = sd_x / n_x,
+                     mean_x_v1 = mean(as.numeric(x_grid), na.rm = T),
+                     sd_x_v1 = sd(as.numeric(x_grid), na.rm = T),
+                     n_x_v1 = dplyr::n(),
+                     se_x_v1 = sd_x_v1 / n_x_v1,
                      .groups = 'keep') %>%
     # Ungroup
     dplyr::ungroup() %>%
-    # Filter out lines that don't show up a lot
-    dplyr::filter(n_x > 10) %>%
     # Sort from lowest to highest X
+    dplyr::arrange(mean_x_v1) %>%
+    # Handle the same "change" occurring twice
+    ## Identify these cases
+    dplyr::mutate(diagnostic = cumsum(ifelse(slope != dplyr::lag(slope) | base::is.na(dplyr::lag(slope)), yes = 1, no = 0))) %>%
+    ## Group by that diagnostic and the change type
+    dplyr::group_by(change_type, diagnostic) %>%
+    ## Summarize
+    dplyr::summarise(change_count = dplyr::first(change_count),
+                     slope = dplyr::first(slope),
+                     mean_x = mean(as.numeric(mean_x_v1), na.rm = T),
+                     sd_x = mean(as.numeric(sd_x_v1)),
+                     n_x = sum(n_x_v1, na.rm = T),
+                     se_x = mean(as.numeric(se_x_v1)),
+                     .groups = 'keep') %>%
+    ## Ungroup
+    dplyr::ungroup() %>%
+    ## Remove the diagnostic column
+    dplyr::select(-diagnostic) %>%
+    # Sort from lowest to highest X (again)
     dplyr::arrange(mean_x) %>%
     # Calculate distance to next one
     dplyr::mutate(dist_to_next = dplyr::lead(x = mean_x) - mean_x) %>%
@@ -100,7 +109,7 @@ sizer_extract <- function(sizer_object = NULL){
     ) %>%
     # Make it a dataframe
     as.data.frame()
-
+  
   # Return that data object
   return(sizer_data)
 }
@@ -128,7 +137,8 @@ p <- ggplot(site, aes(x = Year, y = FNYield)) +
   geom_point() +
   geom_smooth(method = 'loess', formula = 'y ~ x',
               se = F, color = 'black') +
-  geom_vline(xintercept = sizer_tidy$mean_x, color = 'orange') +
+  geom_vline(xintercept = sizer_tidy$mean_x, color = 'orange',
+             linetype = 2, na.rm = TRUE) +
   theme_classic()
 
 # Add the positive to negative inflection point line(s) if one exists
