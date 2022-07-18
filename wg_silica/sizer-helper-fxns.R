@@ -329,9 +329,113 @@ sizer_ggplot <- function(raw_data = NULL, x = NULL, y = NULL,
   return(p)
 }
 
-
-
-
-
+# Function No. 6 - Linear Models with SiZer ------------------------
+sizer_lm <- function(raw_data = NULL, x = NULL, y = NULL,
+                     sizer_data = NULL){
+  
+  # Error out if these aren't provided
+  if(is.null(raw_data) | is.null(sizer_data) |
+     is.null(x) | is.null(y))
+    stop("All arguments must be provided.")
+  
+  # Error out if the data are not both dataframes
+  if(class(raw_data) != "data.frame" |
+     class(sizer_data) != "data.frame") 
+    stop("Both the raw data and the extracted SiZer data must be data frames")
+  
+  # Error out if the column names are not characters 
+  if(!is.character(x) | !is.character(y))
+    stop("The x and y columns must be specified as characters")
+  
+  # Error out if the column names are not in the data object
+  if(!x %in% names(raw_data) | !y %in% names(raw_data))
+    stop("`x` and `y` are not names in the provided `raw_data` object")
+  
+  # Grab inflection points
+  brk_pts <- c(sizer_data$pos_to_neg, sizer_data$neg_to_pos)
+  
+  # Drop NAs
+  brk_pts_actual <- brk_pts[!is.na(brk_pts)]
+  brk_pts_actual
+  
+  # Handle plots without break points
+  if(length(brk_pts_actual) == 0){
+    # Just fit model
+    model_fit <- lm(raw_data[[y]] ~ raw_data[[x]])
+    
+    # Identify statistics and estimates
+    stat_df <- data.frame(broom::glance(model_fit)) %>%
+      dplyr::mutate(section = "No inflection points",
+                    .before = dplyr::everything())
+    est_df <- data.frame(broom::tidy(model_fit)) %>%
+      dplyr::mutate(section = "No inflection points",
+                    .before = dplyr::everything())
+    
+    # Make an empty list
+    return_list <- list()
+    
+    # Put the data in it
+    return_list[["Stat"]] <- stat_df
+    return_list[["Estim"]] <- est_df
+    
+    # Return it
+    return(return_list)
+    
+    # If there *are* break points
+  } else {
+    
+    # Make an empty list to store each model
+    model_fit_list <- list()
+    
+    # Identify rough groups
+    data_mod <- raw_data %>%
+      dplyr::mutate(groups_rough = base::cut(x = Year,
+                                 breaks = c(-Inf, brk_pts_actual, Inf)))
+    
+    # Fit a model for each
+    for(chunk in unique(data_mod$groups_rough)){
+      
+      # Fit model
+      chunk_fit <- model_fit <- lm(data_mod[[y]] ~ data_mod[[x]],
+                      subset = data_mod$groups_rough == chunk)
+      
+      # Grab statistics
+      chk_stat_df <- data.frame(broom::glance(chunk_fit)) %>%
+        dplyr::mutate(section = chunk, .before = dplyr::everything())
+      
+      # Grab estimates
+      chk_est_df <- data.frame(broom::tidy(chunk_fit)) %>%
+        dplyr::mutate(section = chunk, .before = dplyr::everything())
+      
+      # Add it to the list
+      model_fit_list[[paste0("Stats_", chunk)]] <- chk_stat_df
+      model_fit_list[[paste0("Estimates_", chunk)]] <- chk_est_df
+    }
+    
+    # Unlist the statistic list
+    stat_bit <- model_fit_list %>%
+      # Identify all list elements that contain stats info
+      purrr::keep(.p = stringr::str_detect(string = names(.),
+                                           pattern = "Stats")) %>%
+      # Unlist by selecting all columns of each list element
+      purrr::map_dfr(.f = dplyr::select, dplyr::everything())
+    
+    # Unlist the estimate list too
+    est_bit <- model_fit_list %>%
+      purrr::keep(.p = stringr::str_detect(string = names(.), pattern = "Estimates")) %>%
+      purrr::map_dfr(.f = dplyr::select, dplyr::everything())
+    
+    # Now that we have these as two complete dataframes (rather than however many "chunks" there were) we'll add them *back into a new list!*
+    
+    # Make an empty list
+    return_list <- list()
+    
+    # Put the data in it
+    return_list[["Stat"]] <- stat_bit
+    return_list[["Estim"]] <- est_bit
+    
+    # Return it
+    return(return_list) }
+}
 
 # End ----
