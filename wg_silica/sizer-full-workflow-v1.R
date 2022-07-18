@@ -148,18 +148,28 @@ for(place in "ALBION"){
   # Print a progress message
   message("Fit regressions...")
   
-  # Fit model
-  lm_fit <- lm(data_sub$FNYield ~ data_sub$Year,
-               subset = (data_sub$Year > 2000 & data_sub$Year < 2012))
+  # Extract (1) statistics and (2) estimates from linear models
+  agg_lm <- sizer_lm(raw_data = data_sub, sizer_data = sizer_tidy,
+                     x = "Year", y =  "FNYield")
+  low_lm <- sizer_lm(raw_data = data_sub, sizer_data = sizer_low,
+                     x = "Year", y =  "FNYield")
+  mid_lm <- sizer_lm(raw_data = data_sub, sizer_data = sizer_mid,
+                     x = "Year", y =  "FNYield")
+  high_lm <- sizer_lm(raw_data = data_sub, sizer_data = sizer_high,
+                     x = "Year", y =  "FNYield")
   
-  # Identify R^2
-  stat_df <- data.frame(broom::glance(lm_fit)) %>%
-    dplyr::mutate(site = place, .before = dplyr::everything())
+  #  HERE NOW ----
   
-  # Identify estimates
-  est_df <- data.frame(broom::tidy(lm_fit)) %>%
-    dplyr::mutate(site = place, .before = dplyr::everything())
-    
+  # 1) Separate statistics and estimates within each lm
+  # 2) Add a column indicating the bandwidth(s) that lm uses break points from
+  # 3) Put the same 'type' of dataframes together into a single dataframe
+  # 4) Put those two final dataframes into the list below!
+  
+  
+  
+  
+  
+  
   # Add this information to their respective lists
   giant_list[[paste0("stats_", j)]] <- stat_df
   giant_list[[paste0("estimates_", j)]] <- est_df
