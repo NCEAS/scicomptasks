@@ -36,8 +36,8 @@ band_mid <- 6
 band_high <- 9
 
 # Loop through sites and extract information
-# for(place in unique(data$site)) {
-for(place in "ALBION"){
+for(place in unique(data$site)) {
+# for(place in "ALBION"){
   
   # Start with a message!
   message("Processing begun for site: ", place)
@@ -221,7 +221,7 @@ for(data_type in c("aggregate", "specific", "stats", "estimates")){
   # Now save the CSV
   write_csv(x = list_sub, na = "",
             file = file.path(export_folder,
-                             paste0(data_type, "_exported.csv")))
+                             paste0("_", data_type, "_exported.csv")))
   
   # And print a message
   message("Dataframe for ", data_type, " exported.") }
