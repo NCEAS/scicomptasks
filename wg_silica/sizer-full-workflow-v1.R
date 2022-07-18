@@ -150,25 +150,46 @@ for(place in "ALBION"){
   
   # Extract (1) statistics and (2) estimates from linear models
   agg_lm <- sizer_lm(raw_data = data_sub, sizer_data = sizer_tidy,
-                     x = "Year", y =  "FNYield")
+                     x = "Year", y =  "FNYield") %>%
+    # Then add a column for what bandwidth this is for
+    purrr::map(.f = mutate, bandwidth = "aggregate",
+               .before = dplyr::everything())
+  ## Low bandwidth
   low_lm <- sizer_lm(raw_data = data_sub, sizer_data = sizer_low,
-                     x = "Year", y =  "FNYield")
+                     x = "Year", y =  "FNYield") %>%
+    purrr::map(.f = mutate, bandwidth = band_low,
+               .before = dplyr::everything())
+  ## Middle bandwidth
   mid_lm <- sizer_lm(raw_data = data_sub, sizer_data = sizer_mid,
-                     x = "Year", y =  "FNYield")
+                     x = "Year", y =  "FNYield") %>%
+    purrr::map(.f = mutate, bandwidth = band_mid,
+               .before = dplyr::everything())
+  ## High bandwidth
   high_lm <- sizer_lm(raw_data = data_sub, sizer_data = sizer_high,
-                     x = "Year", y =  "FNYield")
+                     x = "Year", y =  "FNYield") %>%
+    purrr::map(.f = mutate, bandwidth = band_high,
+               .before = dplyr::everything())
   
-  #  HERE NOW ----
+  # Form one big list
+  mega_lm_list <- list(agg_lm, low_lm, mid_lm, high_lm)
+  mega_lm_list[[1]]
   
-  # 1) Separate statistics and estimates within each lm
-  # 2) Add a column indicating the bandwidth(s) that lm uses break points from
-  # 3) Put the same 'type' of dataframes together into a single dataframe
-  # 4) Put those two final dataframes into the list below!
+  # Final dataframe processing for *statistics*
+  stat_df <- mega_lm_list %>%
+    # Extract first list element
+    purrr::map(.f = 1) %>%
+    # Make all columns characters
+    purrr::map(.f = dplyr::mutate, dplyr::across(dplyr::everything(),
+                                          as.character)) %>%
+    # Combine all list elements into a dataframe
+    purrr::map_dfr(.f = dplyr::select, dplyr::everything())
   
-  
-  
-  
-  
+  # Final dataframe processing for *estimates*
+ est_df <- mega_lm_list %>%
+    purrr::map(.f = 2) %>%
+    purrr::map(.f = dplyr::mutate, dplyr::across(dplyr::everything(),
+                                                 as.character)) %>%
+    purrr::map_dfr(.f = dplyr::select, dplyr::everything())
   
   # Add this information to their respective lists
   giant_list[[paste0("stats_", j)]] <- stat_df
