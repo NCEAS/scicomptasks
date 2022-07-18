@@ -2,13 +2,17 @@
 
 ## Script explanation
 
-**revised-sizer-script.R**
+**sizer-full-workflow-v1.R**
 
-- *(R Script)* Does a more nuanced job (than "silica-SiZer-pkg-exploration.R" of exploring `SiZer` extraction and creation/export of diagnostic ggplots (as well as base plot `Sizer` outputs). `source`s "sizer-helper-fxns.R"
+ - *(R Script)* Just like the name suggests, this script accepts raw data, uses `SiZer::SiZer` to identify slope inflection points across a range of bandwidths, exports plots at several user-defined specific bandwidths, breaks the trendline at those inflection points and runs separate linear models for each "chunk" of each line. It is a for loop that works for each site in a given dataframe and ultimately produces single dataframes across all iterations of the loop. `source`s "sizer-helper-fxns.R"
 
 **sizer-helper-fxns.R**
 
 - *(R Script)* Contains several custom functions built to make extracting relevant information from `SiZer::SiZer` outputs easier / simpler
+
+**revised-sizer-script.R**
+
+- *(R Script)* Does a more nuanced job (than "silica-SiZer-pkg-exploration.R" of exploring `SiZer` extraction and creation/export of diagnostic ggplots (as well as base plot `Sizer` outputs). `source`s "sizer-helper-fxns.R"
 
 **silica-SiZer-pkg-exploration.R**
 
