@@ -5,6 +5,7 @@ project:
 
 website:
   title: "NCEAS Scientific Computing"
+  favicon: images/scicomptools_hex.png
   repo-url: https://github.com/NCEAS/scicomptasks
   repo-actions: [issue]
   twitter-card: true
