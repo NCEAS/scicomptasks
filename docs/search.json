@@ -7,6 +7,27 @@
     "text": "While much of the work we do is specific to a given working group or task, sometimes we realize afterwards that our functions have the potential to be useful beyond the scope for which they were initially written. To that end, we have created the R package scicomptools!\n\n\n\nThis package contains a diverse mix of functions for everything from repetitive data wrangling tasks to checking whether you have a token attached for GitHub. In addition, functions that we wrote that are deprecated (usually because their internal workings have been superseded by packages on CRAN) are removed from the package but retained in the GitHub repository in case they are useful to you! All functions–both live and deprecated–are summarized in the README on the GitHub repository so take a look!\n\n\n\nTo install the package in R, use the following:\n\n# install.packages(\"devtools\")\ndevtools::install_github(\"NCEAS/scicomptools\")"
   },
   {
+    "objectID": "workshops.html",
+    "href": "workshops.html",
+    "title": "Workshops",
+    "section": "",
+    "text": "In addition to the specific task-based support we offer LTER working groups, we can also create and run interactive workshops on data or coding topics. The specific goals of these workshops can be modified to best suit your team and meet all attendees where they are to ensure no one is left behind. While we are always happy to discuss developing new workshops we do have some materials that have already been designed (and tested by other working groups!) and are happy to offer any of these workshops to your group if it is of interest."
+  },
+  {
+    "objectID": "workshops.html#collaborative-coding-with-github",
+    "href": "workshops.html#collaborative-coding-with-github",
+    "title": "Workshops",
+    "section": "Collaborative Coding with GitHub",
+    "text": "Collaborative Coding with GitHub\n\nIn synthesis science, collaboration on code products is often integral to the productivity of the group. However, learning to use the software and graphical user interfaces that support this kind of teamwork can be a significant hurdle for teams that are already experts in their subject areas. This workshop is aimed at helping participants gain an understanding of the fundamental purpose and functioning of “version control” systems–specifically GitHub–to help teams more effectively code collaboratively.\nThe full workshop materials can be found here.\nThe GitHub  repository for the workshop can be found here."
+  },
+  {
+    "objectID": "workshops.html#coding-in-the-tidyverse",
+    "href": "workshops.html#coding-in-the-tidyverse",
+    "title": "Workshops",
+    "section": "Coding in the tidyverse",
+    "text": "Coding in the tidyverse\n\nFor teams that code using the R programming language, the most familiar tools are often part of “base R” meaning that those functions and packages come pre-loaded when R is installed. Relatively recently the tidyverse has emerged as a comprehensive suite of packages that can complement base R or serve as an alternative for some tasks. This includes packages like dplyr and tidyr as well as the perhaps infamous pipe operator (%>%) among many other tools. This workshop is aimed at helping participants use the tidyverse equivalents of fundamental data wrangling tasks that learners may be used to performing with base R.\nThe full workshop materials can be found here.\nThe GitHub  repository for the workshop can be found here."
+  },
+  {
     "objectID": "best_practices.html#suggested-tools-programs",
     "href": "best_practices.html#suggested-tools-programs",
     "title": "Best Practice Manuals",

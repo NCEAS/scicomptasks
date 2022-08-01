@@ -16,6 +16,7 @@ website:
         text: Home
       - staff.qmd
       - pkgs.qmd
+      - workshops.qmd
       - best_practices.qmd
     right:
       - icon: github
