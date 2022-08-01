@@ -61,7 +61,8 @@ for(place in unique(data$site)) {
   
   # Plot (and export) the SiZer object with horizontal lines of interest
   png(filename = file.path(export_folder, paste0(place_short, "_SiZer-plot.png")), width = 5, height = 5, res = 720, units = 'in')
-  sizer_plot(sizer_object = e, bandwidth_vec = c(3, 6, 9))
+  sizer_plot(sizer_object = e,
+             bandwidth_vec = c(band_low, band_mid, band_high))
   dev.off()
   
   # Strip out the aggregated (across all bandwidths) inflection points
