@@ -82,5 +82,12 @@
     "title": "Our Team",
     "section": "Nick Lyon",
     "text": "Nick Lyon\nnjlyon0.github.io –  njlyon0 –  @scilyon – lyon@nceas.ucsb.edu\n\nNick focuses on supporting LTER synthesis working groups in the acquisition and management prerequisite to analysis and visualization. Nick is a trained restoration ecologist focusing on interacting communities of plants and insects and has extensive experience taking “raw” field-collected data and readying it for hypothesis testing in a rigorous, transparent way. Nick completed his MS in Ecology and Evolutionary Biology at Iowa State University"
+  },
+  {
+    "objectID": "best_practices.html",
+    "href": "best_practices.html",
+    "title": "Best Practice Manuals",
+    "section": "",
+    "text": "This page contains the collected best practice tips of the NCEAS Scientific Computing Support Team. More will be added over time and feel free to post an issue if you have a specific request for a section to add to this document.\nPlease feel free to reach out to our team (see here) if you have any questions about this best practices manual and/or need help implementing some of this content.\nCheck the headings below or in the table of contents on the right of this page to see which tips and tricks we have included so far and we hope this page is a useful resource to you and your team!"
   }
 ]

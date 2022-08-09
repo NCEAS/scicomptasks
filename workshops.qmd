@@ -2,8 +2,6 @@
 title: "Workshops"
 ---
 
-<img src = "images/nceas_logo_square.png" align = "right" width = "15%" />
-
 In addition to the specific task-based support we offer LTER working groups, we can also create and run interactive workshops on data or coding topics. The specific goals of these workshops can be modified to best suit your team and meet all attendees where they are to ensure no one is left behind. While we are always happy to discuss developing new workshops we do have some materials that have already been designed (and tested by other working groups!) and are happy to offer any of these workshops to your group if it is of interest.
 
 ## Collaborative Coding with GitHub
