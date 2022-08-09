@@ -187,6 +187,14 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   <li><a href="#collaborative-tools" id="toc-collaborative-tools" class="nav-link" data-scroll-target="#collaborative-tools">Collaborative Tools</a></li>
   <li><a href="#software" id="toc-software" class="nav-link" data-scroll-target="#software">Software</a></li>
   </ul></li>
+  <li><a href="#r-scripts-versus-r-markdowns" id="toc-r-scripts-versus-r-markdowns" class="nav-link" data-scroll-target="#r-scripts-versus-r-markdowns">R Scripts versus R Markdowns</a>
+  <ul class="collapse">
+  <li><a href="#r-scripts---positives" id="toc-r-scripts---positives" class="nav-link" data-scroll-target="#r-scripts---positives">R Scripts - Positives</a></li>
+  <li><a href="#r-scripts---potential-weaknesses" id="toc-r-scripts---potential-weaknesses" class="nav-link" data-scroll-target="#r-scripts---potential-weaknesses">R Scripts - Potential Weaknesses</a></li>
+  <li><a href="#r-markdowns---positives" id="toc-r-markdowns---positives" class="nav-link" data-scroll-target="#r-markdowns---positives">R Markdowns - Positives</a></li>
+  <li><a href="#r-markdowns---potential-weaknesses" id="toc-r-markdowns---potential-weaknesses" class="nav-link" data-scroll-target="#r-markdowns---potential-weaknesses">R Markdowns - Potential Weaknesses</a></li>
+  <li><a href="#script-vs.-markdown-summary" id="toc-script-vs.-markdown-summary" class="nav-link" data-scroll-target="#script-vs.-markdown-summary">Script vs.&nbsp;Markdown Summary</a></li>
+  </ul></li>
   <li><a href="#file-paths" id="toc-file-paths" class="nav-link" data-scroll-target="#file-paths">File Paths</a>
   <ul class="collapse">
   <li><a href="#preserve-file-paths-as-objects" id="toc-preserve-file-paths-as-objects" class="nav-link" data-scroll-target="#preserve-file-paths-as-objects">1) Preserve File Paths as Objects</a></li>
@@ -269,6 +277,30 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li>Note this is also sometimes called the “command line” or–on Macs–“the Terminal”</li>
 </ul></li>
 </ul>
+</section>
+</section>
+<section id="r-scripts-versus-r-markdowns" class="level2">
+<h2 class="anchored" data-anchor-id="r-scripts-versus-r-markdowns">R Scripts versus R Markdowns</h2>
+<p>When coding in R, either R scripts (.R files) or R markdowns (.Rmd files) are viable options but they have different advantages and disadvantages that we will cover below.</p>
+<section id="r-scripts---positives" class="level3">
+<h3 class="anchored" data-anchor-id="r-scripts---positives">R Scripts - Positives</h3>
+<p>R scripts’ greatest strength is their flexibility. They allow you to format a file in whatever way is most intuitive to you. Additionally, R scripts can be cleaner for <code>for</code> loops insofar as they need not be concerned with staying within a given code chunk (as would be the case for a .Rmd). Developing a new workflow can be swiftly accomplished in an R script as some or all of the code in a script can be run by simply selecting the desired lines rather than manually running the desired chunks in a .Rmd file. Finally, R scripts can also be a better home for custom functions that can be <code>source</code>d by another file (even a .Rmd!) for making repeated operations simpler to read.</p>
+</section>
+<section id="r-scripts---potential-weaknesses" class="level3">
+<h3 class="anchored" data-anchor-id="r-scripts---potential-weaknesses">R Scripts - Potential Weaknesses</h3>
+<p>The benefit of extreme flexibility in R scripts can sometimes be a disadvantage however. We’ve all seen (and written) R scripts that have few or no comments or where lines of code are densely packed without spacing or blank lines to help someone new to the code understand what is being done. R scripts can certainly be written in a way that is accessible to those without prior knowledge of what the script accomplishes but they do not <em>enforce</em> such structure. This can make it easy, especially when we’re feeling pressed for time, to exclude structure that helps our code remain reproducible and understandable.</p>
+</section>
+<section id="r-markdowns---positives" class="level3">
+<h3 class="anchored" data-anchor-id="r-markdowns---positives">R Markdowns - Positives</h3>
+<p>R markdown files’ ability to “knit” as HTML or PDF documents makes them extremely useful in creating outward-facing reports. This is particularly the case when the specific code is less important to communicate than visualizations and/or analyses of the data but .Rmd files do facilitate <code>echo</code>ing the code so that report readers can see how background operations were accomplished. The code chunk structure of these files can also nudge users towards including valuable comments (both between chunks and within them) though of course .Rmd files do not enforce such non-code content.</p>
+</section>
+<section id="r-markdowns---potential-weaknesses" class="level3">
+<h3 class="anchored" data-anchor-id="r-markdowns---potential-weaknesses">R Markdowns - Potential Weaknesses</h3>
+<p>R markdowns can fail to knit due to issues even when the code within the chunks works as desired. Duplicate code chunk names or a failure to install LaTeX can be a frustrating hurdle to overcome between functioning code and a knit output file. When code must be re-run repeatedly (as is often the case when developing a new workflow) the stop-and-start nature of running each code chunk separately can also be a small irritation.</p>
+</section>
+<section id="script-vs.-markdown-summary" class="level3">
+<h3 class="anchored" data-anchor-id="script-vs.-markdown-summary">Script vs.&nbsp;Markdown Summary</h3>
+<p>Taken together, both R scripts and R markdown files can empower users to write reproducible, transparent code. However, both file types have some key limitations that should be taken into consideration when choosing which to use as you set out to create a new code product.</p>
 </section>
 </section>
 <section id="file-paths" class="level2">
