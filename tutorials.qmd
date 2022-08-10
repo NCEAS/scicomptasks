@@ -8,17 +8,16 @@ Some of the content that we produce is not as detailed as our full workshops but
 
 
 
+RAW CONTENT BELOW (vvv)
 
-## Building your first website
+
 
 Open up RStudio and go to File -> New Project -> New Directory -> Simple R Markdown Website and then fill in the following boxes to name and save your website source code wherever you would like. 
 
-```{r, out.width = "33%", fig.align='default'}
-include_graphics(here("img", "new_project.png"))
-include_graphics(here("img", "new_website.png"))
-include_graphics(here("img", "directory_name.png"))
-```
-
+<!-- {r, out.width = "33%", fig.align='default'} -->
+<!-- include_graphics(here("img", "new_project.png")) -->
+<!-- include_graphics(here("img", "new_website.png")) -->
+<!-- include_graphics(here("img", "directory_name.png")) -->
 
 After you click "Create Project", you should see three files in your RStudio window: `_site.yml`, `about.Rmd`, and `index.Rmd`. The idea is that each R Markdown (`.Rmd`) file will be a "page" in our website, and the `.yml` file will contain instructions on how to combine these pages together. 
 
@@ -31,14 +30,12 @@ After you click "Create Project", you should see three files in your RStudio win
     
 To build the demo website, we can go to the Build Pane on RStudio (typically in the top right) and press "Build Website". Alternatively, we can run the command `rmarkdown::render_site()` in the console.
 
-```{r}
-knitr::include_graphics("https://media.github.nceas.ucsb.edu/user/152/files/11586800-83b0-11e9-9f8b-b542b0f59d16")
-```
+<!-- knitr::include_graphics("https://media.github.nceas.ucsb.edu/user/152/files/11586800-83b0-11e9-9f8b-b542b0f59d16") -->
 
 This will create a new folder called `_site` in the working directory with our website! To see what it looks like, go into the new `_site` folder and open up either the `index.html` or the `about.html` file in your web browser. Clicking on the "Home" tab, you should see something like this:
-```{r, out.width="75%"}
-include_graphics(here("img", "demo_website.png"))
-```
+
+<!-- {r, out.width="75%"} -->
+<!-- include_graphics(here("img", "demo_website.png")) -->
 
 Now that we have an idea of how the demo works, let's start personalizing it!
 
@@ -48,19 +45,14 @@ Now that we have an idea of how the demo works, let's start personalizing it!
 First of all, the folder where our website lives was called `_site`. We can change this name to be anything, but let's keep it simple and call it `docs`: 
 Go into our `_site.yml` file and add in `output_dir: "docs"` underneath the name of the project.
 
-```{r}
-knitr::include_graphics(here("img", "output_dir.png"))
-```
+<!-- knitr::include_graphics(here("img", "output_dir.png")) -->
 
 Now we can build the website again (either clicking "Build Website" or running `rmarkdown::render_site()`) and notice that we made a folder called `docs` instead of `_site`! We can even safely delete the old `_site` folder, since our website will now always be built and updated into the `docs` folder.
 
 ### Adding a page to the website:
 Create an R Markdown file (you can name it whatever you want, but ours is called `practice.Rmd`) containing all of the information you want in that page. Make sure that you have `output: html_document` in the header!
 
-```{r}
-knitr::include_graphics(here("img", "rmd_sample.png"))
-```
-
+<!-- knitr::include_graphics(here("img", "rmd_sample.png")) -->
 
 Once your page is all filled up, go into the `_site.yml` file and add the following underneath the other pages:
 
@@ -69,16 +61,13 @@ Once your page is all filled up, go into the `_site.yml` file and add the follow
 
 For example,
 
-```{r}
-knitr::include_graphics(here("img", "yml_page.png"))
-```
-  
+<!-- knitr::include_graphics(here("img", "yml_page.png")) -->
 
 Then if we build our website again, we can see our new page!
 
-```{r, out.width="75%"}
-knitr::include_graphics(here("img", "new_page.png"))
-```
+<!-- {r, out.width="75%"} -->
+<!-- knitr::include_graphics(here("img", "new_page.png")) -->
+
 
 ## Additional Features
 
@@ -89,16 +78,12 @@ If you want to get fancy with styling the website, it helps to know some HTML or
 To apply an HTML/CSS change to every page of your website, we can add an `output` section to our `_site.yml` file.  
 For example, to change the theme of our website to Bootswatch's "flatly" theme, we can apply like it like so:
 
-```{r}
-include_graphics(here("img", "yml_theme.png"))
-```
+<!-- include_graphics(here("img", "yml_theme.png")) -->
 
 Let's see what our website looks like now!
 
-
-```{r, out.width="75%"}
-include_graphics(here("img", "website_theme.png"))
-```
+<!-- {r, out.width="75%"} -->
+<!-- include_graphics(here("img", "website_theme.png")) -->
 
 You can see more bootswatch themes [here](https://bootswatch.com/).
 
@@ -107,22 +92,16 @@ You can see more bootswatch themes [here](https://bootswatch.com/).
 
 If we want to add a footer to the website, make an HTML (or RHTML) document with the footer, like so:
 
-```{r}
-include_graphics(here("img", "footer_sample.png"))
-```
+<!-- include_graphics(here("img", "footer_sample.png")) -->
 
 Then we can add this footer to our website by adding an `include` section to the `output` in `_site.yml`, like so
 
-```{r}
-knitr::include_graphics(here("img", "yml_footer.png"))
-```
+<!-- knitr::include_graphics(here("img", "yml_footer.png")) -->
 
 Then if we build our website again, we can see the footer at the bottom of every page
-```{r, out.width="75%"}
-include_graphics(here("img", "website_footer.png"))
-```
 
-
+<!-- {r, out.width="75%"} -->
+<!-- include_graphics(here("img", "website_footer.png")) -->
 
 _Note:_ For more themes and styling options, look at Section 3.1.4 [here](https://bookdown.org/yihui/rmarkdown/html-document.html)
 

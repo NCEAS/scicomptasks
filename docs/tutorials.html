@@ -60,6 +60,7 @@ ul.task-list{list-style: none;}
 
 <link rel="stylesheet" href="styles.css">
 <meta name="twitter:title" content="NCEAS Scientific Computing Team - Tutorials">
+<meta name="twitter:description" content="Some of the content that we produce is not as detailed as our full workshops but has a wider scope than the content included in our “Best Practices” suggestions.">
 <meta name="twitter:card" content="summary">
 </head>
 
@@ -90,10 +91,10 @@ ul.task-list{list-style: none;}
     <a class="nav-link" href="./workshops.html">Workshops</a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="./best_practices.html">Best Practice Manuals</a>
+    <a class="nav-link active" href="./tutorials.html" aria-current="page">Tutorials</a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link active" href="./tutorials.html" aria-current="page">Tutorials</a>
+    <a class="nav-link" href="./best_practices.html">Best Practice Manuals</a>
   </li>  
   <li class="nav-item">
     <a class="nav-link" href="./onboarding.html">Onboarding</a>
@@ -119,7 +120,23 @@ ul.task-list{list-style: none;}
 <!-- sidebar -->
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
-        
+        <nav id="TOC" role="doc-toc">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#building-a-website-with-quarto" id="toc-building-a-website-with-quarto" class="nav-link active" data-scroll-target="#building-a-website-with-quarto">Building a Website with Quarto</a></li>
+  <li><a href="#updating-the-website" id="toc-updating-the-website" class="nav-link" data-scroll-target="#updating-the-website">Updating the website</a>
+  <ul class="collapse">
+  <li><a href="#changing-output-directory" id="toc-changing-output-directory" class="nav-link" data-scroll-target="#changing-output-directory">Changing output directory</a></li>
+  <li><a href="#adding-a-page-to-the-website" id="toc-adding-a-page-to-the-website" class="nav-link" data-scroll-target="#adding-a-page-to-the-website">Adding a page to the website:</a></li>
+  </ul></li>
+  <li><a href="#additional-features" id="toc-additional-features" class="nav-link" data-scroll-target="#additional-features">Additional Features</a>
+  <ul class="collapse">
+  <li><a href="#apply-a-theme" id="toc-apply-a-theme" class="nav-link" data-scroll-target="#apply-a-theme">Apply a theme</a></li>
+  <li><a href="#add-a-footer" id="toc-add-a-footer" class="nav-link" data-scroll-target="#add-a-footer">Add a footer</a></li>
+  </ul></li>
+  </ul>
+<div class="toc-actions"><div><i class="bi bi-github"></i></div><div class="action-links"><p><a href="https://github.com/NCEAS/scicomptasks/issues/new" class="toc-action">Report an issue</a></p></div></div></nav>
     <div class="quarto-margin-footer"><div class="margin-footer-item">
 <p><img src="images/nceas_logo_square.png" width="40%"></p>
 </div></div></div>
@@ -142,8 +159,81 @@ ul.task-list{list-style: none;}
 
 </header>
 
+<p>Some of the content that we produce is not as detailed as our full workshops but has a wider scope than the content included in our “Best Practices” suggestions. This information can broadly be defined as “tutorials” though their depth and scope can vary significantly depending on the topic being tutorialized. As with our Best Practices, this page is under constant development so please <a href="https://github.com/NCEAS/scicomptasks/issues">post an issue</a> if you have an idea for a tutorial that you’d like to suggest that we create.</p>
+<section id="building-a-website-with-quarto" class="level2">
+<h2 class="anchored" data-anchor-id="building-a-website-with-quarto">Building a Website with Quarto</h2>
+<p>RAW CONTENT BELOW (vvv)</p>
+<p>Open up RStudio and go to File -&gt; New Project -&gt; New Directory -&gt; Simple R Markdown Website and then fill in the following boxes to name and save your website source code wherever you would like.</p>
+<!-- {r, out.width = "33%", fig.align='default'} -->
+<!-- include_graphics(here("img", "new_project.png")) -->
+<!-- include_graphics(here("img", "new_website.png")) -->
+<!-- include_graphics(here("img", "directory_name.png")) -->
+<p>After you click “Create Project”, you should see three files in your RStudio window: <code>_site.yml</code>, <code>about.Rmd</code>, and <code>index.Rmd</code>. The idea is that each R Markdown (<code>.Rmd</code>) file will be a “page” in our website, and the <code>.yml</code> file will contain instructions on how to combine these pages together.</p>
+<ul>
+<li><p><code>index.Rmd</code>: This demo R Markdown file will be our website’s “home” page.</p></li>
+<li><p><code>about.Rmd</code>: This demo R Markdown file will be our website’s “about” page.</p></li>
+<li><p><code>_site.yml</code>: This a configuration file: We’ll use this to change how our website looks;</p>
+<p><em>Note:</em> When building a website, R Markdown only looks for the files <code>index.Rmd</code> and <code>_site.yml</code>. So change the contents of these files however you like, but don’t change the name! On the other hand, feel free the change the name of <code>about.Rmd</code> to whatever you’d like!</p></li>
+</ul>
+<p>To build the demo website, we can go to the Build Pane on RStudio (typically in the top right) and press “Build Website”. Alternatively, we can run the command <code>rmarkdown::render_site()</code> in the console.</p>
+<!-- knitr::include_graphics("https://media.github.nceas.ucsb.edu/user/152/files/11586800-83b0-11e9-9f8b-b542b0f59d16") -->
+<p>This will create a new folder called <code>_site</code> in the working directory with our website! To see what it looks like, go into the new <code>_site</code> folder and open up either the <code>index.html</code> or the <code>about.html</code> file in your web browser. Clicking on the “Home” tab, you should see something like this:</p>
+<!-- {r, out.width="75%"} -->
+<!-- include_graphics(here("img", "demo_website.png")) -->
+<p>Now that we have an idea of how the demo works, let’s start personalizing it!</p>
+</section>
+<section id="updating-the-website" class="level2">
+<h2 class="anchored" data-anchor-id="updating-the-website">Updating the website</h2>
+<section id="changing-output-directory" class="level3">
+<h3 class="anchored" data-anchor-id="changing-output-directory">Changing output directory</h3>
+<p>First of all, the folder where our website lives was called <code>_site</code>. We can change this name to be anything, but let’s keep it simple and call it <code>docs</code>: Go into our <code>_site.yml</code> file and add in <code>output_dir: "docs"</code> underneath the name of the project.</p>
+<!-- knitr::include_graphics(here("img", "output_dir.png")) -->
+<p>Now we can build the website again (either clicking “Build Website” or running <code>rmarkdown::render_site()</code>) and notice that we made a folder called <code>docs</code> instead of <code>_site</code>! We can even safely delete the old <code>_site</code> folder, since our website will now always be built and updated into the <code>docs</code> folder.</p>
+</section>
+<section id="adding-a-page-to-the-website" class="level3">
+<h3 class="anchored" data-anchor-id="adding-a-page-to-the-website">Adding a page to the website:</h3>
+<p>Create an R Markdown file (you can name it whatever you want, but ours is called <code>practice.Rmd</code>) containing all of the information you want in that page. Make sure that you have <code>output: html_document</code> in the header!</p>
+<!-- knitr::include_graphics(here("img", "rmd_sample.png")) -->
+<p>Once your page is all filled up, go into the <code>_site.yml</code> file and add the following underneath the other pages:</p>
+<ul>
+<li><code>text: "&lt;page name to be displayed&gt;"</code></li>
+<li><code>href: &lt;name of rmd file you just made&gt;.html</code></li>
+</ul>
+<p>For example,</p>
+<!-- knitr::include_graphics(here("img", "yml_page.png")) -->
+<p>Then if we build our website again, we can see our new page!</p>
+<!-- {r, out.width="75%"} -->
+<!-- knitr::include_graphics(here("img", "new_page.png")) -->
+</section>
+</section>
+<section id="additional-features" class="level2">
+<h2 class="anchored" data-anchor-id="additional-features">Additional Features</h2>
+<p>If you want to get fancy with styling the website, it helps to know some HTML or CSS. Here are a few examples of some of the things you can do:</p>
+<section id="apply-a-theme" class="level3">
+<h3 class="anchored" data-anchor-id="apply-a-theme">Apply a theme</h3>
+<p>To apply an HTML/CSS change to every page of your website, we can add an <code>output</code> section to our <code>_site.yml</code> file.<br>
+For example, to change the theme of our website to Bootswatch’s “flatly” theme, we can apply like it like so:</p>
+<!-- include_graphics(here("img", "yml_theme.png")) -->
+<p>Let’s see what our website looks like now!</p>
+<!-- {r, out.width="75%"} -->
+<!-- include_graphics(here("img", "website_theme.png")) -->
+<p>You can see more bootswatch themes <a href="https://bootswatch.com/">here</a>.</p>
+</section>
+<section id="add-a-footer" class="level3">
+<h3 class="anchored" data-anchor-id="add-a-footer">Add a footer</h3>
+<p>If we want to add a footer to the website, make an HTML (or RHTML) document with the footer, like so:</p>
+<!-- include_graphics(here("img", "footer_sample.png")) -->
+<p>Then we can add this footer to our website by adding an <code>include</code> section to the <code>output</code> in <code>_site.yml</code>, like so</p>
+<!-- knitr::include_graphics(here("img", "yml_footer.png")) -->
+<p>Then if we build our website again, we can see the footer at the bottom of every page</p>
+<!-- {r, out.width="75%"} -->
+<!-- include_graphics(here("img", "website_footer.png")) -->
+<p><em>Note:</em> For more themes and styling options, look at Section 3.1.4 <a href="https://bookdown.org/yihui/rmarkdown/html-document.html">here</a></p>
+<p>For more information on building a website, see Chapter 10.5 of https://bookdown.org/yihui/rmarkdown/rmarkdown-site.html</p>
 
 
+</section>
+</section>
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
