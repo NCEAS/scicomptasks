@@ -4,7 +4,7 @@ project:
   output-dir: docs
 
 website:
-  title: "NCEAS Scientific Computing"
+  title: "NCEAS Scientific Computing Team"
   favicon: images/scicomptools_hex.png
   repo-url: https://github.com/NCEAS/scicomptasks
   repo-actions: [issue]
@@ -18,6 +18,8 @@ website:
       - pkgs.qmd
       - workshops.qmd
       - best_practices.qmd
+      - tutorials.qmd
+      - onboarding.qmd
     right:
       - icon: github
         href: https://github.com/NCEAS/scicomptasks
