@@ -60,6 +60,7 @@ ul.task-list{list-style: none;}
 
 <link rel="stylesheet" href="styles.css">
 <meta name="twitter:title" content="NCEAS Scientific Computing Team - Onboarding">
+<meta name="twitter:description" content="This page contains a quick, cookbook-style set of instructions for new staff on the Scientific Computing Team.">
 <meta name="twitter:card" content="summary">
 </head>
 
@@ -119,7 +120,32 @@ ul.task-list{list-style: none;}
 <!-- sidebar -->
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
-        
+        <nav id="TOC" role="doc-toc">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#welcome-to-the-team" id="toc-welcome-to-the-team" class="nav-link active" data-scroll-target="#welcome-to-the-team">Welcome to the Team!</a></li>
+  <li><a href="#background-reading-material" id="toc-background-reading-material" class="nav-link" data-scroll-target="#background-reading-material">Background Reading Material</a></li>
+  <li><a href="#programs-resources" id="toc-programs-resources" class="nav-link" data-scroll-target="#programs-resources">Programs &amp; Resources</a>
+  <ul class="collapse">
+  <li><a href="#github-tutorial" id="toc-github-tutorial" class="nav-link" data-scroll-target="#github-tutorial">GitHub Tutorial</a></li>
+  <li><a href="#lter-github-organization" id="toc-lter-github-organization" class="nav-link" data-scroll-target="#lter-github-organization">LTER GitHub Organization</a></li>
+  <li><a href="#nceas-github-enterprise-organization" id="toc-nceas-github-enterprise-organization" class="nav-link" data-scroll-target="#nceas-github-enterprise-organization">NCEAS GitHub Enterprise Organization</a></li>
+  <li><a href="#slack" id="toc-slack" class="nav-link" data-scroll-target="#slack">Slack</a></li>
+  <li><a href="#nceas-server-aurora" id="toc-nceas-server-aurora" class="nav-link" data-scroll-target="#nceas-server-aurora">NCEAS Server: Aurora</a></li>
+  </ul></li>
+  <li><a href="#recurring-nceas-meetings" id="toc-recurring-nceas-meetings" class="nav-link" data-scroll-target="#recurring-nceas-meetings">Recurring NCEAS Meetings</a></li>
+  <li><a href="#data-science-background-and-tutorials" id="toc-data-science-background-and-tutorials" class="nav-link" data-scroll-target="#data-science-background-and-tutorials">Data Science Background and Tutorials</a>
+  <ul class="collapse">
+  <li><a href="#r-self-assessment" id="toc-r-self-assessment" class="nav-link" data-scroll-target="#r-self-assessment">R Self-Assessment</a></li>
+  </ul></li>
+  <li><a href="#hr-related-resources" id="toc-hr-related-resources" class="nav-link" data-scroll-target="#hr-related-resources">HR-related Resources</a>
+  <ul class="collapse">
+  <li><a href="#reporting-hours-kronos" id="toc-reporting-hours-kronos" class="nav-link" data-scroll-target="#reporting-hours-kronos">Reporting Hours &amp; Kronos</a></li>
+  <li><a href="#uc-path" id="toc-uc-path" class="nav-link" data-scroll-target="#uc-path">UC Path</a></li>
+  </ul></li>
+  </ul>
+<div class="toc-actions"><div><i class="bi bi-github"></i></div><div class="action-links"><p><a href="https://github.com/NCEAS/scicomptasks/issues/new" class="toc-action">Report an issue</a></p></div></div></nav>
     <div class="quarto-margin-footer"><div class="margin-footer-item">
 <p><img src="images/nceas_logo_square.png" width="40%"></p>
 </div></div></div>
@@ -142,8 +168,77 @@ ul.task-list{list-style: none;}
 
 </header>
 
+<section id="welcome-to-the-team" class="level3">
+<h3 class="anchored" data-anchor-id="welcome-to-the-team">Welcome to the Team!</h3>
+<p>This page contains a quick, cookbook-style set of instructions for new staff on the Scientific Computing Team. We are so excited to have you join us and we hope that these instructions are clear and easy-to-follow. Please don’t hesitate to reach out if you run into any issues (see the “Our Team” tab of this site) or <a href="https://github.com/NCEAS/scicomptasks/issues">post a GitHub issue yourself</a> on this website’s repository!</p>
+<p>Listed below are a mix of references and tutorials on concepts we aim to promote to researchers who we support, as well as tools and workflows we use in our team. The goal is to give context about open and reproducible science principles NCEAS is promoting to the scientific community. You will also find information on getting access to the tools that you will need and some general information about working at NCEAS.</p>
+<hr>
+</section>
+<section id="background-reading-material" class="level2">
+<h2 class="anchored" data-anchor-id="background-reading-material">Background Reading Material</h2>
+<ul>
+<li><p>Hampton et al 2015. <a href="https://doi.org/10.1890/ES14-00402.1">“The Tao of open science for ecology”</a></p></li>
+<li><p>Borer et al 2009. <a href="https://doi.org/10.1890/0012-9623-90.2.205">“Effective Data Management”</a></p></li>
+<li><p>Fegraus et al 2005. <a href="https://doi.org/10.1890/0012-9623%282005%2986%5B158:MTVOED%5D2.0.CO;2">“Maximizing the Value of Ecological Data with Structured Metadata:”</a></p></li>
+<li><p>Heidborn 2008. <a href="http://doi.org/10.1353/lib.0.0036">“Shedding Light on the Dark Data in the Long Tail of Science”</a></p></li>
+</ul>
+</section>
+<section id="programs-resources" class="level2">
+<h2 class="anchored" data-anchor-id="programs-resources">Programs &amp; Resources</h2>
+<section id="github-tutorial" class="level3">
+<h3 class="anchored" data-anchor-id="github-tutorial">GitHub Tutorial</h3>
+<p>We rely heavily on <a href="https://github.com/">GitHub</a> for collaboration, and there are a few things you must do to get set up. First, complete the NCEAS GitHub Tutorial <a href="https://nceas.github.io/training-git-intro/getting-started-with-git-rstudio.html">here</a>. This tutorial will help you with getting started with <code>git</code> and GitHub using RStudio.</p>
+</section>
+<section id="lter-github-organization" class="level3">
+<h3 class="anchored" data-anchor-id="lter-github-organization">LTER GitHub Organization</h3>
+<p>Register (if you have not already) for a personal GitHub account and send your username to Julien to be added to the <a href="https://github.com/LTER">LTER GitHub</a>. This GitHub Organization “owns” the working groups repositories that you will be directly working with so being added to this organization will give you access to needed repositories.</p>
+</section>
+<section id="nceas-github-enterprise-organization" class="level3">
+<h3 class="anchored" data-anchor-id="nceas-github-enterprise-organization">NCEAS GitHub Enterprise Organization</h3>
+<p>We use a GitHub Enterprise account to keep track of tasks for the Scientific Computing Support of LTER working groups. To be added to the account you must create an NCEAS account.</p>
+<p>Follow the directions outlined <a href="https://docs.google.com/document/d/1eoR1oDrCrczgbYHPZU_1szB_2fhzu7EUHnh5nFI3eSg/edit">here</a> and send your username to Julien Brun (not the email outlined in the Google Doc).</p>
+<p>After you have been added, you will be able to access the <a href="https://github.nceas.ucsb.edu/LTER/lter-wg-scicomp/issues">Issues tab of the lter-wg-scicomp GitHub repository</a>. We use issues on this repository to keep track of tasks and projects as well as who is primarily responsible for a given task and which working group gave us the task initially.</p>
+</section>
+<section id="slack" class="level3">
+<h3 class="anchored" data-anchor-id="slack">Slack</h3>
+<p>We use Slack to communicate with one another throughout the day. To be added to the NCEAS Slack group, register <a href="https://slack.nceas.ucsb.edu/">here</a>. If you already have a slack account, be sure to use the email address you used to register.</p>
+<p>Find and join our <code>#scicomp</code> channel by clicking the plus sign next to the Channels section. Feel free to join any other channels that you might find interesting! Popular channels include <code>#diversity</code>, <code>#nceas</code>, and <code>#social</code>.</p>
+<p>Finally, complete <a href="https://pages.github.nceas.ucsb.edu/NCEAS/help/chat_room_setup.html">this short tutorial</a> on using Slack.</p>
+</section>
+<section id="nceas-server-aurora" class="level3">
+<h3 class="anchored" data-anchor-id="nceas-server-aurora">NCEAS Server: Aurora</h3>
+<p>We use the Aurora server (located at aurora.nceas.ucsb.edu) when working with RStudio or JupyterHub. Send an email to help@nceas.ucsb.edu requesting an account mentioning you are working with Julien. Thomas Hetmank or Nick Outin will contact you with directions for setting up an account.</p>
+</section>
+</section>
+<section id="recurring-nceas-meetings" class="level2">
+<h2 class="anchored" data-anchor-id="recurring-nceas-meetings">Recurring NCEAS Meetings</h2>
+<p>There are a number of recurring meetings that you are encouraged to attend. At your hiring, you should recieve an invitation to the NCEAS Google Calendar which has links to all the meeting information. These include Coffee Klatch (a coffee social), Hacky Hours, and Data Science Chats (to name a few).</p>
+<p>We also have a team Google Calendar to manage team events. Julien will add you if you have not been already.</p>
+</section>
+<section id="data-science-background-and-tutorials" class="level2">
+<h2 class="anchored" data-anchor-id="data-science-background-and-tutorials">Data Science Background and Tutorials</h2>
+<p>For good background information on the tools that we use, read through and practice examples of the following chapters from a training we did for postdocs in early 2020: https://science-for-nature-and-people.github.io/2020-data-collab-workshop/2020-02-snapp/index.html</p>
+<p>Chapters <a href="https://science-for-nature-and-people.github.io/2020-data-collab-workshop/2020-02-snapp/working-on-a-remote-machine.html">3</a>, <a href="https://science-for-nature-and-people.github.io/2020-data-collab-workshop/2020-02-snapp/introduction-to-r-and-rmarkdown.html">5</a>, <a href="https://science-for-nature-and-people.github.io/2020-data-collab-workshop/2020-02-snapp/linux-and-the-command-line.html">8</a> are a good background about the tools we use.</p>
+<p>Chapters <a href="https://science-for-nature-and-people.github.io/2020-data-collab-workshop/2020-02-snapp/data-modeling-tidy-data.html">9</a>, <a href="https://science-for-nature-and-people.github.io/2020-data-collab-workshop/2020-02-snapp/data-cleaning-and-manipulation.html">10</a> are a good introduction to data modeling.</p>
+<section id="r-self-assessment" class="level3">
+<h3 class="anchored" data-anchor-id="r-self-assessment">R Self-Assessment</h3>
+<p>Finally, please complete this <a href="https://cosima.nceas.ucsb.edu/r-self-assessment/">R Training Assessment</a> to self-assess your skills in R.</p>
+<p>Schedule a session with Julien to debrief on your experience.</p>
+</section>
+</section>
+<section id="hr-related-resources" class="level2">
+<h2 class="anchored" data-anchor-id="hr-related-resources">HR-related Resources</h2>
+<section id="reporting-hours-kronos" class="level3">
+<h3 class="anchored" data-anchor-id="reporting-hours-kronos">Reporting Hours &amp; Kronos</h3>
+<p>We submit vacation and sick day hours online through <a href="https://ucsb.kronos.net/wfc/navigator/logonWithUID">Kronos</a>. You should receive an email at the start of your employment adding you to an email listserv that will send reminders on when to approve each month’s timesheet.</p>
+</section>
+<section id="uc-path" class="level3">
+<h3 class="anchored" data-anchor-id="uc-path">UC Path</h3>
+<p><a href="https://www.ucpath.ucsb.edu/">UC Path</a> is the online HR portal and can be accessed with your UCSB Net ID. It is where you can access things like your paycheck, next date of paycheck, and benefits (if applicable).</p>
 
 
+</section>
+</section>
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
