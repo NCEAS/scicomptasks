@@ -2,14 +2,15 @@
 title: "Tutorials"
 ---
 
-```{r, include = FALSE}
-library(here)
-library(knitr)
-knitr::opts_chunk$set(echo = FALSE)
-```
+Some of the content that we produce is not as detailed as our full workshops but has a wider scope than the content included in our "Best Practices" suggestions. This information can broadly be defined as "tutorials" though their depth and scope can vary significantly depending on the topic being tutorialized. As with our Best Practices, this page is under constant development so please [post an issue](https://github.com/NCEAS/scicomptasks/issues) if you have an idea for a tutorial that you'd like to suggest that we create.
+
+## Building a Website with Quarto
+
+
 
 
 ## Building your first website
+
 Open up RStudio and go to File -> New Project -> New Directory -> Simple R Markdown Website and then fill in the following boxes to name and save your website source code wherever you would like. 
 
 ```{r, out.width = "33%", fig.align='default'}
