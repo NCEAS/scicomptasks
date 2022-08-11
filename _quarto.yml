@@ -17,8 +17,8 @@ website:
       - staff.qmd
       - pkgs.qmd
       - workshops.qmd
-      - best_practices.qmd
       - tutorials.qmd
+      - best_practices.qmd
       - onboarding.qmd
     right:
       - icon: github
