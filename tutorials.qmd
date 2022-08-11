@@ -130,9 +130,41 @@ Finally, **push your commited changes** to the repostory that you set as the rem
 git push -u origin main
 ```
 
-Now, go back to GitHub and we can get your website deployed!
+Now, **go back to GitHub** and refresh the page to see your project content safe and sound in your new GitHub repository!
+
+<img src="images/tutorial_quarto/website-tutorial_git-github-connect-1.png" width = "100%" />
 
 ### Deploy Website via GitHub
+
+
+<img src="images/tutorial_quarto/website-tutorial_github-deploy-1.png" width = "100%" />
+
+
+<img src="images/tutorial_quarto/website-tutorial_github-deploy-2.png" width = "100%" />
+
+
+<img src="images/tutorial_quarto/website-tutorial_github-deploy-3.png" width = "100%" />
+
+
+<img src="images/tutorial_quarto/website-tutorial_github-deploy-4.png" width = "100%" />
+
+
+<img src="images/tutorial_quarto/website-tutorial_github-deploy-5.png" width = "100%" />
+
+
+<img src="images/tutorial_quarto/website-tutorial_github-deploy-6.png" width = "100%" />
+
+
+<img src="images/tutorial_quarto/website-tutorial_github-deploy-7.png" width = "100%" />
+
+
+<img src="images/tutorial_quarto/website-tutorial_github-deploy-8.png" width = "100%" />
+
+
+<img src="images/tutorial_quarto/website-tutorial_github-deploy-9.png" width = "100%" />
+
+
+<img src="images/tutorial_quarto/website-tutorial_github-deploy-10.png" width = "100%" />
 
 
 
