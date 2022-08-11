@@ -6,6 +6,81 @@ Some of the content that we produce is not as detailed as our full workshops but
 
 ## Building a Website with Quarto
 
+[Quarto](https://quarto.org/) is a new tool developed by RStudio (the company, not the program) to create a more 'what you see is what you get' editor for creating markdown files and products (e.g., books, websites, etc.). Additionally, it includes a visual editor that allows users to insert headings and embed figures via buttons that are intuitively labeled rather than through somewhat arcane HTML text or symbols. While Quarto is still in its infancy, it is rapidly gathering a following due to the aforementioned visual editor and for the ease with which quarto documents and websites can be created.
+
+### Prerequisites
+
+To follow along with this tutorial you will need to take the following steps:
+
+- [Download R](https://cran.r-project.org/)
+
+- [Download RStudio](https://www.rstudio.com/products/rstudio/download/)
+
+- [Download Quarto](https://quarto.org/docs/get-started/)
+
+- [Install `git`](https://happygitwithr.com/install-git.html)
+
+- [Create a GitHub Account](https://github.com/)
+
+- [Connect `git` to GitHub](https://njlyon0.github.io/asm-2022_github-workshop/setup.html#connecting-programs)
+
+Feel free to skip any steps that you have already completed!
+
+### Create a New R Project
+
+To begin, **click the "Project" button** in the top right of your RStudio session.
+
+<img src="images/tutorial_quarto/website-tutorial_new-proj-1.png" width = "100%" />
+
+In the resulting dialogue, **click the "New Directory" option**.
+
+<img src="images/tutorial_quarto/website-tutorial_new-proj-2.png" width = "60%" />
+
+From the list of options for project templates, **select "Quarto Website".**
+
+<img src="images/tutorial_quarto/website-tutorial_new-proj-3.png" width = "60%" />
+
+**Pick a title** and **check the "Create a git repository" checkbox**. For your title, short but descriptive titles are most effective. Once that is done, click **"Create Project"** in the bottom right of the window.
+
+<img src="images/tutorial_quarto/website-tutorial_new-proj-4.png" width = "60%" />
+
+After a few seconds, RStudio should refresh with a Quarto document (such documents have the file extension ".qmd") and a "_quarto.yml" file open.
+
+<img src="images/tutorial_quarto/website-tutorial_new-proj-5.png" width = "60%" />
+
+Part of Quarto's central philosophy is that all of the formatting of individual .qmd files in a project is governed by the settings created by a singular .yml file. In an R markdown project some of the global settings are set in .yml but other settings are handled within each .Rmd file. This centralization is a key innovation in streamlining projects and is one reason for Quarto's quick popularity.
+
+### Make a New GitHub Repository
+
+
+### Adding your Project to GitHub
+
+```{r}
+# code chunk(s) here!!
+
+# NO PICS
+```
+
+### Preparing Project for Web Deployment
+
+
+Changing `output-dir`
+
+Plus `touch .nojekyll` in Terminal
+
+
+### Deploy Website via GitHub
+
+
+
+### GitHub Housekeeping
+
+
+
+### Adding Content
+
+
+
 
 
 RAW CONTENT BELOW (vvv)

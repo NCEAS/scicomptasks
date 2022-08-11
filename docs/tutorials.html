@@ -15,6 +15,69 @@ span.underline{text-decoration: underline;}
 div.column{display: inline-block; vertical-align: top; width: 50%;}
 div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
 ul.task-list{list-style: none;}
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
 </style>
 
 
@@ -124,7 +187,17 @@ ul.task-list{list-style: none;}
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#building-a-website-with-quarto" id="toc-building-a-website-with-quarto" class="nav-link active" data-scroll-target="#building-a-website-with-quarto">Building a Website with Quarto</a></li>
+  <li><a href="#building-a-website-with-quarto" id="toc-building-a-website-with-quarto" class="nav-link active" data-scroll-target="#building-a-website-with-quarto">Building a Website with Quarto</a>
+  <ul class="collapse">
+  <li><a href="#prerequisites" id="toc-prerequisites" class="nav-link" data-scroll-target="#prerequisites">Prerequisites</a></li>
+  <li><a href="#create-a-new-r-project" id="toc-create-a-new-r-project" class="nav-link" data-scroll-target="#create-a-new-r-project">Create a New R Project</a></li>
+  <li><a href="#make-a-new-github-repository" id="toc-make-a-new-github-repository" class="nav-link" data-scroll-target="#make-a-new-github-repository">Make a New GitHub Repository</a></li>
+  <li><a href="#adding-your-project-to-github" id="toc-adding-your-project-to-github" class="nav-link" data-scroll-target="#adding-your-project-to-github">Adding your Project to GitHub</a></li>
+  <li><a href="#preparing-project-for-web-deployment" id="toc-preparing-project-for-web-deployment" class="nav-link" data-scroll-target="#preparing-project-for-web-deployment">Preparing Project for Web Deployment</a></li>
+  <li><a href="#deploy-website-via-github" id="toc-deploy-website-via-github" class="nav-link" data-scroll-target="#deploy-website-via-github">Deploy Website via GitHub</a></li>
+  <li><a href="#github-housekeeping" id="toc-github-housekeeping" class="nav-link" data-scroll-target="#github-housekeeping">GitHub Housekeeping</a></li>
+  <li><a href="#adding-content" id="toc-adding-content" class="nav-link" data-scroll-target="#adding-content">Adding Content</a></li>
+  </ul></li>
   <li><a href="#updating-the-website" id="toc-updating-the-website" class="nav-link" data-scroll-target="#updating-the-website">Updating the website</a>
   <ul class="collapse">
   <li><a href="#changing-output-directory" id="toc-changing-output-directory" class="nav-link" data-scroll-target="#changing-output-directory">Changing output directory</a></li>
@@ -162,6 +235,58 @@ ul.task-list{list-style: none;}
 <p>Some of the content that we produce is not as detailed as our full workshops but has a wider scope than the content included in our “Best Practices” suggestions. This information can broadly be defined as “tutorials” though their depth and scope can vary significantly depending on the topic being tutorialized. As with our Best Practices, this page is under constant development so please <a href="https://github.com/NCEAS/scicomptasks/issues">post an issue</a> if you have an idea for a tutorial that you’d like to suggest that we create.</p>
 <section id="building-a-website-with-quarto" class="level2">
 <h2 class="anchored" data-anchor-id="building-a-website-with-quarto">Building a Website with Quarto</h2>
+<p><a href="https://quarto.org/">Quarto</a> is a new tool developed by RStudio (the company, not the program) to create a more ‘what you see is what you get’ editor for creating markdown files and products (e.g., books, websites, etc.). Additionally, it includes a visual editor that allows users to insert headings and embed figures via buttons that are intuitively labeled rather than through somewhat arcane HTML text or symbols. While Quarto is still in its infancy, it is rapidly gathering a following due to the aforementioned visual editor and for the ease with which quarto documents and websites can be created.</p>
+<section id="prerequisites" class="level3">
+<h3 class="anchored" data-anchor-id="prerequisites">Prerequisites</h3>
+<p>To follow along with this tutorial you will need to take the following steps:</p>
+<ul>
+<li><p><a href="https://cran.r-project.org/">Download R</a></p></li>
+<li><p><a href="https://www.rstudio.com/products/rstudio/download/">Download RStudio</a></p></li>
+<li><p><a href="https://quarto.org/docs/get-started/">Download Quarto</a></p></li>
+<li><p><a href="https://happygitwithr.com/install-git.html">Install <code>git</code></a></p></li>
+<li><p><a href="https://github.com/">Create a GitHub Account</a></p></li>
+<li><p><a href="https://njlyon0.github.io/asm-2022_github-workshop/setup.html#connecting-programs">Connect <code>git</code> to GitHub</a></p></li>
+</ul>
+<p>Feel free to skip any steps that you have already completed!</p>
+</section>
+<section id="create-a-new-r-project" class="level3">
+<h3 class="anchored" data-anchor-id="create-a-new-r-project">Create a New R Project</h3>
+<p>To begin, <strong>click the “Project” button</strong> in the top right of your RStudio session.</p>
+<p><img src="images/tutorial_quarto/website-tutorial_new-proj-1.png" width="100%"></p>
+<p>In the resulting dialogue, <strong>click the “New Directory” option</strong>.</p>
+<p><img src="images/tutorial_quarto/website-tutorial_new-proj-2.png" width="60%"></p>
+<p>From the list of options for project templates, <strong>select “Quarto Website”.</strong></p>
+<p><img src="images/tutorial_quarto/website-tutorial_new-proj-3.png" width="60%"></p>
+<p><strong>Pick a title</strong> and <strong>check the “Create a git repository” checkbox</strong>. For your title, short but descriptive titles are most effective. Once that is done, click <strong>“Create Project”</strong> in the bottom right of the window.</p>
+<p><img src="images/tutorial_quarto/website-tutorial_new-proj-4.png" width="60%"></p>
+<p>After a few seconds, RStudio should refresh with a Quarto document (such documents have the file extension “.qmd”) and a “_quarto.yml” file open.</p>
+<p><img src="images/tutorial_quarto/website-tutorial_new-proj-5.png" width="60%"></p>
+<p>Part of Quarto’s central philosophy is that all of the formatting of individual .qmd files in a project is governed by the settings created by a singular .yml file. In an R markdown project some of the global settings are set in .yml but other settings are handled within each .Rmd file. This centralization is a key innovation in streamlining projects and is one reason for Quarto’s quick popularity.</p>
+</section>
+<section id="make-a-new-github-repository" class="level3">
+<h3 class="anchored" data-anchor-id="make-a-new-github-repository">Make a New GitHub Repository</h3>
+</section>
+<section id="adding-your-project-to-github" class="level3">
+<h3 class="anchored" data-anchor-id="adding-your-project-to-github">Adding your Project to GitHub</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># code chunk(s) here!!</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="co"># NO PICS</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="preparing-project-for-web-deployment" class="level3">
+<h3 class="anchored" data-anchor-id="preparing-project-for-web-deployment">Preparing Project for Web Deployment</h3>
+<p>Changing <code>output-dir</code></p>
+<p>Plus <code>touch .nojekyll</code> in Terminal</p>
+</section>
+<section id="deploy-website-via-github" class="level3">
+<h3 class="anchored" data-anchor-id="deploy-website-via-github">Deploy Website via GitHub</h3>
+</section>
+<section id="github-housekeeping" class="level3">
+<h3 class="anchored" data-anchor-id="github-housekeeping">GitHub Housekeeping</h3>
+</section>
+<section id="adding-content" class="level3">
+<h3 class="anchored" data-anchor-id="adding-content">Adding Content</h3>
 <p>RAW CONTENT BELOW (vvv)</p>
 <p>Open up RStudio and go to File -&gt; New Project -&gt; New Directory -&gt; Simple R Markdown Website and then fill in the following boxes to name and save your website source code wherever you would like.</p>
 <!-- {r, out.width = "33%", fig.align='default'} -->
@@ -181,6 +306,7 @@ ul.task-list{list-style: none;}
 <!-- {r, out.width="75%"} -->
 <!-- include_graphics(here("img", "demo_website.png")) -->
 <p>Now that we have an idea of how the demo works, let’s start personalizing it!</p>
+</section>
 </section>
 <section id="updating-the-website" class="level2">
 <h2 class="anchored" data-anchor-id="updating-the-website">Updating the website</h2>
