@@ -182,11 +182,21 @@ Alternately, the website for your repository always uses the following compositi
 
 <img src="images/tutorial_quarto/website-tutorial_github-deploy-10.png" width = "100%" />
 
-
-
-
 ### GitHub Housekeeping
 
+We recommend a quick housekeeping step now to make it easier to find this URL in the future. **Copy the URL from the Pages setting area and return to the "Code" tab of the repository**.
+
+Once there, **click the small gear icon to the right of the "About" header.**
+
+<img src="images/tutorial_quarto/website-tutorial_github-tidy-1.png" width = "100%" />
+
+In the resulting window, **paste the copied URL into the "Website" field.** Once you've pasted it in, **click the** **<span style="color:green">green</span>** **"Save changes" button.**
+
+<img src="images/tutorial_quarto/website-tutorial_github-tidy-2.png" width = "60%" />
+
+This places the link to your deployed website in an intuitive, easy-to-find location both for interested third parties and yourself in the future.
+
+<img src="images/tutorial_quarto/website-tutorial_github-tidy-3.png" width = "100%" />
 
 
 ### Adding Content
