@@ -32,7 +32,7 @@ To begin, **click the "Project" button** in the top right of your RStudio sessio
 
 <img src="images/tutorial_quarto/website-tutorial_new-proj-1.png" width = "100%" />
 
-In the resulting dialogue, **click the "New Directory" option**.
+In the resulting dialogue, **click the "New Directory" option.**
 
 <img src="images/tutorial_quarto/website-tutorial_new-proj-2.png" width = "60%" />
 
@@ -40,7 +40,7 @@ From the list of options for project templates, **select "Quarto Website".**
 
 <img src="images/tutorial_quarto/website-tutorial_new-proj-3.png" width = "60%" />
 
-**Pick a title** and **check the "Create a git repository" checkbox**. For your title, short but descriptive titles are most effective. Once that is done, click **"Create Project"** in the bottom right of the window.
+**Pick a title** and **check the "Create a git repository" checkbox.** For your title, short but descriptive titles are most effective. Once that is done, click **"Create Project"** in the bottom right of the window.
 
 <img src="images/tutorial_quarto/website-tutorial_new-proj-4.png" width = "60%" />
 
@@ -54,11 +54,11 @@ Part of Quarto's central philosophy is that all of the formatting of individual 
 
 To prepare your project for web deployment via GitHub Pages, we have **three** quick steps that we must first complete.
 
-*First*, in the "_quarto.yml" file, **add `output-dir: docs` as a subheading beneath the `project:` heading**. Make sure that the indentation is the same as the `type: website` but the new line can be either above or below that line.
+*First*, in the "_quarto.yml" file, **add `output-dir: docs` as a subheading beneath the `project:` heading.** Make sure that the indentation is the same as the `type: website` but the new line can be either above or below that line.
 
 <img src="images/tutorial_quarto/website-tutorial_deploy-prep-1.png" width = "75%" />
 
-*Second*, **in the "Terminal" pane run `touch .nojekyll`**. This creates a file called ".nojekyll" that is necessary for hosting your website via GitHub Pages. 
+*Second*, **in the "Terminal" pane run `touch .nojekyll`.** This creates a file called ".nojekyll" that is necessary for hosting your website via GitHub Pages. 
 
 *Third*, **in the "Terminal" pane run `quarto render`.** This processes the template .qmd files you currently have in the repository and prepares them to become actual web pages.
 
@@ -70,11 +70,11 @@ From your GitHub **"Repositories"** tab, click the **<span style="color:green"> 
 
 <img src="images/tutorial_quarto/website-tutorial_new-github-1.png" width = "100%" />
 
-**Add a title** to your repository and **add a description**. Once you've added these two things, scroll down and click the **<span style="color:green"> green </span> "Create repository" button**.
+**Add a title** to your repository and **add a description.** Once you've added these two things, scroll down and click the **<span style="color:green"> green </span> "Create repository" button.**
 
 <img src="images/tutorial_quarto/website-tutorial_new-github-2.png" width = "60%" />
 
-Be sure that you **do not add a README**, **do not add a gitignore**, and **do not add a license**. Adding any of these three will cause a merge conflict when we link the project that you just created with the GitHub repository that you are in the process of creating.
+Be sure that you **do not add a README**, **do not add a gitignore**, and **do not add a license.** Adding any of these three will cause a merge conflict when we link the project that you just created with the GitHub repository that you are in the process of creating.
 
 <img src="images/tutorial_quarto/website-tutorial_new-github-3.png" width = "60%" />
 
@@ -86,15 +86,54 @@ Copy the link in the field and go back to your RStudio session.
 
 ### Adding your Project to GitHub
 
-```{r}
-# code chunk(s) here!!
+The following steps include a sequence of command line operations that will be relayed in code chunks below. **Unless otherwise stated, all of the following code should be run in "Terminal".**
 
-# NO PICS
+If you didn't check the "Create a git repository" button while creating the R project, you'll need to do that via the command line now. **If you did check that box, you should skip this step!**
+
+```{r create-repo, eval = F}
+# Start a git repository on the "main" branch
+git init -b main
 ```
 
-If you prefer, GitHub also created [its own instructions](https://docs.github.com/en/get-started/importing-your-projects-to-github/importing-source-code-to-github/adding-locally-hosted-code-to-github#adding-a-local-repository-to-github-using-git) for exactly this process.
+**Stage all of the files in your project to the git repository.** This includes the .yml file, all .qmd files and all of their rendered versions created when you ran `quarto render` earlier. This code is equivalent to checking the box for the files in the "Git" pane of RStudio.
+
+```{r stage-everything, eval = F}
+# Stage all files
+git add .
+```
+
+Once everything has been staged, **you now must commit those staged files** with a message.
+
+```{r commit-everything, eval = F}
+# Commit all files with the message in quotes
+git commit -m "Initial commit"
+```
+
+Now that your project files have been committed, you need to **tell your computer where you will be pushing to and pulling from.** Paste the link you copied at the end of the "Make a New GitHub Repository" into the code shown in the chunk below (inside of the `[...]`) and run it.
+
+```{r set-remote, eval = F}
+# Tell your computer which GitHub repository to connect to
+git remote add origin [GITHUB_URL]
+```
+
+**Verify that URL** before continuing.
+
+```{r verify-remote, eval = F}
+# Confirm that URL worked
+git remote -v
+```
+
+Finally, **push your commited changes** to the repostory that you set as the remote in the preceding two steps.
+
+```{r push, eval = F}
+# Push all of the content to the main branch
+git push -u origin main
+```
+
+Now, go back to GitHub and we can get your website deployed!
 
 ### Deploy Website via GitHub
+
 
 
 

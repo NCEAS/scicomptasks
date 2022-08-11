@@ -253,11 +253,11 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <h3 class="anchored" data-anchor-id="create-a-new-r-project">Create a New R Project</h3>
 <p>To begin, <strong>click the “Project” button</strong> in the top right of your RStudio session.</p>
 <p><img src="images/tutorial_quarto/website-tutorial_new-proj-1.png" width="100%"></p>
-<p>In the resulting dialogue, <strong>click the “New Directory” option</strong>.</p>
+<p>In the resulting dialogue, <strong>click the “New Directory” option.</strong></p>
 <p><img src="images/tutorial_quarto/website-tutorial_new-proj-2.png" width="60%"></p>
 <p>From the list of options for project templates, <strong>select “Quarto Website”.</strong></p>
 <p><img src="images/tutorial_quarto/website-tutorial_new-proj-3.png" width="60%"></p>
-<p><strong>Pick a title</strong> and <strong>check the “Create a git repository” checkbox</strong>. For your title, short but descriptive titles are most effective. Once that is done, click <strong>“Create Project”</strong> in the bottom right of the window.</p>
+<p><strong>Pick a title</strong> and <strong>check the “Create a git repository” checkbox.</strong> For your title, short but descriptive titles are most effective. Once that is done, click <strong>“Create Project”</strong> in the bottom right of the window.</p>
 <p><img src="images/tutorial_quarto/website-tutorial_new-proj-4.png" width="60%"></p>
 <p>After a few seconds, RStudio should refresh with a Quarto document (such documents have the file extension “.qmd”) and a “_quarto.yml” file open.</p>
 <p><img src="images/tutorial_quarto/website-tutorial_new-proj-5.png" width="75%"></p>
@@ -266,9 +266,9 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <section id="preparing-project-for-web-deployment" class="level3">
 <h3 class="anchored" data-anchor-id="preparing-project-for-web-deployment">Preparing Project for Web Deployment</h3>
 <p>To prepare your project for web deployment via GitHub Pages, we have <strong>three</strong> quick steps that we must first complete.</p>
-<p><em>First</em>, in the “_quarto.yml” file, <strong>add <code>output-dir: docs</code> as a subheading beneath the <code>project:</code> heading</strong>. Make sure that the indentation is the same as the <code>type: website</code> but the new line can be either above or below that line.</p>
+<p><em>First</em>, in the “_quarto.yml” file, <strong>add <code>output-dir: docs</code> as a subheading beneath the <code>project:</code> heading.</strong> Make sure that the indentation is the same as the <code>type: website</code> but the new line can be either above or below that line.</p>
 <p><img src="images/tutorial_quarto/website-tutorial_deploy-prep-1.png" width="75%"></p>
-<p><em>Second</em>, <strong>in the “Terminal” pane run <code>touch .nojekyll</code></strong>. This creates a file called “.nojekyll” that is necessary for hosting your website via GitHub Pages.</p>
+<p><em>Second</em>, <strong>in the “Terminal” pane run <code>touch .nojekyll</code>.</strong> This creates a file called “.nojekyll” that is necessary for hosting your website via GitHub Pages.</p>
 <p><em>Third</em>, <strong>in the “Terminal” pane run <code>quarto render</code>.</strong> This processes the template .qmd files you currently have in the repository and prepares them to become actual web pages.</p>
 <p>Once you’ve done these three things you can move on to creating a GitHub repository so that we can take the necessary steps to having GitHub host your website!</p>
 </section>
@@ -276,9 +276,9 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <h3 class="anchored" data-anchor-id="make-a-new-github-repository">Make a New GitHub Repository</h3>
 <p>From your GitHub <strong>“Repositories”</strong> tab, click the <strong><span style="color:green"> green </span> “New”</strong> button.</p>
 <p><img src="images/tutorial_quarto/website-tutorial_new-github-1.png" width="100%"></p>
-<p><strong>Add a title</strong> to your repository and <strong>add a description</strong>. Once you’ve added these two things, scroll down and click the <strong><span style="color:green"> green </span> “Create repository” button</strong>.</p>
+<p><strong>Add a title</strong> to your repository and <strong>add a description.</strong> Once you’ve added these two things, scroll down and click the <strong><span style="color:green"> green </span> “Create repository” button.</strong></p>
 <p><img src="images/tutorial_quarto/website-tutorial_new-github-2.png" width="60%"></p>
-<p>Be sure that you <strong>do not add a README</strong>, <strong>do not add a gitignore</strong>, and <strong>do not add a license</strong>. Adding any of these three will cause a merge conflict when we link the project that you just created with the GitHub repository that you are in the process of creating.</p>
+<p>Be sure that you <strong>do not add a README</strong>, <strong>do not add a gitignore</strong>, and <strong>do not add a license.</strong> Adding any of these three will cause a merge conflict when we link the project that you just created with the GitHub repository that you are in the process of creating.</p>
 <p><img src="images/tutorial_quarto/website-tutorial_new-github-3.png" width="60%"></p>
 <p>After a few seconds you should be placed on your new repository’s landing page which will look like the below image because there isn’t anything in your repository (yet).</p>
 <p>Copy the link in the field and go back to your RStudio session.</p>
@@ -286,12 +286,38 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </section>
 <section id="adding-your-project-to-github" class="level3">
 <h3 class="anchored" data-anchor-id="adding-your-project-to-github">Adding your Project to GitHub</h3>
+<p>The following steps include a sequence of command line operations that will be relayed in code chunks below. <strong>Unless otherwise stated, all of the following code should be run in “Terminal”.</strong></p>
+<p>If you didn’t check the “Create a git repository” button while creating the R project, you’ll need to do that via the command line now. <strong>If you did check that box, you should skip this step!</strong></p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># code chunk(s) here!!</span></span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="co"># NO PICS</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Start a git repository on the "main" branch</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>git init <span class="sc">-</span>b main</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>If you prefer, GitHub also created <a href="https://docs.github.com/en/get-started/importing-your-projects-to-github/importing-source-code-to-github/adding-locally-hosted-code-to-github#adding-a-local-repository-to-github-using-git">its own instructions</a> for exactly this process.</p>
+<p><strong>Stage all of the files in your project to the git repository.</strong> This includes the .yml file, all .qmd files and all of their rendered versions created when you ran <code>quarto render</code> earlier. This code is equivalent to checking the box for the files in the “Git” pane of RStudio.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Stage all files</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>git add .</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Once everything has been staged, <strong>you now must commit those staged files</strong> with a message.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Commit all files with the message in quotes</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>git commit <span class="sc">-</span>m <span class="st">"Initial commit"</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Now that your project files have been committed, you need to <strong>tell your computer where you will be pushing to and pulling from.</strong> Paste the link you copied at the end of the “Make a New GitHub Repository” into the code shown in the chunk below (inside of the <code>[...]</code>) and run it.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Tell your computer which GitHub repository to connect to</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>git remote add origin [GITHUB_URL]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p><strong>Verify that URL</strong> before continuing.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Confirm that URL worked</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>git remote <span class="sc">-</span>v</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Finally, <strong>push your commited changes</strong> to the repostory that you set as the remote in the preceding two steps.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Push all of the content to the main branch</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>git push <span class="sc">-</span>u origin main</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Now, go back to GitHub and we can get your website deployed!</p>
 </section>
 <section id="deploy-website-via-github" class="level3">
 <h3 class="anchored" data-anchor-id="deploy-website-via-github">Deploy Website via GitHub</h3>
