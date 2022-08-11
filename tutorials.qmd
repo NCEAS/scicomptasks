@@ -50,6 +50,20 @@ After a few seconds, RStudio should refresh with a Quarto document (such documen
 
 Part of Quarto's central philosophy is that all of the formatting of individual .qmd files in a project is governed by the settings created by a singular .yml file. In an R markdown project some of the global settings are set in .yml but other settings are handled within each .Rmd file. This centralization is a key innovation in streamlining projects and is one reason for Quarto's quick popularity.
 
+### Preparing Project for Web Deployment
+
+To prepare your project for web deployment via GitHub Pages, we have **three** quick steps that we must first complete.
+
+*First*, in the "_quarto.yml" file, **add `output-dir: docs` as a subheading beneath the `project:` heading**. Make sure that the indentation is the same as the `type: website` but the new line can be either above or below that line.
+
+<img src="images/tutorial_quarto/website-tutorial_deploy-prep-1.png" width = "75%" />
+
+*Second*, **in the "Terminal" pane run `touch .nojekyll`**. This creates a file called ".nojekyll" that is necessary for hosting your website via GitHub Pages. 
+
+*Third*, **in the "Terminal" pane run `quarto render`.** This processes the template .qmd files you currently have in the repository and prepares them to become actual web pages.
+
+Once you've done these three things you can move on to creating a GitHub repository so that we can take the necessary steps to having GitHub host your website!
+
 ### Make a New GitHub Repository
 
 From your GitHub **"Repositories"** tab, click the **<span style="color:green"> green </span> "New"** button.
@@ -69,14 +83,6 @@ After a few seconds you should be placed on your new repository's landing page w
 Copy the link in the field and go back to your RStudio session.
 
 <img src="images/tutorial_quarto/website-tutorial_new-github-4.png" width = "100%" />
-
-### Preparing Project for Web Deployment
-
-
-Changing `output-dir`
-
-Plus `touch .nojekyll` in Terminal
-
 
 ### Adding your Project to GitHub
 
