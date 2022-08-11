@@ -192,8 +192,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   <li><a href="#prerequisites" id="toc-prerequisites" class="nav-link" data-scroll-target="#prerequisites">Prerequisites</a></li>
   <li><a href="#create-a-new-r-project" id="toc-create-a-new-r-project" class="nav-link" data-scroll-target="#create-a-new-r-project">Create a New R Project</a></li>
   <li><a href="#make-a-new-github-repository" id="toc-make-a-new-github-repository" class="nav-link" data-scroll-target="#make-a-new-github-repository">Make a New GitHub Repository</a></li>
-  <li><a href="#adding-your-project-to-github" id="toc-adding-your-project-to-github" class="nav-link" data-scroll-target="#adding-your-project-to-github">Adding your Project to GitHub</a></li>
   <li><a href="#preparing-project-for-web-deployment" id="toc-preparing-project-for-web-deployment" class="nav-link" data-scroll-target="#preparing-project-for-web-deployment">Preparing Project for Web Deployment</a></li>
+  <li><a href="#adding-your-project-to-github" id="toc-adding-your-project-to-github" class="nav-link" data-scroll-target="#adding-your-project-to-github">Adding your Project to GitHub</a></li>
   <li><a href="#deploy-website-via-github" id="toc-deploy-website-via-github" class="nav-link" data-scroll-target="#deploy-website-via-github">Deploy Website via GitHub</a></li>
   <li><a href="#github-housekeeping" id="toc-github-housekeeping" class="nav-link" data-scroll-target="#github-housekeeping">GitHub Housekeeping</a></li>
   <li><a href="#adding-content" id="toc-adding-content" class="nav-link" data-scroll-target="#adding-content">Adding Content</a></li>
@@ -260,11 +260,25 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p><strong>Pick a title</strong> and <strong>check the “Create a git repository” checkbox</strong>. For your title, short but descriptive titles are most effective. Once that is done, click <strong>“Create Project”</strong> in the bottom right of the window.</p>
 <p><img src="images/tutorial_quarto/website-tutorial_new-proj-4.png" width="60%"></p>
 <p>After a few seconds, RStudio should refresh with a Quarto document (such documents have the file extension “.qmd”) and a “_quarto.yml” file open.</p>
-<p><img src="images/tutorial_quarto/website-tutorial_new-proj-5.png" width="60%"></p>
+<p><img src="images/tutorial_quarto/website-tutorial_new-proj-5.png" width="75%"></p>
 <p>Part of Quarto’s central philosophy is that all of the formatting of individual .qmd files in a project is governed by the settings created by a singular .yml file. In an R markdown project some of the global settings are set in .yml but other settings are handled within each .Rmd file. This centralization is a key innovation in streamlining projects and is one reason for Quarto’s quick popularity.</p>
 </section>
 <section id="make-a-new-github-repository" class="level3">
 <h3 class="anchored" data-anchor-id="make-a-new-github-repository">Make a New GitHub Repository</h3>
+<p>From your GitHub <strong>“Repositories”</strong> tab, click the <strong><span style="color:green"> green </span> “New”</strong> button.</p>
+<p><img src="images/tutorial_quarto/website-tutorial_new-github-1.png" width="100%"></p>
+<p><strong>Add a title</strong> to your repository and <strong>add a description</strong>. Once you’ve added these two things, scroll down and click the <strong><span style="color:green"> green </span> “Create repository” button</strong>.</p>
+<p><img src="images/tutorial_quarto/website-tutorial_new-github-2.png" width="60%"></p>
+<p>Be sure that you <strong>do not add a README</strong>, <strong>do not add a gitignore</strong>, and <strong>do not add a license</strong>. Adding any of these three will cause a merge conflict when we link the project that you just created with the GitHub repository that you are in the process of creating.</p>
+<p><img src="images/tutorial_quarto/website-tutorial_new-github-3.png" width="60%"></p>
+<p>After a few seconds you should be placed on your new repository’s landing page which will look like the below image because there isn’t anything in your repository (yet).</p>
+<p>Copy the link in the field and go back to your RStudio session.</p>
+<p><img src="images/tutorial_quarto/website-tutorial_new-github-4.png" width="100%"></p>
+</section>
+<section id="preparing-project-for-web-deployment" class="level3">
+<h3 class="anchored" data-anchor-id="preparing-project-for-web-deployment">Preparing Project for Web Deployment</h3>
+<p>Changing <code>output-dir</code></p>
+<p>Plus <code>touch .nojekyll</code> in Terminal</p>
 </section>
 <section id="adding-your-project-to-github" class="level3">
 <h3 class="anchored" data-anchor-id="adding-your-project-to-github">Adding your Project to GitHub</h3>
@@ -273,11 +287,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="co"># NO PICS</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-</section>
-<section id="preparing-project-for-web-deployment" class="level3">
-<h3 class="anchored" data-anchor-id="preparing-project-for-web-deployment">Preparing Project for Web Deployment</h3>
-<p>Changing <code>output-dir</code></p>
-<p>Plus <code>touch .nojekyll</code> in Terminal</p>
+<p>If you prefer, GitHub also created <a href="https://docs.github.com/en/get-started/importing-your-projects-to-github/importing-source-code-to-github/adding-locally-hosted-code-to-github#adding-a-local-repository-to-github-using-git">its own instructions</a> for exactly this process.</p>
 </section>
 <section id="deploy-website-via-github" class="level3">
 <h3 class="anchored" data-anchor-id="deploy-website-via-github">Deploy Website via GitHub</h3>
