@@ -322,15 +322,28 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </section>
 <section id="deploy-website-via-github" class="level3">
 <h3 class="anchored" data-anchor-id="deploy-website-via-github">Deploy Website via GitHub</h3>
+<p>In order to get your new website actually on the web, we’ll need to tell GitHub that we want our website to be accessible at a .github.io URL.</p>
+<p>To do this, <strong>go to the “Settings” tab</strong> with a gear icon and click it. You may be prompted to re-enter your GitHub password, do so and you can proceed.</p>
 <p><img src="images/tutorial_quarto/website-tutorial_github-deploy-1.png" width="100%"></p>
+<p>In the resulting page, look towards the bottom of the left sidebar of settings categories and <strong>click the “Pages” option.</strong> This is at the very bottom of the sidebar in the screen capture below but is towards the middle of all of the settings categories Github offers you.</p>
 <p><img src="images/tutorial_quarto/website-tutorial_github-deploy-2.png" width="100%"></p>
+<p>Scroll down to the middle of this page and where it says “Branch” <strong>click the dropdown menu that says “None” by default.</strong></p>
 <p><img src="images/tutorial_quarto/website-tutorial_github-deploy-3.png" width="100%"></p>
-<p><img src="images/tutorial_quarto/website-tutorial_github-deploy-4.png" width="100%"></p>
-<p><img src="images/tutorial_quarto/website-tutorial_github-deploy-5.png" width="100%"></p>
-<p><img src="images/tutorial_quarto/website-tutorial_github-deploy-6.png" width="100%"></p>
+<p><strong>Select “main”</strong> from the dropdown.</p>
+<p><img src="images/tutorial_quarto/website-tutorial_github-deploy-4.png" width="60%"></p>
+<p>This opens up a new dropdown menu where you can select which folder in your repository contains your website’s content (it defaults to “/ (root)”). Because we specified <code>output-dir: docs</code> in the .yml file earlier we can <strong>select “/docs” from the dropdown menu.</strong></p>
+<p><img src="images/tutorial_quarto/website-tutorial_github-deploy-5.png" width="60%"></p>
+<p>Once you’ve told GitHub that you want a website generated from the “docs” folder on the main branch, <strong>click the “Save” button.</strong></p>
+<p><img src="images/tutorial_quarto/website-tutorial_github-deploy-6.png" width="75%"></p>
+<p>From this moment your website has begun being deployed by GitHub! You can check the status of the building process by <strong>navigating to the “Actions” tab of your repository.</strong></p>
+<p><strong>Select the “pages build and deployment workflow</strong> in the list of workflows on the bottom righthand side of the page.</p>
 <p><img src="images/tutorial_quarto/website-tutorial_github-deploy-7.png" width="100%"></p>
+<p>This <strong>shows you GitHub’s building and deployment process as a flowchart.</strong> While it is working on a given step there will be an <strong><span style="color:orange">amber</span></strong> circle next to the name of the sub-task and when these are completed the <strong><span style="color:orange">amber</span></strong> circle becomes a <strong><span style="color:green">green</span></strong> circle with a check mark.</p>
 <p><img src="images/tutorial_quarto/website-tutorial_github-deploy-8.png" width="100%"></p>
+<p>When the three steps are complete the <strong><span style="color:orange">amber</span></strong> clock symbol next to the “pages build and deployment” action will turn into a larger <strong><span style="color:green">green</span></strong> circle with a check mark. This is GitHub’s way of telling you that your website is live and accessible to anyone on the internet.</p>
 <p><img src="images/tutorial_quarto/website-tutorial_github-deploy-9.png" width="100%"></p>
+<p>You can now visit your website by visiting its dedicated URL. <strong>This URL can be found by returning to the “Settings” tab and then scrolling through the sidebar to the “Pages” section.</strong></p>
+<p>Alternately, the website for your repository always uses the following composition: <em>https://<strong><span style="color:blue">repository owner</span></strong>.github.io/<strong><span style="color:purple">repository name</span></strong>/</em></p>
 <p><img src="images/tutorial_quarto/website-tutorial_github-deploy-10.png" width="100%"></p>
 </section>
 <section id="github-housekeeping" class="level3">
