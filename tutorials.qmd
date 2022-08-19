@@ -164,11 +164,11 @@ Once you've told GitHub that you want a website generated from the "docs" folder
 
 From this moment your website has begun being deployed by GitHub! You can check the status of the building process by **navigating to the "Actions" tab of your repository.**
 
-**Select the "pages build and deployment workflow** in the list of workflows on the bottom righthand side of the page.
+**Select the "pages build and deployment workflow"** in the list of workflows on the bottom righthand side of the page.
 
 <img src="images/tutorial_quarto/website-tutorial_github-deploy-7.png" width = "100%" />
 
-This **shows you GitHub's building and deployment process as a flowchart.** While it is working on a given step there will be an **<span style="color:orange">amber</span>** circle next to the name of the sub-task and when these are completed the **<span style="color:orange">amber</span>** circle becomes a **<span style="color:green">green</span>** circle with a check mark.
+This **shows you GitHub's building and deployment process as a flowchart.** While it is working on each step there will be an **<span style="color:orange">amber</span>** circle next to the name of that sub-task. When a sub-task is completed, the **<span style="color:orange">amber</span>** circle becomes a **<span style="color:green">green</span>** circle with a check mark.
 
 <img src="images/tutorial_quarto/website-tutorial_github-deploy-8.png" width = "100%" />
 
