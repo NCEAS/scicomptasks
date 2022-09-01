@@ -366,7 +366,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Load libraries</span></span>
 <span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse); <span class="fu">library</span>(scicomptools)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>With <code>librarian::shelf()</code> however this becomes <em>much</em> cleaner!</p>
+<p>With <code>librarian::shelf()</code> however this becomes <em>much</em> cleaner! In addition to being fewer lines, using <code>librarian</code> also removes the possibility that someone running your code misses one of the packages that your script depends on and then the script breaks for them later on. <code>librarian::shelf()</code> automatically detects whether a package is installed, installs it if necessary, and then attaches the package.</p>
+<p>In essence, <code>librarian::shelf()</code> wraps <code>install.packages()</code>, <code>devtools::install_github()</code>, and <code>library()</code> into a single, human-readable function.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Install and load packages!</span></span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>librarian<span class="sc">::</span><span class="fu">shelf</span>(tidyverse, NCEAS<span class="sc">/</span>scicomptools)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
