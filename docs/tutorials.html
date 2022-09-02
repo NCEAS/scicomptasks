@@ -257,7 +257,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <h3 class="anchored" data-anchor-id="preparing-project-for-web-deployment">Preparing Project for Web Deployment</h3>
 <p>To prepare your project for web deployment via GitHub Pages, we have <strong>three</strong> quick steps that we must first complete.</p>
 <p><em>First</em>, in the “_quarto.yml” file, <strong>add <code>output-dir: docs</code> as a subheading beneath the <code>project:</code> heading.</strong> Make sure that the indentation is the same as the <code>type: website</code> but the new line can be either above or below that line.</p>
-<p><img src="images/tutorial_quarto/website-tutorial_deploy-prep-1.png" width="75%"></p>
+<p><img src="images/tutorial_quarto-website/website-tutorial_deploy-prep-1.png" width="75%"></p>
 <p><em>Second</em>, <strong>in the “Terminal” pane run <code>touch .nojekyll</code>.</strong> This creates a file called “.nojekyll” that is necessary for hosting your website via GitHub Pages.</p>
 <p><em>Third</em>, <strong>in the “Terminal” pane run <code>quarto render</code>.</strong> This processes the template .qmd files you currently have in the repository and prepares them to become actual web pages.</p>
 <p>Once you’ve done these three things you can move on to creating a GitHub repository so that we can take the necessary steps to having GitHub host your website!</p>
@@ -265,14 +265,14 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <section id="make-a-new-github-repository" class="level3">
 <h3 class="anchored" data-anchor-id="make-a-new-github-repository">Make a New GitHub Repository</h3>
 <p>From your GitHub <strong>“Repositories”</strong> tab, click the <strong><span style="color:green"> green </span> “New”</strong> button.</p>
-<p><img src="images/tutorial_quarto/website-tutorial_new-github-1.png" width="100%"></p>
+<p><img src="images/tutorial_github-modules/new-github-1.png" width="100%"></p>
 <p><strong>Add a title</strong> to your repository and <strong>add a description.</strong> Once you’ve added these two things, scroll down and click the <strong><span style="color:green"> green </span> “Create repository” button.</strong></p>
-<p><img src="images/tutorial_quarto/website-tutorial_new-github-2.png" width="60%"></p>
+<p><img src="images/tutorial_github-modules/new-github-2.png" width="60%"></p>
 <p>Be sure that you <strong>do not add a README</strong>, <strong>do not add a gitignore</strong>, and <strong>do not add a license.</strong> Adding any of these three will cause a merge conflict when we link the project that you just created with the GitHub repository that you are in the process of creating.</p>
-<p><img src="images/tutorial_quarto/website-tutorial_new-github-3.png" width="60%"></p>
+<p><img src="images/tutorial_github-modules/new-github-3.png" width="60%"></p>
 <p>After a few seconds you should be placed on your new repository’s landing page which will look like the below image because there isn’t anything in your repository (yet).</p>
 <p>Copy the link in the field and go back to your RStudio session.</p>
-<p><img src="images/tutorial_quarto/website-tutorial_new-github-4.png" width="100%"></p>
+<p><img src="images/tutorial_github-modules/new-github-4.png" width="100%"></p>
 </section>
 <section id="adding-your-project-to-github" class="level3">
 <h3 class="anchored" data-anchor-id="adding-your-project-to-github">Adding your Project to GitHub</h3>
@@ -308,70 +308,70 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>git push <span class="sc">-</span>u origin main</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Now, <strong>go back to GitHub</strong> and refresh the page to see your project content safe and sound in your new GitHub repository!</p>
-<p><img src="images/tutorial_quarto/website-tutorial_git-github-connect-1.png" width="100%"></p>
+<p><img src="images/tutorial_github-modules/git-github-connect-1.png" width="100%"></p>
 </section>
 <section id="deploy-website-via-github" class="level3">
 <h3 class="anchored" data-anchor-id="deploy-website-via-github">Deploy Website via GitHub</h3>
 <p>In order to get your new website actually on the web, we’ll need to tell GitHub that we want our website to be accessible at a .github.io URL.</p>
 <p>To do this, <strong>go to the “Settings” tab</strong> with a gear icon and click it. You may be prompted to re-enter your GitHub password, do so and you can proceed.</p>
-<p><img src="images/tutorial_quarto/website-tutorial_github-deploy-1.png" width="100%"></p>
+<p><img src="images/tutorial_github-modules/github-deploy-1.png" width="100%"></p>
 <p>In the resulting page, look towards the bottom of the left sidebar of settings categories and <strong>click the “Pages” option.</strong> This is at the very bottom of the sidebar in the screen capture below but is towards the middle of all of the settings categories Github offers you.</p>
-<p><img src="images/tutorial_quarto/website-tutorial_github-deploy-2.png" width="100%"></p>
+<p><img src="images/tutorial_github-modules/github-deploy-2.png" width="100%"></p>
 <p>Scroll down to the middle of this page and where it says “Branch” <strong>click the dropdown menu that says “None” by default.</strong></p>
-<p><img src="images/tutorial_quarto/website-tutorial_github-deploy-3.png" width="100%"></p>
+<p><img src="images/tutorial_github-modules/github-deploy-3.png" width="100%"></p>
 <p><strong>Select “main”</strong> from the dropdown.</p>
-<p><img src="images/tutorial_quarto/website-tutorial_github-deploy-4.png" width="60%"></p>
+<p><img src="images/tutorial_github-modules/github-deploy-4.png" width="60%"></p>
 <p>This opens up a new dropdown menu where you can select which folder in your repository contains your website’s content (it defaults to “/ (root)”). Because we specified <code>output-dir: docs</code> in the .yml file earlier we can <strong>select “/docs” from the dropdown menu.</strong></p>
-<p><img src="images/tutorial_quarto/website-tutorial_github-deploy-5.png" width="60%"></p>
+<p><img src="images/tutorial_github-modules/github-deploy-5.png" width="60%"></p>
 <p>Once you’ve told GitHub that you want a website generated from the “docs” folder on the main branch, <strong>click the “Save” button.</strong></p>
-<p><img src="images/tutorial_quarto/website-tutorial_github-deploy-6.png" width="75%"></p>
+<p><img src="images/tutorial_github-modules/github-deploy-6.png" width="75%"></p>
 <p>From this moment your website has begun being deployed by GitHub! You can check the status of the building process by <strong>navigating to the “Actions” tab of your repository.</strong></p>
 <p><strong>Select the “pages build and deployment workflow”</strong> in the list of workflows on the bottom righthand side of the page.</p>
-<p><img src="images/tutorial_quarto/website-tutorial_github-deploy-7.png" width="100%"></p>
+<p><img src="images/tutorial_github-modules/github-deploy-7.png" width="100%"></p>
 <p>This <strong>shows you GitHub’s building and deployment process as a flowchart.</strong> While it is working on each step there will be an <strong><span style="color:orange">amber</span></strong> circle next to the name of that sub-task. When a sub-task is completed, the <strong><span style="color:orange">amber</span></strong> circle becomes a <strong><span style="color:green">green</span></strong> circle with a check mark.</p>
-<p><img src="images/tutorial_quarto/website-tutorial_github-deploy-8.png" width="100%"></p>
+<p><img src="images/tutorial_github-modules/github-deploy-8.png" width="100%"></p>
 <p>When the three steps are complete the <strong><span style="color:orange">amber</span></strong> clock symbol next to the “pages build and deployment” action will turn into a larger <strong><span style="color:green">green</span></strong> circle with a check mark. This is GitHub’s way of telling you that your website is live and accessible to anyone on the internet.</p>
-<p><img src="images/tutorial_quarto/website-tutorial_github-deploy-9.png" width="100%"></p>
+<p><img src="images/tutorial_github-modules/github-deploy-9.png" width="100%"></p>
 <p>You can now visit your website by visiting its dedicated URL. <strong>This URL can be found by returning to the “Settings” tab and then scrolling through the sidebar to the “Pages” section.</strong></p>
 <p>Alternately, the website for your repository always uses the following composition: <em>https://<strong><span style="color:blue">repository owner</span></strong>.github.io/<strong><span style="color:purple">repository name</span></strong>/</em></p>
-<p><img src="images/tutorial_quarto/website-tutorial_github-deploy-10.png" width="100%"></p>
+<p><img src="images/tutorial_github-modules/github-deploy-10.png" width="100%"></p>
 <p>If we visit that link, we can see that our website is live!</p>
-<p><img src="images/tutorial_quarto/website-tutorial_github-deploy-11.png" width="100%"></p>
+<p><img src="images/tutorial_github-modules/github-deploy-11.png" width="100%"></p>
 <section id="github-housekeeping" class="level4">
 <h4 class="anchored" data-anchor-id="github-housekeeping">GitHub Housekeeping</h4>
 <p>We recommend a quick housekeeping step now to make it easier to find this URL in the future. <strong>Copy the URL from the Pages setting area and return to the “Code” tab of the repository</strong>.</p>
 <p>Once there, <strong>click the small gear icon to the right of the “About” header.</strong></p>
-<p><img src="images/tutorial_quarto/website-tutorial_github-tidy-1.png" width="100%"></p>
+<p><img src="images/tutorial_github-modules/github-tidy-1.png" width="100%"></p>
 <p>In the resulting window, <strong>paste the copied URL into the “Website” field.</strong> Once you’ve pasted it in, <strong>click the</strong> <strong><span style="color:green">green</span></strong> <strong>“Save changes” button.</strong></p>
-<p><img src="images/tutorial_quarto/website-tutorial_github-tidy-2.png" width="60%"></p>
+<p><img src="images/tutorial_github-modules/github-tidy-2.png" width="60%"></p>
 <p>This places the link to your deployed website in an intuitive, easy-to-find location both for interested third parties and yourself in the future.</p>
-<p><img src="images/tutorial_quarto/website-tutorial_github-tidy-3.png" width="100%"></p>
+<p><img src="images/tutorial_github-modules/github-tidy-3.png" width="100%"></p>
 </section>
 </section>
 <section id="adding-website-content" class="level3">
 <h3 class="anchored" data-anchor-id="adding-website-content">Adding Website Content</h3>
 <p>Now that you have a live website you can build whatever you’d like! Given the wide range of possibility, we’ll only cover how to add a new page but the same process applies to any edit to the living webpage.</p>
 <p>To add a new page <strong>create a new Quarto document.</strong> You can do this by going to the “File” menu, entering the “New File” options, and selecting “Quarto Document…”</p>
-<p><img src="images/tutorial_quarto/website-tutorial_new-content-1.png" width="60%"></p>
+<p><img src="images/tutorial_quarto-website/website-tutorial_new-content-1.png" width="60%"></p>
 <p>Similarly to an R markdown file, this will open a new window that lets you enter a title and author as well as decide what format you want to render files to along with some other settings options. <strong>You only need to click the “Create” button</strong> in the bottom right of this dialogue (though you can definitely play with the other options and text boxes as you desire).</p>
-<p><img src="images/tutorial_quarto/website-tutorial_new-content-2.png" width="75%"></p>
+<p><img src="images/tutorial_quarto-website/website-tutorial_new-content-2.png" width="75%"></p>
 <p>After a moment, a new .qmd file will open in Quarto’s visual editor. <strong>For the purposes of this tutorial, you only need to add a <code>title</code> in the top of the file</strong> but for a real website you can add whatever content sparks joy for you!</p>
-<p><img src="images/tutorial_quarto/website-tutorial_new-content-3.png" width="75%"></p>
+<p><img src="images/tutorial_quarto-website/website-tutorial_new-content-3.png" width="75%"></p>
 <p><strong>Save that file into your project folder.</strong> Its name can be anything but be sure that you remember what you name it!</p>
-<p><img src="images/tutorial_quarto/website-tutorial_new-content-4.png" width="60%"></p>
+<p><img src="images/tutorial_quarto-website/website-tutorial_new-content-4.png" width="60%"></p>
 <p><strong>Add the name of the new Quarto document to the .yml file</strong> in the website navbar area (in this example the file is called “more-stuff.qmd”).</p>
-<p><img src="images/tutorial_quarto/website-tutorial_new-content-5.png" width="75%"></p>
+<p><img src="images/tutorial_quarto-website/website-tutorial_new-content-5.png" width="75%"></p>
 <p>Once you’ve added the file to the fundamental architecture of your website, you need to tell Quarto to re-build the part of the website that GitHub looks for when it deploys. To do this <strong>run <code>quarto render</code> in the Terminal.</strong></p>
 <p>If you want to <em>preview</em> your changes, run <code>quarto preview</code> in the Terminal and a new browser window will be displayed showing your current website content. This preview continues until you click the <strong><span style="color:red">red</span></strong> stop sign icon in RStudio so be sure to end it when you’re done with the preview!</p>
-<p><img src="images/tutorial_quarto/website-tutorial_new-content-6.png" width="100%"></p>
+<p><img src="images/tutorial_quarto-website/website-tutorial_new-content-6.png" width="100%"></p>
 <p>Regardless, once you’ve run either <code>quarto render</code> or <code>quarto preview</code> <strong>you need to stage and commit all changed files indicated in the Git pane of RStudio</strong>. As a reminder, to stage files you check the box next to them, to commit staged files, type an informative message and press the “Commit” button in the right side of the window.</p>
-<p><img src="images/tutorial_quarto/website-tutorial_new-content-7.png" width="100%"></p>
+<p><img src="images/tutorial_quarto-website/website-tutorial_new-content-7.png" width="100%"></p>
 <p>Switch back to GitHub and you’ll see an <strong><span style="color:orange">amber</span></strong> dot next to the commit hash just beneath and to the left of the <strong><span style="color:green">green</span></strong> “Code” button.</p>
-<p><img src="images/tutorial_quarto/website-tutorial_new-content-8.png" width="100%"></p>
+<p><img src="images/tutorial_quarto-website/website-tutorial_new-content-8.png" width="100%"></p>
 <p>When the <strong><span style="color:orange">amber</span></strong> dot turns into a <strong><span style="color:green">green</span></strong> check mark that means that your edits to your website are now included in the live version of your site!</p>
-<p><img src="images/tutorial_quarto/website-tutorial_new-content-9.png" width="100%"></p>
+<p><img src="images/tutorial_quarto-website/website-tutorial_new-content-9.png" width="100%"></p>
 <p>When you visit your website you may need to refresh the page for your edits to appear but all new visitors will see the updated content when they load the page.</p>
-<p><img src="images/tutorial_quarto/website-tutorial_new-content-10.png" width="100%"></p>
+<p><img src="images/tutorial_quarto-website/website-tutorial_new-content-10.png" width="100%"></p>
 </section>
 <section id="supplementary-information" class="level3">
 <h3 class="anchored" data-anchor-id="supplementary-information">Supplementary Information</h3>

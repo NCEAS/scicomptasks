@@ -128,26 +128,26 @@ ul.task-list{list-style: none;}
 
 <p>Now that you have a live website you can build whatever you’d like! Given the wide range of possibility, we’ll only cover how to add a new page but the same process applies to any edit to the living webpage.</p>
 <p>To add a new page <strong>create a new Quarto document.</strong> You can do this by going to the “File” menu, entering the “New File” options, and selecting “Quarto Document…”</p>
-<p><img src="images/tutorial_quarto/website-tutorial_new-content-1.png" width="60%"></p>
+<p><img src="images/tutorial_quarto-website/website-tutorial_new-content-1.png" width="60%"></p>
 <p>Similarly to an R markdown file, this will open a new window that lets you enter a title and author as well as decide what format you want to render files to along with some other settings options. <strong>You only need to click the “Create” button</strong> in the bottom right of this dialogue (though you can definitely play with the other options and text boxes as you desire).</p>
-<p><img src="images/tutorial_quarto/website-tutorial_new-content-2.png" width="75%"></p>
+<p><img src="images/tutorial_quarto-website/website-tutorial_new-content-2.png" width="75%"></p>
 <p>After a moment, a new .qmd file will open in Quarto’s visual editor. <strong>For the purposes of this tutorial, you only need to add a <code>title</code> in the top of the file</strong> but for a real website you can add whatever content sparks joy for you!</p>
-<p><img src="images/tutorial_quarto/website-tutorial_new-content-3.png" width="75%"></p>
+<p><img src="images/tutorial_quarto-website/website-tutorial_new-content-3.png" width="75%"></p>
 <p><strong>Save that file into your project folder.</strong> Its name can be anything but be sure that you remember what you name it!</p>
-<p><img src="images/tutorial_quarto/website-tutorial_new-content-4.png" width="60%"></p>
+<p><img src="images/tutorial_quarto-website/website-tutorial_new-content-4.png" width="60%"></p>
 <p><strong>Add the name of the new Quarto document to the .yml file</strong> in the website navbar area (in this example the file is called “more-stuff.qmd”).</p>
-<p><img src="images/tutorial_quarto/website-tutorial_new-content-5.png" width="75%"></p>
+<p><img src="images/tutorial_quarto-website/website-tutorial_new-content-5.png" width="75%"></p>
 <p>Once you’ve added the file to the fundamental architecture of your website, you need to tell Quarto to re-build the part of the website that GitHub looks for when it deploys. To do this <strong>run <code>quarto render</code> in the Terminal.</strong></p>
 <p>If you want to <em>preview</em> your changes, run <code>quarto preview</code> in the Terminal and a new browser window will be displayed showing your current website content. This preview continues until you click the <strong><span style="color:red">red</span></strong> stop sign icon in RStudio so be sure to end it when you’re done with the preview!</p>
-<p><img src="images/tutorial_quarto/website-tutorial_new-content-6.png" width="100%"></p>
+<p><img src="images/tutorial_quarto-website/website-tutorial_new-content-6.png" width="100%"></p>
 <p>Regardless, once you’ve run either <code>quarto render</code> or <code>quarto preview</code> <strong>you need to stage and commit all changed files indicated in the Git pane of RStudio</strong>. As a reminder, to stage files you check the box next to them, to commit staged files, type an informative message and press the “Commit” button in the right side of the window.</p>
-<p><img src="images/tutorial_quarto/website-tutorial_new-content-7.png" width="100%"></p>
+<p><img src="images/tutorial_quarto-website/website-tutorial_new-content-7.png" width="100%"></p>
 <p>Switch back to GitHub and you’ll see an <strong><span style="color:orange">amber</span></strong> dot next to the commit hash just beneath and to the left of the <strong><span style="color:green">green</span></strong> “Code” button.</p>
-<p><img src="images/tutorial_quarto/website-tutorial_new-content-8.png" width="100%"></p>
+<p><img src="images/tutorial_quarto-website/website-tutorial_new-content-8.png" width="100%"></p>
 <p>When the <strong><span style="color:orange">amber</span></strong> dot turns into a <strong><span style="color:green">green</span></strong> check mark that means that your edits to your website are now included in the live version of your site!</p>
-<p><img src="images/tutorial_quarto/website-tutorial_new-content-9.png" width="100%"></p>
+<p><img src="images/tutorial_quarto-website/website-tutorial_new-content-9.png" width="100%"></p>
 <p>When you visit your website you may need to refresh the page for your edits to appear but all new visitors will see the updated content when they load the page.</p>
-<p><img src="images/tutorial_quarto/website-tutorial_new-content-10.png" width="100%"></p>
+<p><img src="images/tutorial_quarto-website/website-tutorial_new-content-10.png" width="100%"></p>
 
 
 

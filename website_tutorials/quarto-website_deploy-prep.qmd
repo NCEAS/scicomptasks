@@ -3,7 +3,7 @@ To prepare your project for web deployment via GitHub Pages, we have **three** q
 
 *First*, in the "_quarto.yml" file, **add `output-dir: docs` as a subheading beneath the `project:` heading.** Make sure that the indentation is the same as the `type: website` but the new line can be either above or below that line.
 
-<img src="images/tutorial_quarto/website-tutorial_deploy-prep-1.png" width = "75%" />
+<img src="images/tutorial_quarto-website/website-tutorial_deploy-prep-1.png" width = "75%" />
 
 *Second*, **in the "Terminal" pane run `touch .nojekyll`.** This creates a file called ".nojekyll" that is necessary for hosting your website via GitHub Pages. 
 

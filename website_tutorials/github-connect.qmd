@@ -45,4 +45,4 @@ git push -u origin main
 
 Now, **go back to GitHub** and refresh the page to see your project content safe and sound in your new GitHub repository!
 
-<img src="images/tutorial_quarto/website-tutorial_git-github-connect-1.png" width = "100%" />
+<img src="images/tutorial_github-modules/git-github-connect-1.png" width = "100%" />
