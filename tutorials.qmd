@@ -182,6 +182,10 @@ Alternately, the website for your repository always uses the following compositi
 
 <img src="images/tutorial_quarto/website-tutorial_github-deploy-10.png" width = "100%" />
 
+If we visit that link, we can see that our website is live!
+
+<img src="images/tutorial_quarto/website-tutorial_github-deploy-11.png" width = "100%" />
+
 ### GitHub Housekeeping
 
 We recommend a quick housekeeping step now to make it easier to find this URL in the future. **Copy the URL from the Pages setting area and return to the "Code" tab of the repository**.
