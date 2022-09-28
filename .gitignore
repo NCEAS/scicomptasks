@@ -56,3 +56,5 @@ best_practice_manuals/*.html
 # Ignore PDFs in Silica folder
 wg_silica/*.pdf
 
+# Ignore NEON token
+neon_token.R
