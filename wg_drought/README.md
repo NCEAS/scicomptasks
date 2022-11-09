@@ -9,3 +9,7 @@
 **"drought-export-model-test.R"**
 
 -   R script that was used to develop the formal function included in "drought-mod-export-fxn.R"
+
+**"rarefy-explore.R**
+
+-  R script to explore different methods of rarefaction (including the R package "Rarefy")
