@@ -11,16 +11,27 @@ librarian::shelf(vegan)
 
 # Clear environment
 rm(list = ls())
+
 # Load data
-
 data(BCI)
-S <- specnumber(BCI) # observed number of species
-(raremax <- min(rowSums(BCI)))
-Srare <- rarefy(BCI, raremax)
-plot(S, Srare, xlab = "Observed No. of Species", ylab = "Rarefied No. of Species")
-abline(0, 1)
-rarecurve(BCI, step = 20, sample = raremax, col = "blue", cex = 0.6)
 
+# Glimpse it
+dplyr::glimpse(BCI)
+
+# Calculate number of species
+(S <- vegan::specnumber(BCI))
+
+# Now identify minimum number of species
+(raremax <- min(rowSums(BCI)))
+
+# Do rarefaction
+Srare <- vegan::rarefy(x = BCI, sample = raremax, se = F)
+
+# Exploratory plotting
+base::plot(S, Srare, xlab = "Observed No. of Species", ylab = "Rarefied No. of Species")
+graphics::abline(0, 1)
+vegan::rarecurve(x = BCI, sample = raremax, step = 20,
+                 col = "blue", cex = 0.6)
 
 ## ------------------------------------- ##
       # Rarefy Package - Spatial ----
