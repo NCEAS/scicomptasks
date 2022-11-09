@@ -21,15 +21,19 @@ dplyr::glimpse(BCI)
 # Calculate number of species
 (S <- vegan::specnumber(BCI))
 
-# Now identify minimum number of species
-(raremax <- min(rowSums(BCI)))
+# Now identify minimum sample size
+(sample_min <- min(rowSums(BCI)))
 
 # Do rarefaction
-Srare <- vegan::rarefy(x = BCI, sample = raremax, se = F)
+Srare <- vegan::rarefy(x = BCI, sample = sample_min, se = F)
 
 # Exploratory plotting
-base::plot(S, Srare, xlab = "Observed No. of Species", ylab = "Rarefied No. of Species")
+base::plot(x = S, y = Srare, 
+           xlab = "Observed No. of Species", 
+           ylab = "Rarefied No. of Species")
 graphics::abline(0, 1)
+
+# Now plot rarefaction curves
 vegan::rarecurve(x = BCI, sample = raremax, step = 20,
                  col = "blue", cex = 0.6)
 
