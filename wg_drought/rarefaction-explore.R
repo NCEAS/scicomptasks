@@ -1,18 +1,26 @@
 ## ----------------------------------------------------- ##
                 # Rarefaction Exploration
 ## ----------------------------------------------------- ##
-
 ## ------------------------------------- ##
-             # Housekeeping ----
+            # Vegan Package ----
 ## ------------------------------------- ##
 
-# Load general libraries
+# Load vegan
 # install.packages("librarian")
-librarian::shelf(tidyverse)
-## Note that "Rarefy" requires (at least) Mac users to have XQuartz installed
+librarian::shelf(vegan)
 
 # Clear environment
 rm(list = ls())
+# Load data
+
+data(BCI)
+S <- specnumber(BCI) # observed number of species
+(raremax <- min(rowSums(BCI)))
+Srare <- rarefy(BCI, raremax)
+plot(S, Srare, xlab = "Observed No. of Species", ylab = "Rarefied No. of Species")
+abline(0, 1)
+rarecurve(BCI, step = 20, sample = raremax, col = "blue", cex = 0.6)
+
 
 ## ------------------------------------- ##
       # Rarefy Package - Spatial ----
@@ -20,7 +28,9 @@ rm(list = ls())
 # See: https://cran.r-project.org/web/packages/Rarefy/vignettes/Rarefy_basics.html
 
 # Load Rarefy packages
+# install.packages("librarian")
 librarian::shelf(Rarefy, ade4, adiv, ape, vegan, phyloregion, raster)
+## Note that "Rarefy" requires (at least) Mac users to have XQuartz installed
 
 # Load data
 data("duneFVG") #plot/species matrix
