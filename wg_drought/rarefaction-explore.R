@@ -1,5 +1,5 @@
 ## ----------------------------------------------------- ##
-              # Rarefy Package Exploration
+                # Rarefaction Exploration
 ## ----------------------------------------------------- ##
 
 ## ------------------------------------- ##
@@ -15,7 +15,7 @@ librarian::shelf(tidyverse, Rarefy, ade4, adiv, ape, vegan, phyloregion, raster)
 rm(list = ls())
 
 ## ------------------------------------- ##
-   # Spatially Explicit Rarefaction ----
+            # Rarefy Package ----
 ## ------------------------------------- ##
 # See: https://cran.r-project.org/web/packages/Rarefy/vignettes/Rarefy_basics.html
 
