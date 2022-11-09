@@ -6,18 +6,21 @@
              # Housekeeping ----
 ## ------------------------------------- ##
 
-# Load libraries
+# Load general libraries
 # install.packages("librarian")
-librarian::shelf(tidyverse, Rarefy, ade4, adiv, ape, vegan, phyloregion, raster)
+librarian::shelf(tidyverse)
 ## Note that "Rarefy" requires (at least) Mac users to have XQuartz installed
 
 # Clear environment
 rm(list = ls())
 
 ## ------------------------------------- ##
-            # Rarefy Package ----
+      # Rarefy Package - Spatial ----
 ## ------------------------------------- ##
 # See: https://cran.r-project.org/web/packages/Rarefy/vignettes/Rarefy_basics.html
+
+# Load Rarefy packages
+librarian::shelf(Rarefy, ade4, adiv, ape, vegan, phyloregion, raster)
 
 # Load data
 data("duneFVG") #plot/species matrix
@@ -38,5 +41,41 @@ graphics::legend(x = "bottomright",
                  legend = c("Classic Rarefaction",
                             "Spatially-explicit Rarefaction"),
                  pch = 1:2)
+
+## ------------------------------------- ##
+    # Rarefy Package - Alpha Div. ----
+## ------------------------------------- ##
+# Define set of community metrics
+a <- list(NA,'Shannon')
+names(a) <- c('comm','method')
+
+# Perform rarefaction with and without spatial explicit-ness
+rare_shannon <- Rarefy::rare_alpha(comm = duneFVG$total,
+                                   method = "fun_div",
+                                   random = 999,
+                                   fun_div = 'speciesdiv',
+                                   args = a, mean = T, verbose = F,
+                                   spatial = FALSE)
+rare_shannon_sp <- Rarefy::rare_alpha(comm = duneFVG$total,
+                                      dist_xy = dist_sp,
+                                      method = "fun_div",
+                                      random = 999,
+                                      fun_div = 'speciesdiv',
+                                      args = a, mean = T, verbose = F,
+                                      spatial = TRUE)
+
+# Exploratory plot
+base::plot(rare_shannon[,1], ylab = "Shannon index",
+           xlab = "Number of sampling units",
+           type = "l", ylim = range(rare_shannon, na.rm=TRUE))
+graphics::lines(rare_shannon[,2], lty = 2)
+graphics::lines(rare_shannon[,3], lty = 2)
+graphics::lines(rare_shannon_sp[,1], col = 4)
+graphics::lines(rare_shannon_sp[,2], lty = 2, col = 4)
+graphics::lines(rare_shannon_sp[,3], lty = 2, col = 4)
+graphics::legend(x = "bottomright",
+                 legend = c("Non spatially-explicit Rarefaction",
+                            "Spatially-explicit Rarefaction"),
+                 lty = 1, col = c(1, 4))
 
 # End ----
