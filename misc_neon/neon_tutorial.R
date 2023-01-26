@@ -45,14 +45,6 @@ write.csv(apl_plantExternalLabDataPerSample,
           file.path("data", "apl_plantExternalLabDataPerSample.csv"), row.names = F)
 write.csv(variables_20063, file.path("data", "variables_20063.csv"), row.names = F)
 
-# Download remote sensing data too
-neonUtilities::byTileAOP(dpID = "DP3.30015.001", site = "WREF", year = "2017",
-                         check.size = T, easting = 580000, northing = 5075000,
-                         savepath = file.path("data"))
-
-# Download a 3 months of PAR data manually and store the .zip in the "data" folder
-# neonUtilities::stackByTable(filepath = file.path("data", "NEON_par.zip"))
-
 # Navigate downloads
 par30 <- neonUtilities::readTableNEON(
   dataFile = file.path("data", "NEON_par", "stackedFiles", "PARPAR_30min.csv"), 
@@ -72,6 +64,30 @@ boxplot(analyteConcentration ~ siteID,
         data = apl_plantExternalLabDataPerSample, 
         subset = analyte == "d13C",
         xlab = "Site", ylab = "d13C")
+
+# Also NEON has made its own joining function
+apct <- neonOS::joinTableNEON(apl_biomass, apl_plantExternalLabDataPerSample)
+
+# Now can plot information across several files
+boxplot(analyteConcentration ~ scientificName, 
+        data = apct, 
+        subset = analyte == "d13C", 
+        xlab = NA, ylab = "d13C", 
+        las = 2, cex.axis = 0.7)
+
+# Download remote sensing data too
+neonUtilities::byTileAOP(dpID = "DP3.30015.001", site = "WREF", year = "2017",
+                         check.size = T, easting = 580000, northing = 5075000,
+                         savepath = file.path("data"))
+
+# Read in the raster of that remote sensing data
+chm <- raster::raster(x = file.path("data", "DP3.30015.001", "neon-aop-products",
+                                    "2017", "FullSite", "D16", "2017_WREF_1", "L3", 
+                                    "DiscreteLidar", "CanopyHeightModelGtif", 
+                                    "NEON_D16_WREF_DP3_580000_5075000_CHM.tif"))
+
+# Check out that remote sensing data
+plot(chm, col = topo.colors(6))
 
 ## -------------------------------------------- ##
 # NEON Tutorial No. 2 ----
