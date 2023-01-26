@@ -9,12 +9,19 @@
 # https://www.neonscience.org/resources/learning-hub/tutorials/mammal-data-intro
 
 ## -------------------------------------------- ##
-            # NEON Tutorial No. 1 ----
+# NEON Tutorial No. 1 ----
 ## -------------------------------------------- ##
+
+### NOTE ON THIS TUTORIAL
+# You must download PAR data manually and put the zip file in the "data" folder
+# The tutorial depends on doing that AND doing the direct download steps
 
 # Load libraries
 # install.packages("librarian")
 librarian::shelf(neonUtilities, neonOS, raster, tidyverse)
+
+# Create a folder for local preservation of NEON data
+dir.create("data", showWarnings = F)
 
 # Clear environment
 rm(list = ls())
@@ -34,9 +41,6 @@ dplyr::glimpse(apchem$apl_plantExternalLabDataPerSample)
 
 # Can create separate objects for each dataframe in that list
 list2env(apchem, .GlobalEnv)
-
-# Create a folder for local preservation of NEON data
-dir.create("data", showWarnings = F)
 
 # Export some of these dataframes as CSVs for later use
 write.csv(apl_clipHarvest, file.path("data", "apl_clipHarvest.csv"), row.names = F)
@@ -88,6 +92,9 @@ chm <- raster::raster(x = file.path("data", "DP3.30015.001", "neon-aop-products"
 
 # Check out that remote sensing data
 plot(chm, col = topo.colors(6))
+
+# End of tutorial; clear environment
+rm(list = ls())
 
 ## -------------------------------------------- ##
 # NEON Tutorial No. 2 ----
