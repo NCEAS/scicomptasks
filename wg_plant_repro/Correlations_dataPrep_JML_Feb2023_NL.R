@@ -291,18 +291,19 @@ options(scipen = 999)
 #Super simple model - this works
 linear_model_output <- merge_cor_phylo %>%
   group_by(lter) %>%
-  do(broom::tidy(lm(r.spearman ~ CV_similarity, .)))
+  reframe(broom::tidy(lm(r.spearman ~ CV_similarity, .)))
+
 
 #All continuous variables - this works
 linear_model_output_Continuous <- merge_cor_phylo %>%
   group_by(lter) %>%
-  do(broom::tidy(lm(r.spearman ~ CV_similarity+Seed_mass_similarity+ACL1_similarity+Phylogenetic_similarity, .)))
+  reframe(broom::tidy(lm(r.spearman ~ CV_similarity+Seed_mass_similarity+ACL1_similarity+Phylogenetic_similarity, .)))
 
 #All variables - for some LTER sites this doesn't work - all variables have P-values of NA or NAN, even when there are data.
 #The problem might be related to when there's no variation for an attribute within a site
 linear_model_output_Full <- merge_cor_phylo %>%
   group_by(lter) %>%
-  do(broom::tidy(lm(r.spearman ~ Pollinator_code_shared+Seed_development_shared+Needleleaf_Broadleaf_shared+Deciduous_Evergreen_shared+
+  reframe(broom::tidy(lm(r.spearman ~ Pollinator_code_shared+Seed_development_shared+Needleleaf_Broadleaf_shared+Deciduous_Evergreen_shared+
                       Dispersal_syndrome_shared+Sexual_system_shared+Shade_tolerance_shared+Growth_form_shared+Fleshy_fruit_shared+
                       Seed_bank_shared+CV_similarity+Seed_mass_similarity+ACL1_similarity+Phylogenetic_similarity, .)))
 
