@@ -279,13 +279,13 @@ library(googledrive)
 
 # Read in the csv file
 #Set wd
-setwd("C:/Jalene/DePaul/Research/Projects/LTER Synthesis Working Group")
-merge_cor_phylo<-read.csv("merge_cor_traits_Jan18.csv")
+# setwd("C:/Jalene/DePaul/Research/Projects/LTER Synthesis Working Group")
+merge_cor_phylo <- read.csv(file.path("data", "merge_cor_traits_Jan18.csv"))
 
 library(ecodist)
 library(tidyverse)
 library(lme4)
-options(scipen=999)
+options(scipen = 999)
 
 #Analysis
 #Super simple model - this works
