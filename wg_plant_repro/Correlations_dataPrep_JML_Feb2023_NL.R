@@ -388,7 +388,9 @@ for(site in unique(merge_cor_phylo$lter)){
     ## Rename response column
     dplyr::rename(dist_r_spearman = `dist(r.spearman)`) %>%
     ## Make coefficient names a column rather than stored as rownames
-    dplyr::mutate(coef = rownames(.), .before = dplyr::everything())
+    dplyr::mutate(LTER = rep(site, times = nrow(mrm_out$coef)),
+                  coef = rownames(.), 
+                  .before = dplyr::everything())
   
   # Drop rownames
   rownames(mrm_df_out) <- NULL
