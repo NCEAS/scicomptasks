@@ -353,10 +353,56 @@ for(site in unique(merge_cor_phylo$lter)){
     do(broom::tidy(lm(r.spearman ~ CV_similarity, .)))
   
   # Export a CSV of that output with the sitename in the filename
-  write.csv(linear_model_output, file = paste0(site, "_lm_output.csv"))
+  # write.csv(linear_model_output, file = paste0(site, "_lm_output.csv"))
   
   # Print success message
   message("Processing complete for LTER, ", site)
   
 } # Close loop curly brace
 
+
+# Make empty list to store MRM outputs in
+full_out <- list()
+
+# Loop across sites for the MRM bit
+for(site in unique(merge_cor_phylo$lter)){
+  
+  # Subset the data to that site
+  data_sub <- dplyr::filter(merge_cor_phylo, lter == site)
+  
+  # Fit model
+  mrm_out <- MRM((dist(r.spearman) ~ dist(CV_similarity)), 
+                 data = data_sub,
+                 nperm = 100, mrank = T)
+  
+  # Identify the number of blank spaces needed
+  spacers <- rep(NA, times = nrow(mrm_out$coef) - 1)
+  
+  # Strip out relevant parts of output
+  ## Begin with coefficients
+  mrm_df_out <- as.data.frame(mrm_out$coef) %>%
+    ## Get R2, F, and P values as well
+    dplyr::mutate(r.squared = c(mrm_out$r.squared[1], spacers),
+                  F.value = c(mrm_out$F.test[1], spacers),
+                  global.p = c(mrm_out$r.squared[2], spacers)) %>%
+    ## Rename response column
+    dplyr::rename(dist_r_spearman = `dist(r.spearman)`) %>%
+    ## Make coefficient names a column rather than stored as rownames
+    dplyr::mutate(coef = rownames(.), .before = dplyr::everything())
+  
+  # Drop rownames
+  rownames(mrm_df_out) <- NULL
+  
+  # Add to list
+  full_out[[site]] <- mrm_df_out
+  
+  # Print success message
+  message("Processing complete for LTER, ", site) }
+
+# Unlist
+full_df <- full_out %>%
+  purrr::map_df(.f = dplyr::bind_rows)
+
+# Check it out
+dplyr::glimpse(full_df)
+# view(full_df)
