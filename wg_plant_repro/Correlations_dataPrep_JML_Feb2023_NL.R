@@ -17,264 +17,264 @@ library(googledrive)
 
 #### download files from Google drive
 
-# species correlations in "all data/tidy data/"
-folder_url<- "https://drive.google.com/drive/folders/1aPdQBNlrmyWKtVkcCzY0jBGnYNHnwpeE"
-folder <- drive_get(as_id(folder_url), shared_drive = "LTER-WG_Plant_Reproduction")
-csv_files <- drive_ls(folder, type = "csv")
-walk(csv_files$id, ~ drive_download(as_id(.x), overwrite=TRUE))
-
-pair_cor<- read.csv("pairwise_corr.csv")
-mast_summary<- read.csv("masting_summary_stats.csv")
-
-
-# trait data in "LTER Synthesis - 1st Paper - Synchrony & Species Attributes/Team #2 - Attributes/" 
-folder_url<- "https://drive.google.com/drive/folders/1PGaPAkNz1lmvZQMwwthmS-ZjQ97BS2Am"
-folder <- drive_get(as_id(folder_url), shared_drive = "LTER-WG_Plant_Reproduction")
-csv_files <- drive_ls(folder, type = "csv")
-walk(csv_files$id, ~ drive_download(as_id(.x), overwrite=TRUE))
-
-traits <- read.csv("LTER_integrated_attributes_USDA_2022-12-14.csv")
-
-# phylogeny distance data
-folder_url<- "https://drive.google.com/drive/u/0/folders/1IVY6i79REaF59kZEBbrJCRNOlcxE7Tel"
-folder <- drive_get(as_id(folder_url), shared_drive = "LTER-WG_Plant_Reproduction")
-csv_files <- drive_ls(folder, type = "csv")
-walk(csv_files$id, ~ drive_download(as_id(.x), overwrite=TRUE))
-
-phylo <- read.csv("phylo distance matrix.csv")
-
-# reshape the phylo data (from matrix to long)
-# There is an issue with the column name Dolichandra_unguis-cati 
-# R is changing the - to a . which is causing issues during the merge later.
-# Line 50 below, changes it back.
-phylo_reshape <- phylo %>%
-  pivot_longer(2:105, names_to = "SpeciesY", values_to = "Phylo_distance") %>%
-  mutate(SpeciesY = case_when(
-    SpeciesY =="Dolichandra_unguis.cati" ~ "Dolichandra_unguis-cati",
-    TRUE ~ SpeciesY)) %>%
-  mutate(Species1 = gsub("_",".",X),
-         Species2 = gsub("_",".",SpeciesY)) %>%
-  select(Species1, Species2, Phylo_distance)
-
-
-# merge the correlation data with trait data, and select just the traits we want. 
-traits <- traits %>%
-  mutate(Species.Name = gsub(" ",".",species))
-
-head(pair_cor)
-
-trait_sub <- traits %>%
-  select(Species.Name, Seed_development_1_2or3yrs,Pollinator_code,Mycorrhiza_AM_EM,
-         Needleleaf_Broadleaf,Deciduous_Evergreen_yrs,Dispersal_syndrome,
-         Sexual_system, Shade_tolerance, Growth_form, Fleshy_fruit, Seed_bank,Seed_mass_mg)
-
-mast_metric_sub <- mast_summary %>%
-  select(lter, Species.Name, Plot.ID,CV.raw,ACL1.raw)
-
-# For categorical traits: 1 = same trait, 0 = different trait
-# For numeric traits: 1 = most similar, 0 = most different. 
-# The formula was used for numeric values: 1 - (Sp1_value - Sp2_value)/MAX_value_at_the_lter_site
-
-merge_cor <- pair_cor %>%
-  filter(overlap>=10)%>%
-  left_join(trait_sub, by =c("Species1"="Species.Name")) %>%
-  left_join(mast_metric_sub, by = c("lter"="lter", "Plot.ID"="Plot.ID", "Species1"="Species.Name"))%>%
-  rename(Pollinator_code_Sp1 = Pollinator_code,
-         Seed_development_1_2or3yrs_Sp1 = Seed_development_1_2or3yrs,
-         Mycorrhiza_AM_EM_Sp1 = Mycorrhiza_AM_EM,
-         Needleleaf_Broadleaf_Sp1 = Needleleaf_Broadleaf,
-         Deciduous_Evergreen_yrs_Sp1 = Deciduous_Evergreen_yrs,
-         Dispersal_syndrome_Sp1 = Dispersal_syndrome,
-         Sexual_system_Sp1 = Sexual_system, 
-         Shade_tolerance_Sp1 = Shade_tolerance, 
-         Growth_form_Sp1 = Growth_form,
-         Fleshy_fruit_Sp1 = Fleshy_fruit, 
-         Seed_bank_Sp1 = Seed_bank,
-         Seed_mass_Sp1 = Seed_mass_mg,
-         CV_Sp1 = CV.raw,
-         ACL1_Sp1 = ACL1.raw) %>%
-  left_join(trait_sub, by =c("Species2"="Species.Name")) %>%
-  left_join(mast_metric_sub, by = c("lter"="lter", "Plot.ID"="Plot.ID", "Species2"="Species.Name"))%>%
-    rename(Pollinator_code_Sp2 = Pollinator_code,
-         Seed_development_1_2or3yrs_Sp2 = Seed_development_1_2or3yrs,
-         Mycorrhiza_AM_EM_Sp2 = Mycorrhiza_AM_EM,
-         Needleleaf_Broadleaf_Sp2 = Needleleaf_Broadleaf,
-         Deciduous_Evergreen_yrs_Sp2 = Deciduous_Evergreen_yrs,
-         Dispersal_syndrome_Sp2 = Dispersal_syndrome,
-         Sexual_system_Sp2 = Sexual_system, 
-         Shade_tolerance_Sp2 = Shade_tolerance, 
-         Growth_form_Sp2 = Growth_form,
-         Fleshy_fruit_Sp2 = Fleshy_fruit, 
-         Seed_bank_Sp2 = Seed_bank,
-         Seed_mass_Sp2 = Seed_mass_mg,
-         CV_Sp2 = CV.raw,
-         ACL1_Sp2 = ACL1.raw) %>%
-    mutate(Pollinator_code_shared = ifelse(Pollinator_code_Sp1 == Pollinator_code_Sp2, 1,0),
-         Seed_development_shared = ifelse(Seed_development_1_2or3yrs_Sp1 == Seed_development_1_2or3yrs_Sp2, 1,0),
-         Mycorrhiza_shared = ifelse(Mycorrhiza_AM_EM_Sp1 == Mycorrhiza_AM_EM_Sp2, 1,0),
-         Needleleaf_Broadleaf_shared = ifelse(Needleleaf_Broadleaf_Sp1 == Needleleaf_Broadleaf_Sp2, 1,0),
-         Deciduous_Evergreen_shared = ifelse(Deciduous_Evergreen_yrs_Sp1 == Deciduous_Evergreen_yrs_Sp2, 1,0),
-         Dispersal_syndrome_shared = ifelse(Dispersal_syndrome_Sp1 == Dispersal_syndrome_Sp2, 1,0),
-         Sexual_system_shared = ifelse(Sexual_system_Sp1 == Sexual_system_Sp2, 1,0), 
-         Shade_tolerance_shared = ifelse(Shade_tolerance_Sp1 == Shade_tolerance_Sp2, 1,0), 
-         Growth_form_shared = ifelse(Growth_form_Sp1 == Growth_form_Sp2, 1,0), 
-         Fleshy_fruit_shared = ifelse(Fleshy_fruit_Sp1 == Fleshy_fruit_Sp2, 1,0),  
-         Seed_bank_shared = ifelse(Seed_bank_Sp1 == Seed_bank_Sp2, 1,0))%>%
-  group_by(lter)%>% # divide by max value for each site (seed mass, CV and ACL1)
-  mutate(maxSeed = max(Seed_mass_Sp1,Seed_mass_Sp2),
-         Seed_mass_similarity = 1 - abs((Seed_mass_Sp1 - Seed_mass_Sp2)/maxSeed),
-         maxCV = max(CV_Sp1,CV_Sp2),
-         CV_similarity = 1 - abs((CV_Sp1 - CV_Sp2)/maxCV)) %>%
-  ungroup()%>%
-  mutate(maxACL1 = pmax(ACL1_Sp1,ACL1_Sp2),
-          minACL1 = pmin(ACL1_Sp1,ACL1_Sp2),
-          ACL1_similarity = 1-(maxACL1 - minACL1),
-          Pollinator_code_values = ifelse(Pollinator_code_Sp1<Pollinator_code_Sp2,
-                                         paste(Pollinator_code_Sp1,Pollinator_code_Sp2, sep="-"),
-                                         paste(Pollinator_code_Sp2,Pollinator_code_Sp1, sep="-")),
-         Seed_development_values = ifelse(Seed_development_1_2or3yrs_Sp1<Seed_development_1_2or3yrs_Sp2,
-                                          paste(Seed_development_1_2or3yrs_Sp1,Seed_development_1_2or3yrs_Sp2, sep="-"),
-                                         paste(Seed_development_1_2or3yrs_Sp2,Seed_development_1_2or3yrs_Sp1, sep="-")),
-         Mycorrhiza_values = ifelse(Mycorrhiza_AM_EM_Sp1<Mycorrhiza_AM_EM_Sp2,
-                                    paste(Mycorrhiza_AM_EM_Sp1,Mycorrhiza_AM_EM_Sp2, sep="-"),
-                                    paste(Mycorrhiza_AM_EM_Sp2,Mycorrhiza_AM_EM_Sp1, sep="-")),
-         Needleleaf_Broadleaf_values = ifelse(Needleleaf_Broadleaf_Sp1<Needleleaf_Broadleaf_Sp2,
-                                          paste(Needleleaf_Broadleaf_Sp1,Needleleaf_Broadleaf_Sp2, sep="-"),
-                                          paste(Needleleaf_Broadleaf_Sp2,Needleleaf_Broadleaf_Sp1, sep="-")),
-         Deciduous_Evergreen_values = ifelse(Deciduous_Evergreen_yrs_Sp1<Deciduous_Evergreen_yrs_Sp2,
-                                          paste(Deciduous_Evergreen_yrs_Sp1,Deciduous_Evergreen_yrs_Sp2, sep="-"),
-                                          paste(Deciduous_Evergreen_yrs_Sp2,Deciduous_Evergreen_yrs_Sp1, sep="-")),
-         Dispersal_syndrome_values = ifelse(Dispersal_syndrome_Sp1<Dispersal_syndrome_Sp2,
-                                          paste(Dispersal_syndrome_Sp1,Dispersal_syndrome_Sp2, sep="-"),
-                                          paste(Dispersal_syndrome_Sp2,Dispersal_syndrome_Sp1, sep="-")),
-         Sexual_system_values = ifelse( Sexual_system_Sp1< Sexual_system_Sp2,
-                                          paste( Sexual_system_Sp1, Sexual_system_Sp2, sep="-"),
-                                          paste( Sexual_system_Sp2, Sexual_system_Sp1, sep="-")),
-         Shade_tolerance_values = ifelse(Shade_tolerance_Sp1<Shade_tolerance_Sp2,
-                                          paste(Shade_tolerance_Sp1,Shade_tolerance_Sp2, sep="-"),
-                                          paste(Shade_tolerance_Sp2,Shade_tolerance_Sp1, sep="-")),
-         Growth_form_values = ifelse(Growth_form_Sp1<Growth_form_Sp2,
-                                          paste(Growth_form_Sp1,Growth_form_Sp2, sep="-"),
-                                          paste(Growth_form_Sp2,Growth_form_Sp1, sep="-")),
-         Fleshy_fruit_values = ifelse(Fleshy_fruit_Sp1<Fleshy_fruit_Sp2,
-                                          paste(Fleshy_fruit_Sp1,Fleshy_fruit_Sp2, sep="-"),
-                                          paste(Fleshy_fruit_Sp2,Fleshy_fruit_Sp1, sep="-")),
-         Seed_bank_values = ifelse(Seed_bank_Sp1<Seed_bank_Sp2,
-                                          paste(Seed_bank_Sp1,Seed_bank_Sp2, sep="-"),
-                                          paste(Seed_bank_Sp2,Seed_bank_Sp1, sep="-")))%>%
-  select(1:9, contains("shared"), contains("similarity"),contains("values"),
-         Seed_mass_Sp1,Seed_mass_Sp2,CV_Sp1,CV_Sp2,ACL1_Sp1,ACL1_Sp2)
-
-# merge the phylo distance to the final data set and calculate similarity
-maxPhylo <- max(phylo_reshape$Phylo_distance)
-merge_cor_phylo <- merge_cor %>%
-  left_join(phylo_reshape)%>%
-  mutate(Phylogenetic_similarity = 1 - (Phylo_distance/maxPhylo))
-  
-
-# Save the data frame
-#write.csv(merge_cor_phylo, "~/LTER_Masting/Merged_Data_Jan_2023/merge_cor_traits_Jan18.csv", quote = FALSE, row.names = FALSE)
-
-# Read in the csv file
-#Set wd
-setwd("C:/Jalene/DePaul/Research/Projects/LTER Synthesis Working Group")
-merge_cor_phylo<-read.csv("merge_cor_traits_Jan18.csv")
-
-# Some quick graphs to look at traits one by one
-
-site.colours <- c("red","orange","gold","green","skyblue",
-                       "violet","purple","grey")
-
-
-
-ggplot(merge_cor_phylo, aes(Phylogenetic_similarity))+geom_histogram(bins = 50)+
-  theme_bw()
-ggplot(merge_cor_phylo, aes(x=lter, y=Phylogenetic_similarity))+geom_boxplot()+
-  geom_jitter(height = 0, width = 0.1, alpha = 0.2, size = 3)+
-  theme_bw()
-ggplot(merge_cor_phylo, aes(x = ACL1_Sp1, y = ACL1_Sp2, colour = ACL1_similarity))+
-  geom_point()+
-  theme_bw()+
-  scale_colour_gradientn(colours = rainbow(10))
-ggplot(merge_cor_phylo, aes(x = CV_Sp1, y = CV_Sp2, colour = CV_similarity))+
-  geom_point()+
-  theme_bw()+
-  scale_colour_gradientn(colours = rainbow(10))
-ggplot(merge_cor_phylo, aes(x = CV_Sp1, y = CV_Sp2, colour = CV_similarity))+
-  geom_point()+
-  theme_bw()+
-  facet_wrap(~lter, scales = "free")+
-  scale_colour_gradientn(colours = rainbow(10))
-ggplot(merge_cor_phylo, aes(x = Seed_mass_Sp1, y = Seed_mass_Sp2, colour = Seed_mass_similarity))+
-  geom_point()+
-  theme_bw()+
-  facet_wrap(~lter, scales = "free")+
-  scale_colour_gradientn(colours = rainbow(10))
-
-
-
-ggplot(merge_cor_phylo, aes(x = Pollinator_code_values, y = r.spearman))+geom_boxplot()
-ggplot(merge_cor_phylo, aes(x = Seed_development_values, y = r.spearman))+geom_boxplot()+
-geom_jitter(height = 0, width = 0.1, aes(colour = lter))+
-  scale_colour_manual(values = site.colours)
-ggplot(merge_cor_phylo, aes(x = Mycorrhiza_values, y = r.spearman))+geom_boxplot()
-ggplot(merge_cor_phylo, aes(x = Needleleaf_Broadleaf_values, y = r.spearman))+geom_boxplot()
-ggplot(merge_cor_phylo, aes(x = Deciduous_Evergreen_values, y = r.spearman))+geom_boxplot()
-ggplot(merge_cor_phylo, aes(x = Dispersal_syndrome_values, y = r.spearman))+geom_boxplot()+
-  theme(axis.text.x = element_text(angle = 45, hjust=1))
-ggplot(merge_cor_phylo, aes(x = Sexual_system_values, y = r.spearman))+geom_boxplot()+
-  theme(axis.text.x = element_text(angle = 45, hjust=1))
-ggplot(merge_cor_phylo, aes(x = Shade_tolerance_values, y = r.spearman))+geom_boxplot()+
-  geom_jitter(height = 0, width = 0.1, aes(colour = lter))+
-  scale_colour_manual(values = site.colours)+
-  theme(axis.text.x = element_text(angle = 45, hjust=1))
-
-ggplot(merge_cor_phylo, aes(x = Growth_form_values, y = r.spearman))+geom_boxplot()
-ggplot(merge_cor_phylo, aes(x = Fleshy_fruit_values, y = r.spearman))+geom_boxplot()
-ggplot(merge_cor_phylo, aes(x = Seed_bank_values, y = r.spearman))+geom_boxplot()
-ggplot(merge_cor_phylo, aes(x = Seed_mass_similarity, y = r.spearman,color = lter))+geom_point()+
-  facet_wrap(~lter)
-ggplot(merge_cor_phylo, aes(x = CV_similarity, y = r.spearman,color = lter))+geom_point()+
-  facet_wrap(~lter)
-ggplot(merge_cor_phylo, aes(x = ACL1_similarity, y = r.spearman,color = lter))+geom_point()+
-  facet_wrap(~lter)
-
-
-
-# an interesting graph?
-cor_graph <- merge_cor_phylo %>%
-  select(1:5, contains("shared")) %>%
-  pivot_longer(6:16,names_to = "Trait", values_to = "Shared")
-
-cor_graph_summary <- cor_graph %>%
-  group_by(lter, Trait, Shared) %>%
-  summarise(meanCor.spearman = mean(r.spearman))
-
-ggplot() +
-  geom_jitter(data = cor_graph, aes(x = factor(Shared), y = r.spearman, colour = lter),
-              height = 0, width = 0.1, alpha = 0.1)+
-  geom_line(data = cor_graph_summary, aes(x = factor(Shared), y = meanCor.spearman, colour =lter, group = lter),
-            size = 1)+
-  geom_point(data = cor_graph_summary, aes(x = factor(Shared), y = meanCor.spearman, fill =lter),
-             shape = 21, colour = "black", size = 3)+
-  facet_wrap(~Trait)+
-  theme_bw()+
-  xlab("Shared trait")+
-  scale_x_discrete(labels = c("No","Yes"))+
-  ylab("Spearmans r")+
-  scale_color_manual(values = site.colours)+
-  scale_fill_manual(values = site.colours)
-
-
-## Feb 2023 - Jalene LaMontagne
-
-# Looking at distributions of ACL1
-hist(merge_cor_phylo$ACL1_Sp1)
-hist(merge_cor_phylo$ACL1_Sp2)
-hist(merge_cor_phylo$ACL1_similarity)
-hist(merge_cor_phylo$CV_Sp1)
-hist(merge_cor_phylo$CV_Sp2)
-hist(merge_cor_phylo$CV_similarity)
+# # species correlations in "all data/tidy data/"
+# folder_url<- "https://drive.google.com/drive/folders/1aPdQBNlrmyWKtVkcCzY0jBGnYNHnwpeE"
+# folder <- drive_get(as_id(folder_url), shared_drive = "LTER-WG_Plant_Reproduction")
+# csv_files <- drive_ls(folder, type = "csv")
+# walk(csv_files$id, ~ drive_download(as_id(.x), overwrite=TRUE))
+# 
+# pair_cor<- read.csv("pairwise_corr.csv")
+# mast_summary<- read.csv("masting_summary_stats.csv")
+# 
+# 
+# # trait data in "LTER Synthesis - 1st Paper - Synchrony & Species Attributes/Team #2 - Attributes/" 
+# folder_url<- "https://drive.google.com/drive/folders/1PGaPAkNz1lmvZQMwwthmS-ZjQ97BS2Am"
+# folder <- drive_get(as_id(folder_url), shared_drive = "LTER-WG_Plant_Reproduction")
+# csv_files <- drive_ls(folder, type = "csv")
+# walk(csv_files$id, ~ drive_download(as_id(.x), overwrite=TRUE))
+# 
+# traits <- read.csv("LTER_integrated_attributes_USDA_2022-12-14.csv")
+# 
+# # phylogeny distance data
+# folder_url<- "https://drive.google.com/drive/u/0/folders/1IVY6i79REaF59kZEBbrJCRNOlcxE7Tel"
+# folder <- drive_get(as_id(folder_url), shared_drive = "LTER-WG_Plant_Reproduction")
+# csv_files <- drive_ls(folder, type = "csv")
+# walk(csv_files$id, ~ drive_download(as_id(.x), overwrite=TRUE))
+# 
+# phylo <- read.csv("phylo distance matrix.csv")
+# 
+# # reshape the phylo data (from matrix to long)
+# # There is an issue with the column name Dolichandra_unguis-cati 
+# # R is changing the - to a . which is causing issues during the merge later.
+# # Line 50 below, changes it back.
+# phylo_reshape <- phylo %>%
+#   pivot_longer(2:105, names_to = "SpeciesY", values_to = "Phylo_distance") %>%
+#   mutate(SpeciesY = case_when(
+#     SpeciesY =="Dolichandra_unguis.cati" ~ "Dolichandra_unguis-cati",
+#     TRUE ~ SpeciesY)) %>%
+#   mutate(Species1 = gsub("_",".",X),
+#          Species2 = gsub("_",".",SpeciesY)) %>%
+#   select(Species1, Species2, Phylo_distance)
+# 
+# 
+# # merge the correlation data with trait data, and select just the traits we want. 
+# traits <- traits %>%
+#   mutate(Species.Name = gsub(" ",".",species))
+# 
+# head(pair_cor)
+# 
+# trait_sub <- traits %>%
+#   select(Species.Name, Seed_development_1_2or3yrs,Pollinator_code,Mycorrhiza_AM_EM,
+#          Needleleaf_Broadleaf,Deciduous_Evergreen_yrs,Dispersal_syndrome,
+#          Sexual_system, Shade_tolerance, Growth_form, Fleshy_fruit, Seed_bank,Seed_mass_mg)
+# 
+# mast_metric_sub <- mast_summary %>%
+#   select(lter, Species.Name, Plot.ID,CV.raw,ACL1.raw)
+# 
+# # For categorical traits: 1 = same trait, 0 = different trait
+# # For numeric traits: 1 = most similar, 0 = most different. 
+# # The formula was used for numeric values: 1 - (Sp1_value - Sp2_value)/MAX_value_at_the_lter_site
+# 
+# merge_cor <- pair_cor %>%
+#   filter(overlap>=10)%>%
+#   left_join(trait_sub, by =c("Species1"="Species.Name")) %>%
+#   left_join(mast_metric_sub, by = c("lter"="lter", "Plot.ID"="Plot.ID", "Species1"="Species.Name"))%>%
+#   rename(Pollinator_code_Sp1 = Pollinator_code,
+#          Seed_development_1_2or3yrs_Sp1 = Seed_development_1_2or3yrs,
+#          Mycorrhiza_AM_EM_Sp1 = Mycorrhiza_AM_EM,
+#          Needleleaf_Broadleaf_Sp1 = Needleleaf_Broadleaf,
+#          Deciduous_Evergreen_yrs_Sp1 = Deciduous_Evergreen_yrs,
+#          Dispersal_syndrome_Sp1 = Dispersal_syndrome,
+#          Sexual_system_Sp1 = Sexual_system, 
+#          Shade_tolerance_Sp1 = Shade_tolerance, 
+#          Growth_form_Sp1 = Growth_form,
+#          Fleshy_fruit_Sp1 = Fleshy_fruit, 
+#          Seed_bank_Sp1 = Seed_bank,
+#          Seed_mass_Sp1 = Seed_mass_mg,
+#          CV_Sp1 = CV.raw,
+#          ACL1_Sp1 = ACL1.raw) %>%
+#   left_join(trait_sub, by =c("Species2"="Species.Name")) %>%
+#   left_join(mast_metric_sub, by = c("lter"="lter", "Plot.ID"="Plot.ID", "Species2"="Species.Name"))%>%
+#     rename(Pollinator_code_Sp2 = Pollinator_code,
+#          Seed_development_1_2or3yrs_Sp2 = Seed_development_1_2or3yrs,
+#          Mycorrhiza_AM_EM_Sp2 = Mycorrhiza_AM_EM,
+#          Needleleaf_Broadleaf_Sp2 = Needleleaf_Broadleaf,
+#          Deciduous_Evergreen_yrs_Sp2 = Deciduous_Evergreen_yrs,
+#          Dispersal_syndrome_Sp2 = Dispersal_syndrome,
+#          Sexual_system_Sp2 = Sexual_system, 
+#          Shade_tolerance_Sp2 = Shade_tolerance, 
+#          Growth_form_Sp2 = Growth_form,
+#          Fleshy_fruit_Sp2 = Fleshy_fruit, 
+#          Seed_bank_Sp2 = Seed_bank,
+#          Seed_mass_Sp2 = Seed_mass_mg,
+#          CV_Sp2 = CV.raw,
+#          ACL1_Sp2 = ACL1.raw) %>%
+#     mutate(Pollinator_code_shared = ifelse(Pollinator_code_Sp1 == Pollinator_code_Sp2, 1,0),
+#          Seed_development_shared = ifelse(Seed_development_1_2or3yrs_Sp1 == Seed_development_1_2or3yrs_Sp2, 1,0),
+#          Mycorrhiza_shared = ifelse(Mycorrhiza_AM_EM_Sp1 == Mycorrhiza_AM_EM_Sp2, 1,0),
+#          Needleleaf_Broadleaf_shared = ifelse(Needleleaf_Broadleaf_Sp1 == Needleleaf_Broadleaf_Sp2, 1,0),
+#          Deciduous_Evergreen_shared = ifelse(Deciduous_Evergreen_yrs_Sp1 == Deciduous_Evergreen_yrs_Sp2, 1,0),
+#          Dispersal_syndrome_shared = ifelse(Dispersal_syndrome_Sp1 == Dispersal_syndrome_Sp2, 1,0),
+#          Sexual_system_shared = ifelse(Sexual_system_Sp1 == Sexual_system_Sp2, 1,0), 
+#          Shade_tolerance_shared = ifelse(Shade_tolerance_Sp1 == Shade_tolerance_Sp2, 1,0), 
+#          Growth_form_shared = ifelse(Growth_form_Sp1 == Growth_form_Sp2, 1,0), 
+#          Fleshy_fruit_shared = ifelse(Fleshy_fruit_Sp1 == Fleshy_fruit_Sp2, 1,0),  
+#          Seed_bank_shared = ifelse(Seed_bank_Sp1 == Seed_bank_Sp2, 1,0))%>%
+#   group_by(lter)%>% # divide by max value for each site (seed mass, CV and ACL1)
+#   mutate(maxSeed = max(Seed_mass_Sp1,Seed_mass_Sp2),
+#          Seed_mass_similarity = 1 - abs((Seed_mass_Sp1 - Seed_mass_Sp2)/maxSeed),
+#          maxCV = max(CV_Sp1,CV_Sp2),
+#          CV_similarity = 1 - abs((CV_Sp1 - CV_Sp2)/maxCV)) %>%
+#   ungroup()%>%
+#   mutate(maxACL1 = pmax(ACL1_Sp1,ACL1_Sp2),
+#           minACL1 = pmin(ACL1_Sp1,ACL1_Sp2),
+#           ACL1_similarity = 1-(maxACL1 - minACL1),
+#           Pollinator_code_values = ifelse(Pollinator_code_Sp1<Pollinator_code_Sp2,
+#                                          paste(Pollinator_code_Sp1,Pollinator_code_Sp2, sep="-"),
+#                                          paste(Pollinator_code_Sp2,Pollinator_code_Sp1, sep="-")),
+#          Seed_development_values = ifelse(Seed_development_1_2or3yrs_Sp1<Seed_development_1_2or3yrs_Sp2,
+#                                           paste(Seed_development_1_2or3yrs_Sp1,Seed_development_1_2or3yrs_Sp2, sep="-"),
+#                                          paste(Seed_development_1_2or3yrs_Sp2,Seed_development_1_2or3yrs_Sp1, sep="-")),
+#          Mycorrhiza_values = ifelse(Mycorrhiza_AM_EM_Sp1<Mycorrhiza_AM_EM_Sp2,
+#                                     paste(Mycorrhiza_AM_EM_Sp1,Mycorrhiza_AM_EM_Sp2, sep="-"),
+#                                     paste(Mycorrhiza_AM_EM_Sp2,Mycorrhiza_AM_EM_Sp1, sep="-")),
+#          Needleleaf_Broadleaf_values = ifelse(Needleleaf_Broadleaf_Sp1<Needleleaf_Broadleaf_Sp2,
+#                                           paste(Needleleaf_Broadleaf_Sp1,Needleleaf_Broadleaf_Sp2, sep="-"),
+#                                           paste(Needleleaf_Broadleaf_Sp2,Needleleaf_Broadleaf_Sp1, sep="-")),
+#          Deciduous_Evergreen_values = ifelse(Deciduous_Evergreen_yrs_Sp1<Deciduous_Evergreen_yrs_Sp2,
+#                                           paste(Deciduous_Evergreen_yrs_Sp1,Deciduous_Evergreen_yrs_Sp2, sep="-"),
+#                                           paste(Deciduous_Evergreen_yrs_Sp2,Deciduous_Evergreen_yrs_Sp1, sep="-")),
+#          Dispersal_syndrome_values = ifelse(Dispersal_syndrome_Sp1<Dispersal_syndrome_Sp2,
+#                                           paste(Dispersal_syndrome_Sp1,Dispersal_syndrome_Sp2, sep="-"),
+#                                           paste(Dispersal_syndrome_Sp2,Dispersal_syndrome_Sp1, sep="-")),
+#          Sexual_system_values = ifelse( Sexual_system_Sp1< Sexual_system_Sp2,
+#                                           paste( Sexual_system_Sp1, Sexual_system_Sp2, sep="-"),
+#                                           paste( Sexual_system_Sp2, Sexual_system_Sp1, sep="-")),
+#          Shade_tolerance_values = ifelse(Shade_tolerance_Sp1<Shade_tolerance_Sp2,
+#                                           paste(Shade_tolerance_Sp1,Shade_tolerance_Sp2, sep="-"),
+#                                           paste(Shade_tolerance_Sp2,Shade_tolerance_Sp1, sep="-")),
+#          Growth_form_values = ifelse(Growth_form_Sp1<Growth_form_Sp2,
+#                                           paste(Growth_form_Sp1,Growth_form_Sp2, sep="-"),
+#                                           paste(Growth_form_Sp2,Growth_form_Sp1, sep="-")),
+#          Fleshy_fruit_values = ifelse(Fleshy_fruit_Sp1<Fleshy_fruit_Sp2,
+#                                           paste(Fleshy_fruit_Sp1,Fleshy_fruit_Sp2, sep="-"),
+#                                           paste(Fleshy_fruit_Sp2,Fleshy_fruit_Sp1, sep="-")),
+#          Seed_bank_values = ifelse(Seed_bank_Sp1<Seed_bank_Sp2,
+#                                           paste(Seed_bank_Sp1,Seed_bank_Sp2, sep="-"),
+#                                           paste(Seed_bank_Sp2,Seed_bank_Sp1, sep="-")))%>%
+#   select(1:9, contains("shared"), contains("similarity"),contains("values"),
+#          Seed_mass_Sp1,Seed_mass_Sp2,CV_Sp1,CV_Sp2,ACL1_Sp1,ACL1_Sp2)
+# 
+# # merge the phylo distance to the final data set and calculate similarity
+# maxPhylo <- max(phylo_reshape$Phylo_distance)
+# merge_cor_phylo <- merge_cor %>%
+#   left_join(phylo_reshape)%>%
+#   mutate(Phylogenetic_similarity = 1 - (Phylo_distance/maxPhylo))
+#   
+# 
+# # Save the data frame
+# #write.csv(merge_cor_phylo, "~/LTER_Masting/Merged_Data_Jan_2023/merge_cor_traits_Jan18.csv", quote = FALSE, row.names = FALSE)
+# 
+# # Read in the csv file
+# #Set wd
+# setwd("C:/Jalene/DePaul/Research/Projects/LTER Synthesis Working Group")
+# merge_cor_phylo<-read.csv("merge_cor_traits_Jan18.csv")
+# 
+# # Some quick graphs to look at traits one by one
+# 
+# site.colours <- c("red","orange","gold","green","skyblue",
+#                        "violet","purple","grey")
+# 
+# 
+# 
+# ggplot(merge_cor_phylo, aes(Phylogenetic_similarity))+geom_histogram(bins = 50)+
+#   theme_bw()
+# ggplot(merge_cor_phylo, aes(x=lter, y=Phylogenetic_similarity))+geom_boxplot()+
+#   geom_jitter(height = 0, width = 0.1, alpha = 0.2, size = 3)+
+#   theme_bw()
+# ggplot(merge_cor_phylo, aes(x = ACL1_Sp1, y = ACL1_Sp2, colour = ACL1_similarity))+
+#   geom_point()+
+#   theme_bw()+
+#   scale_colour_gradientn(colours = rainbow(10))
+# ggplot(merge_cor_phylo, aes(x = CV_Sp1, y = CV_Sp2, colour = CV_similarity))+
+#   geom_point()+
+#   theme_bw()+
+#   scale_colour_gradientn(colours = rainbow(10))
+# ggplot(merge_cor_phylo, aes(x = CV_Sp1, y = CV_Sp2, colour = CV_similarity))+
+#   geom_point()+
+#   theme_bw()+
+#   facet_wrap(~lter, scales = "free")+
+#   scale_colour_gradientn(colours = rainbow(10))
+# ggplot(merge_cor_phylo, aes(x = Seed_mass_Sp1, y = Seed_mass_Sp2, colour = Seed_mass_similarity))+
+#   geom_point()+
+#   theme_bw()+
+#   facet_wrap(~lter, scales = "free")+
+#   scale_colour_gradientn(colours = rainbow(10))
+# 
+# 
+# 
+# ggplot(merge_cor_phylo, aes(x = Pollinator_code_values, y = r.spearman))+geom_boxplot()
+# ggplot(merge_cor_phylo, aes(x = Seed_development_values, y = r.spearman))+geom_boxplot()+
+# geom_jitter(height = 0, width = 0.1, aes(colour = lter))+
+#   scale_colour_manual(values = site.colours)
+# ggplot(merge_cor_phylo, aes(x = Mycorrhiza_values, y = r.spearman))+geom_boxplot()
+# ggplot(merge_cor_phylo, aes(x = Needleleaf_Broadleaf_values, y = r.spearman))+geom_boxplot()
+# ggplot(merge_cor_phylo, aes(x = Deciduous_Evergreen_values, y = r.spearman))+geom_boxplot()
+# ggplot(merge_cor_phylo, aes(x = Dispersal_syndrome_values, y = r.spearman))+geom_boxplot()+
+#   theme(axis.text.x = element_text(angle = 45, hjust=1))
+# ggplot(merge_cor_phylo, aes(x = Sexual_system_values, y = r.spearman))+geom_boxplot()+
+#   theme(axis.text.x = element_text(angle = 45, hjust=1))
+# ggplot(merge_cor_phylo, aes(x = Shade_tolerance_values, y = r.spearman))+geom_boxplot()+
+#   geom_jitter(height = 0, width = 0.1, aes(colour = lter))+
+#   scale_colour_manual(values = site.colours)+
+#   theme(axis.text.x = element_text(angle = 45, hjust=1))
+# 
+# ggplot(merge_cor_phylo, aes(x = Growth_form_values, y = r.spearman))+geom_boxplot()
+# ggplot(merge_cor_phylo, aes(x = Fleshy_fruit_values, y = r.spearman))+geom_boxplot()
+# ggplot(merge_cor_phylo, aes(x = Seed_bank_values, y = r.spearman))+geom_boxplot()
+# ggplot(merge_cor_phylo, aes(x = Seed_mass_similarity, y = r.spearman,color = lter))+geom_point()+
+#   facet_wrap(~lter)
+# ggplot(merge_cor_phylo, aes(x = CV_similarity, y = r.spearman,color = lter))+geom_point()+
+#   facet_wrap(~lter)
+# ggplot(merge_cor_phylo, aes(x = ACL1_similarity, y = r.spearman,color = lter))+geom_point()+
+#   facet_wrap(~lter)
+# 
+# 
+# 
+# # an interesting graph?
+# cor_graph <- merge_cor_phylo %>%
+#   select(1:5, contains("shared")) %>%
+#   pivot_longer(6:16,names_to = "Trait", values_to = "Shared")
+# 
+# cor_graph_summary <- cor_graph %>%
+#   group_by(lter, Trait, Shared) %>%
+#   summarise(meanCor.spearman = mean(r.spearman))
+# 
+# ggplot() +
+#   geom_jitter(data = cor_graph, aes(x = factor(Shared), y = r.spearman, colour = lter),
+#               height = 0, width = 0.1, alpha = 0.1)+
+#   geom_line(data = cor_graph_summary, aes(x = factor(Shared), y = meanCor.spearman, colour =lter, group = lter),
+#             size = 1)+
+#   geom_point(data = cor_graph_summary, aes(x = factor(Shared), y = meanCor.spearman, fill =lter),
+#              shape = 21, colour = "black", size = 3)+
+#   facet_wrap(~Trait)+
+#   theme_bw()+
+#   xlab("Shared trait")+
+#   scale_x_discrete(labels = c("No","Yes"))+
+#   ylab("Spearmans r")+
+#   scale_color_manual(values = site.colours)+
+#   scale_fill_manual(values = site.colours)
+# 
+# 
+# ## Feb 2023 - Jalene LaMontagne
+# 
+# # Looking at distributions of ACL1
+# hist(merge_cor_phylo$ACL1_Sp1)
+# hist(merge_cor_phylo$ACL1_Sp2)
+# hist(merge_cor_phylo$ACL1_similarity)
+# hist(merge_cor_phylo$CV_Sp1)
+# hist(merge_cor_phylo$CV_Sp2)
+# hist(merge_cor_phylo$CV_similarity)
 
 
 # Read in the csv file
