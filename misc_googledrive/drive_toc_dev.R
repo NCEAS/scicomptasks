@@ -43,27 +43,32 @@ while(FALSE %in% contents$listed){
   # Loop across these folders to identify their subfolders
   for(k in 1:nrow(contents)){
     
-    # Identify that folder's ID
-    sub_id <- contents[k,]$id
-    
-    # List out the folders within that folder
-    sub_conts <- googledrive::drive_ls(path = googledrive::as_id(sub_id), type = "folder") %>%
-      # Add the columns we added to the first `drive_ls` return
-      dplyr::mutate(listed = FALSE,
-                    parent_name = contents[k,]$name,
-                    parent_id = sub_id)
-    
-    # Combine that output with the contents object
-    contents %<>%
-      # Row bind nested folders
-      dplyr::bind_rows(sub_conts) %>%
-      # Flip this folder's "listed" entry to TRUE
-      dplyr::mutate(listed = ifelse(test = (id == sub_id),
-                                    yes = TRUE,
-                                    no = listed))
-    
-    # Message success
-    message("Subfolders identified for folder ", k) } 
+    # Skip if already listed
+    if(contents[k,]$listed == TRUE){ message("Skipping already listed folder (folder ", k, ")") 
+      
+      # Otherwise...
+    } else {
+      # Identify that folder's ID
+      sub_id <- contents[k,]$id
+      
+      # List out the folders within that folder
+      sub_conts <- googledrive::drive_ls(path = googledrive::as_id(sub_id), type = "folder") %>%
+        # Add the columns we added to the first `drive_ls` return
+        dplyr::mutate(listed = FALSE,
+                      parent_name = contents[k,]$name,
+                      parent_id = sub_id)
+      
+      # Combine that output with the contents object
+      contents %<>%
+        # Row bind nested folders
+        dplyr::bind_rows(sub_conts) %>%
+        # Flip this folder's "listed" entry to TRUE
+        dplyr::mutate(listed = ifelse(test = (id == sub_id),
+                                      yes = TRUE,
+                                      no = listed))
+      
+      # Message success
+      message("Subfolders identified for folder ", k) } } 
   
 } # Close `while` loop
 
