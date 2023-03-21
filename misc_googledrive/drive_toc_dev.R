@@ -6,17 +6,18 @@
 ## Explore whether some use of `drive_ls` would allow for algorithmic creation of full table of contents for a user-supplied top-level Drive folder URL
 
 ## ------------------------------------- ##
-# Housekeeping ----
+            # Housekeeping ----
 ## ------------------------------------- ##
 
 # Read in needed packages
-librarian::shelf(tidyverse, googledrive, magrittr)
+librarian::shelf(tidyverse, googledrive, magrittr,
+                 data.tree, DiagrammeR)
 
 # Clear environment
 rm(list = ls())
 
 ## ------------------------------------- ##
-# Scripted Exploration ----
+        # Scripted Exploration ----
 ## ------------------------------------- ##
 # Snag Drive ID (not actually top to make testing faster)
 top_url <- googledrive::as_id("https://drive.google.com/drive/u/0/folders/1JsdILSmvKZX8c22jtcQF2LXB-nNGOMo0")
@@ -31,7 +32,7 @@ top_contents
 contents <- top_contents %>%
   # Also make a column for whether that directory has been listed and which folder it is nested in
   dplyr::mutate(listed = FALSE,
-                parent_path = "top")
+                parent_path = ".")
 
 # Look at that
 contents
@@ -70,24 +71,29 @@ while(FALSE %in% contents$listed){
 } # Close `while` loop
 
 # Process this a little
-contents_v2 <- contents %>%
-  # Drop the drive_resources column
-  dplyr::select(-drive_resource) %>%
-  # Make into a dataframe
-  as.data.frame() %>%
+paths <- contents %>%
   # Complete the path by adding in each folder's name
   dplyr::mutate(path = paste0(parent_path, "/", name)) %>%
-  # Pare down to minimum needed columns
-  dplyr::select(path) %>%
-  # Count number of slashes
-  dplyr::mutate(max_folder_num = stringr::str_count(string = path, pattern = "\\/") + 1)
+  # Strip out ONLY paths
+  dplyr::pull(var = path)
   
 # Check that out
-contents_v2
-# view(contents_v2)
+paths
 
+# Split into a list of dataframes where each path is a dataframe with a column for each folder
+contents_list <- base::lapply(X = base::strsplit(x = paths, split = "/"),
+                              FUN = function(z) base::as.data.frame(base::t(z)))
 
+# Bind back together
+contents_df <- contents_list %>%
+  dplyr::bind_rows() %>%
+  # Also re-gain the full path string
+  dplyr::mutate(pathString = paths)
+  
+# Check out visual table of contents
+(drive_tree <- data.tree::as.Node(contents_df))
 
-
+# Plot it!
+plot(drive_tree)
 
 # End ----
