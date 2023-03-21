@@ -1,0 +1,22 @@
+---
+title: "Shared Google Drive Table of Contents"
+date: "Last created on `r Sys.Date()`"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r libraries, echo = F, message = F, warning = F}
+# install.packages("librarian")
+librarian::shelf(NCEAS/scicomptools, googledrive)
+
+# Also make sure you're authenticated to work with the Drive
+# googledrive::drive_auth()
+```
+
+```{r toc, echo = F, message = F}
+scicomptools::drive_toc(url = googledrive::as_id("https://drive.google.com/drive/u/0/folders/0AIPkWhVuXjqFUk9PVA"), ignore_names = c("Backups"), quiet = F)
+```
+
