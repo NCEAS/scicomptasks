@@ -31,8 +31,7 @@ top_contents
 contents <- top_contents %>%
   # Also make a column for whether that directory has been listed and which folder it is nested in
   dplyr::mutate(listed = FALSE,
-                parent_name = "top_level",
-                parent_id = "top_level")
+                parent_path = "top")
 
 # Look at that
 contents
@@ -48,22 +47,20 @@ while(FALSE %in% contents$listed){
       
       # Otherwise...
     } else {
-      # Identify that folder's ID
-      sub_id <- contents[k,]$id
       
       # List out the folders within that folder
-      sub_conts <- googledrive::drive_ls(path = googledrive::as_id(sub_id), type = "folder") %>%
+      sub_conts <- googledrive::drive_ls(path = googledrive::as_id(contents[k,]$id), 
+                                         type = "folder", recursive = FALSE) %>%
         # Add the columns we added to the first `drive_ls` return
         dplyr::mutate(listed = FALSE,
-                      parent_name = contents[k,]$name,
-                      parent_id = sub_id)
+                      parent_path = paste0(contents[k,]$parent_path, "/", contents[k,]$name))
       
       # Combine that output with the contents object
       contents %<>%
         # Row bind nested folders
         dplyr::bind_rows(sub_conts) %>%
         # Flip this folder's "listed" entry to TRUE
-        dplyr::mutate(listed = ifelse(test = (id == sub_id),
+        dplyr::mutate(listed = ifelse(test = (id == contents[k,]$id),
                                       yes = TRUE,
                                       no = listed))
       
@@ -72,8 +69,22 @@ while(FALSE %in% contents$listed){
   
 } # Close `while` loop
 
-# Check what we're left with
-contents
+# Process this a little
+contents_v2 <- contents %>%
+  # Drop the drive_resources column
+  dplyr::select(-drive_resource) %>%
+  # Make into a dataframe
+  as.data.frame() %>%
+  # Complete the path by adding in each folder's name
+  dplyr::mutate(path = paste0(parent_path, "/", name)) %>%
+  # Pare down to minimum needed columns
+  dplyr::select(path) %>%
+  # Count number of slashes
+  dplyr::mutate(max_folder_num = stringr::str_count(string = path, pattern = "\\/") + 1)
+  
+# Check that out
+contents_v2
+# view(contents_v2)
 
 
 
