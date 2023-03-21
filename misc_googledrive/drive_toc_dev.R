@@ -103,7 +103,7 @@ rm(list = ls())
           # Function Variant ----
 ## ------------------------------------- ##
 # Define function
-drive_toc <- function(url = NULL, quiet = FALSE){
+drive_toc <- function(url = NULL, ignore_names = NULL, quiet = FALSE){
   
   # Error out for missing folder URL
   if(is.null(url))
@@ -124,6 +124,11 @@ drive_toc <- function(url = NULL, quiet = FALSE){
   
   # While any folders are not identified
   while(FALSE %in% contents$listed){
+    
+    # Remove any folders marked to be ignored (if any are)
+    if(length(x = ignore_names) != 0){
+      contents <- dplyr::filter(contents, !name %in% ignore_names)
+    }
     
     # Loop across these folders to identify their subfolders
     for(k in 1:nrow(contents)){
@@ -190,7 +195,7 @@ my_tree
 plot(my_tree)
 
 # Try for a real top-level folder (will definitely take longer but *should* still work)
-full_tree <- drive_toc(url = googledrive::as_id("https://drive.google.com/drive/u/0/folders/0AIPkWhVuXjqFUk9PVA"), quiet = F)
+full_tree <- drive_toc(url = googledrive::as_id("https://drive.google.com/drive/u/0/folders/0AIPkWhVuXjqFUk9PVA"), ignore_names = c("Backups"), quiet = F)
 
 # Check this one out
 full_tree
