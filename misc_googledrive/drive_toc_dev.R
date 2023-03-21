@@ -18,8 +18,8 @@ rm(list = ls())
 ## ------------------------------------- ##
 # Scripted Exploration ----
 ## ------------------------------------- ##
-# Snag Drive ID
-top_url <- googledrive::as_id("https://drive.google.com/drive/u/0/folders/0AIPkWhVuXjqFUk9PVA")
+# Snag Drive ID (not actually top to make testing faster)
+top_url <- googledrive::as_id("https://drive.google.com/drive/u/0/folders/1JsdILSmvKZX8c22jtcQF2LXB-nNGOMo0")
 
 # Check folders within this top-level folder
 (top_contents <- googledrive::drive_ls(path = top_url, type = "folder", recursive = FALSE))
