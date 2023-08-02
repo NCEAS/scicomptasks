@@ -101,10 +101,41 @@ ggsave(plot = timeline, filename = file.path("plots", "LTER_site_timeline.png"),
        height = 5, width = 6, units = "in")
 
 ## ------------------------------ ##
-# Site Map ----
+          # Site Map ----
 ## ------------------------------ ##
 
+# Define latitude / longitude limits
+(lat_lims <- c(min(site_actual$lat, na.rm = T), max(site_actual$lat, na.rm = T)))
+(lon_lims <- c(min(site_actual$lon, na.rm = T), max(site_actual$lon, na.rm = T)))
 
+# Get an object of world / US state borders
+borders <- sf::st_as_sf(maps::map(database = "world", plot = F, fill = T)) %>%
+  dplyr::bind_rows(sf::st_as_sf(maps::map(database = "state", plot = F, fill = T)))
 
+# Make map
+map <- borders %>%
+  ggplot() +
+  geom_sf(fill = "gray95") +
+  # Set map extent
+  coord_sf(xlim = lon_lims, ylim = lat_lims, expand = F) +
+  # Add points & labels for LTER sites
+  geom_point(data = site_actual, aes(x = lon, y = lat, fill = habitat), pch = 21, size = 4) +
+  geom_label(data = site_actual, aes(x = lon, y = lat),
+             label = site_actual$code, nudge_y = 3, size = 3, fontface = "bold", 
+             label.padding = unit(x = 0.15, units = "lines")) +
+  # Customize color
+  scale_fill_manual(values = habitat_colors) +
+  # Customize axis labels
+  labs(x = "Longitude", y = "Latitude") +
+  # Tweak theme / formatting
+  theme_bw() +
+  theme(panel.border = element_blank(),
+        axis.title = element_blank(),
+        axis.text = element_text(size = 12),
+        legend.title = element_blank()); map
+  
+# Export the map
+ggsave(plot = map, filename = file.path("plots", "LTER_site_map.png"),
+       height = 8, width = 8, units = "in")
 
 # End ----
