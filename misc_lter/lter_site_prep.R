@@ -71,7 +71,33 @@ sites_v1 <- site_dates_v1 %>%
 dplyr::glimpse(sites_v1)
 
 ## ------------------------------ ##
-# Final Wrangling ----
+      # Final Wrangling ----
+## ------------------------------ ##
+
+# Do necessary wrangling to make a polished data object
+sites_v2 <- sites_v1 %>%
+  # Combine full site name
+  dplyr::mutate(Name = dplyr::coalesce(Name.x, Name.y), 
+                .before = dplyr::everything()) %>%
+  # Drop old name columns
+  dplyr::select(-Name.x, -Name.y) %>%
+  # Remove unwanted 'sites'
+  dplyr::filter(!Code %in% c("EDI", "NCO", "LNO")) %>%
+  # Rename all columns for clarity + consistent casing
+  dplyr::rename(name = Name, code = Code, habitat = Type,
+                start_year = Start.date, end_year = End.date,
+                lat = Latitude, lon = Longitude, grant = Grant..,
+                site_url = Link, status = Status)
+
+# Check a few columns specifically
+sort(unique(sites_v2$code))
+
+# Check structure generally
+dplyr::glimpse(sites_v2)
+## view(sites_v2) # View if needed
+
+## ------------------------------ ##
+          # Export ----
 ## ------------------------------ ##
 
 
