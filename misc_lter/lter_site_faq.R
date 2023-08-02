@@ -22,6 +22,9 @@ rm(list = ls())
 # Authorize googledrive
 googledrive::drive_auth()
 
+# Create a folder for local export of outputs
+dir.create(path = file.path("plots"), showWarnings = F)
+
 ## ------------------------------ ##
       # Data Acquisition ----
 ## ------------------------------ ##
@@ -93,14 +96,15 @@ timeline <- ggplot(site_long, aes(x = year, y = code)) +
         axis.text = element_text(size = 12),
         legend.title = element_blank()); timeline
 
+# Export this graph
+ggsave(plot = timeline, filename = file.path("plots", "LTER_site_timeline.png"),
+       height = 5, width = 6, units = "in")
+
 ## ------------------------------ ##
 # Site Map ----
 ## ------------------------------ ##
 
 
 
-## ------------------------------ ##
-# Export ----
-## ------------------------------ ##
 
 # End ----
