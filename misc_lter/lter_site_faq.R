@@ -14,7 +14,7 @@
 
 # Load libraries
 # install.packages("librarian")
-librarian::shelf(tidyverse, googledrive, purrr, supportR)
+librarian::shelf(tidyverse, googledrive, purrr, supportR, sf)
 
 # Clear environment
 rm(list = ls())
@@ -102,9 +102,15 @@ ggsave(plot = timeline, filename = file.path("plots", "LTER_site_timeline.png"),
           # Site Map ----
 ## ------------------------------ ##
 
+# Identify min & max latitude / longitude
+(min_lat <- min(site_actual$lat, na.rm = T))
+(max_lat <- max(site_actual$lat, na.rm = T))
+(min_lon <- min(site_actual$lon, na.rm = T))
+(max_lon <- max(site_actual$lon, na.rm = T))
+
 # Define latitude / longitude limits
-(lat_lims <- c(min(site_actual$lat, na.rm = T), max(site_actual$lat, na.rm = T)))
-(lon_lims <- c(min(site_actual$lon, na.rm = T), max(site_actual$lon, na.rm = T)))
+(lat_lims <- c((min_lat - 0.1 * min_lat), (max_lat + 0.1 * max_lat)))
+(lon_lims <- c((min_lon + 0.15 * min_lon), (max_lon - 0.15 * max_lon)))
 
 # Get an object of world / US state borders
 borders <- sf::st_as_sf(maps::map(database = "world", plot = F, fill = T)) %>%
@@ -119,14 +125,14 @@ map <- borders %>%
   # Add points & labels for LTER sites
   geom_point(data = site_actual, aes(x = lon, y = lat, fill = habitat), pch = 21, size = 4) +
   geom_label(data = site_actual, aes(x = lon, y = lat),
-             label = site_actual$code, nudge_y = 3, size = 3, fontface = "bold", 
+             label = site_actual$code, nudge_y = 0, nudge_x = 5, size = 3, fontface = "bold", 
              label.padding = unit(x = 0.15, units = "lines")) +
   # Customize color
   scale_fill_manual(values = habitat_colors) +
   # Customize axis labels
   labs(x = "Longitude", y = "Latitude") +
   # Tweak theme / formatting
-  theme_bw() +
+  theme_bw() + 
   theme(panel.border = element_blank(),
         axis.title = element_blank(),
         axis.text = element_text(size = 12),
