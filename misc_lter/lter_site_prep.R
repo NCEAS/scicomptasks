@@ -100,5 +100,14 @@ dplyr::glimpse(sites_v2)
           # Export ----
 ## ------------------------------ ##
 
+# Export locally
+write.csv(x = sites_v2, row.names = F, na = '',
+          file = file.path("data", "site_faq_info.csv"))
+
+
+# Upload to 'sites-information' folder of LNO Shared Drive
+googledrive::drive_upload(media = file.path("data", "site_faq_info.csv"),
+                          path = googledrive::as_id("https://drive.google.com/drive/u/0/folders/1HSB6LWEbXrTCEzHppfmTHWGZSX5qa30B"), overwrite = T)
+
 
 # End ----
