@@ -9,7 +9,7 @@
 ## FAQ = Frequently Asked Questions
 
 ## ------------------------------ ##
-# Housekeeping ----
+        # Housekeeping ----
 ## ------------------------------ ##
 
 # Load libraries
@@ -23,7 +23,7 @@ rm(list = ls())
 googledrive::drive_auth()
 
 ## ------------------------------ ##
-# Data Acquisition ----
+      # Data Acquisition ----
 ## ------------------------------ ##
 
 # List all files in relevant Drive folder
@@ -40,7 +40,7 @@ purrr::walk2(.x = site_drive$name, .y = site_drive$id,
                                                 path = file.path("data", .x)))
 
 ## ------------------------------ ##
-# Wrangling ----
+      # Initial Wrangling ----
 ## ------------------------------ ##
 
 # Read in the site start/end dates
@@ -51,12 +51,28 @@ site_dates_v1 <- read.csv(file = file.path("data", "site-start-end-dates-only.cs
 # Check structure
 dplyr::glimpse(site_dates_v1)
 
-# Load coordinate information
-site_coords_v1 <- read.csv(file = file.path("data", "Site-list.csv"))
-
+# Load coordinate information (note this is downloaded separately not in R yet)
+site_coords_v1 <- read.csv(file = file.path("data", "Site-list.csv")) %>%
+  # Drop start/end date (they are only for a particular grant period)
+  dplyr::select(-dplyr::ends_with(".date"))
 
 # Check structure
 dplyr::glimpse(site_coords_v1)
+
+# Check difference between the two scripts' site abbreviations
+supportR::diff_check(old = unique(site_dates_v1$Code), new = unique(site_coords_v1$Code))
+## A few dates exist for 'sites' not found in the coordinate set (that's fine)
+
+# Join coordinates to dates to preserve coordinate-lacking rows
+sites_v1 <- site_dates_v1 %>%
+  dplyr::left_join(y = site_coords_v1, by = c("Code"))
+
+# Check structure
+dplyr::glimpse(sites_v1)
+
+## ------------------------------ ##
+# Final Wrangling ----
+## ------------------------------ ##
 
 
 # End ----
