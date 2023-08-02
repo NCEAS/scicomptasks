@@ -51,14 +51,12 @@ site_df <- read.csv(file = file.path("data", "site_faq_info.csv")) %>%
 dplyr::glimpse(site_df)
 
 ## ------------------------------ ##
-# Filter ----
+            # Filter ----
 ## ------------------------------ ##
 
-# Skip (for now)
-## Eventually filtering to 'sites of interest' will be done here
-
-# Make sure object is named appropriately
-site_actual <- site_df
+# Perform desired filtering
+site_actual <- site_df %>%
+  dplyr::filter(habitat %in% c("Marine", "Coastal")) # Marine Consumer Nutrient Dynamic request
 
 ## ------------------------------ ##
 # Site Timeline ----
