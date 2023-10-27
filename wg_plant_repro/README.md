@@ -14,6 +14,10 @@
 
 - R script to calculate some statistics for the data set exported from **trait_integration.R**
 
+**"seed_mass_production_time_series.R"**
+
+- R script to produce an exploratory time series of total seed mass production (g/year)
+
 **"plant-repro-compadre.R"**
 
  - R script to compare which of the species sampled by the Plant Repro WG have traits in the [COMPADRE plant trait database](https://compadre-db.org/)
