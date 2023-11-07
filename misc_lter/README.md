@@ -2,6 +2,10 @@
 
 ## Script explanation
 
+**"lter_pub_crosscheck.R"**
+
+- R script for checking publication overlap through time between the LTER Network and NEON Zotero libraries
+
 **"lter_site_faq.R"**
 
 - R script for creating site-level outputs that are frequently requested
