@@ -44,6 +44,7 @@ vignettes/*.pdf
 # Ignore certain folders
 data/
 plots/
+graphs/
 task_export/
 
 # Ignore any knit files in the best practice manuals folder
