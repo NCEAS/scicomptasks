@@ -164,6 +164,9 @@ cat_sums <- combo_v1 %>%
             # Visuals ----
 ## ------------------------------ ##
 
+# Create folder for exporting graphs locally
+dir.create(path = file.path("graphs"), showWarnings = F)
+
 # Graph 1 - Shared paper *count* over time
 ggplot(shared_only, aes(x = pub_year, y = shared_ct)) +
   geom_smooth(method = "loess", formula = "y ~ x", se = F, color = 'black') +
@@ -172,6 +175,10 @@ ggplot(shared_only, aes(x = pub_year, y = shared_ct)) +
   supportR::theme_lyon() +
   theme(legend.position = "none")
 
+# Export
+ggsave(filename = file.path("graphs", "lter-neon-pubs_shared-ct.png"),
+       height = 4, width = 6, units = "in")
+
 # Graph 2 - Shared paper *proportion* over time
 ggplot(shared_only, aes(x = pub_year, y = shared_prop)) +
   geom_smooth(method = "loess", formula = "y ~ x", se = F, color = 'black') +
@@ -179,6 +186,10 @@ ggplot(shared_only, aes(x = pub_year, y = shared_prop)) +
   labs(y = "Shared Publication Proportion", x = "Publication Year") +
   supportR::theme_lyon() +
   theme(legend.position = "none")
+
+# Export
+ggsave(filename = file.path("graphs", "lter-neon-pubs_shared-prop.png"),
+       height = 4, width = 6, units = "in")
 
 # Graph 3 - Stacked bar plot of LTER only, NEON only, and shared
 ggplot(cat_sums, aes(x = pub_year, y = pub_ct)) +
@@ -189,6 +200,8 @@ ggplot(cat_sums, aes(x = pub_year, y = pub_ct)) +
                                "NEON only" = "#0262bf")) +
   supportR::theme_lyon()
   
-
+# Export
+ggsave(filename = file.path("graphs", "lter-neon-pubs_shared-vs-not.png"),
+       height = 4, width = 6, units = "in")
 
 # End ----
