@@ -136,7 +136,16 @@ combo_v1 <- lter_v1 %>%
                    shared_ct = sum(shared, na.rm = T)) %>% 
   dplyr::ungroup() %>% 
   # Calculate proportion shared
-  dplyr::mutate(shared_prop = shared_ct / total_ct)
+  dplyr::mutate(shared_prop = shared_ct / total_ct) %>% 
+  # Identify counts based on whether they are library specific or shared
+  dplyr::mutate(category = dplyr::case_when(
+    shared_ct != 0 ~ "Shared",
+    library == "lter" & shared_ct == 0 ~ "LTER only",
+    library == "neon" & shared_ct == 0 ~ "NEON only"),
+    .after = type) %>% 
+  # Mess with the factor order
+  dplyr::mutate(category = factor(category,
+                                  levels = c("LTER only", "Shared", "NEON only")))
 
 # Check structure
 dplyr::glimpse(combo_v1)
@@ -144,6 +153,12 @@ dplyr::glimpse(combo_v1)
 # Make a version for shared only (LTER focal)
 shared_only <- combo_v1 %>% 
   dplyr::filter(library == "lter" & shared_ct != 0)
+
+# Make a simpler count per 'category'
+cat_sums <- combo_v1 %>% 
+  dplyr::group_by(category, pub_year) %>% 
+  dplyr::summarize(pub_ct = sum(total_ct, na.rm = T)) %>% 
+  dplyr::ungroup()
 
 ## ------------------------------ ##
             # Visuals ----
@@ -165,7 +180,15 @@ ggplot(shared_only, aes(x = pub_year, y = shared_prop)) +
   supportR::theme_lyon() +
   theme(legend.position = "none")
 
-
+# Graph 3 - Stacked bar plot of LTER only, NEON only, and shared
+ggplot(cat_sums, aes(x = pub_year, y = pub_ct)) +
+  geom_bar(aes(fill = category), color = "black", stat = "identity") +
+  labs(y = "Publication Count", x = "Publication Year") +
+  scale_fill_manual(values = c("LTER only" = "#97AE3F", 
+                               "Shared" = "#B89E92", 
+                               "NEON only" = "#0262bf")) +
+  supportR::theme_lyon()
+  
 
 
 # End ----
