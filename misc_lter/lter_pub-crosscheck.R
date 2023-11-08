@@ -131,11 +131,24 @@ combo_v1 <- lter_v1 %>%
 # Check structure
 dplyr::glimpse(combo_v1)
 
-
+# Make a version for shared only
+shared_only <- combo_v1 %>% 
+  dplyr::filter(shared_ct != 0)
 
 ## ------------------------------ ##
-# Visuals ----
+            # Visuals ----
 ## ------------------------------ ##
 
+# Graph 1 - Shared paper count over time
+ggplot(shared_only, aes(x = pub_year, y = shared_ct)) +
+  geom_smooth(method = "loess", formula = "y ~ x", se = F, color = 'black') +
+  geom_point(aes(fill = shared_ct), shape = 21, size = 3) +
+  # Custom aesthetics
+  labs(y = "Shared Publication Count", x = "Publication Year") +
+  supportR::theme_lyon() +
+  theme(legend.position = "none")
+
+
+# Graph 2 - 
 
 # End ----
