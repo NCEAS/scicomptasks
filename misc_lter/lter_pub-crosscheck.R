@@ -81,6 +81,9 @@ lter_v1 <- lter_v0 %>%
   dplyr::filter(!is.na(Publication.Year)) %>% 
   # Drop any publications before LTER was founded
   dplyr::filter(Publication.Year >= 1980) %>% 
+  # Filter to only journal articles or theses (and drop that column after)
+  dplyr::filter(Item.Type %in% c("journalArticle", "thesis")) %>% 
+  dplyr::select(-Item.Type) %>% 
   # Drop non-unique rows
   dplyr::distinct()
 
@@ -101,6 +104,8 @@ neon_v1 <- neon_v0 %>%
   dplyr::mutate(Publication.Year = as.numeric(Publication.Year)) %>% 
   dplyr::filter(!is.na(Publication.Year)) %>% 
   dplyr::filter(Publication.Year >= 1980) %>% 
+  dplyr::filter(Item.Type %in% c("journalArticle", "thesis")) %>% 
+  dplyr::select(-Item.Type) %>% 
   dplyr::distinct()
 
 # Check structure of this too
@@ -127,11 +132,10 @@ combo_v1 <- lter_v1 %>%
     library == "neon" & !is.na(DOI) & DOI %in% lter_v1$DOI ~ 1,
     # Otherwise, assume not in publication list
     T ~ NA)) %>% 
-  # Tweak the name of two key visualization columns
-  dplyr::rename(type = Item.Type,
-                pub_year = Publication.Year) %>% 
+  # Tweak the name of columns with overly long names
+  dplyr::rename(pub_year = Publication.Year) %>% 
   # Count instances per year and publication type
-  dplyr::group_by(library, type, pub_year) %>% 
+  dplyr::group_by(library, pub_year) %>% 
   dplyr::summarize(total_ct = dplyr::n(),
                    shared_ct = sum(shared, na.rm = T)) %>% 
   dplyr::ungroup() %>% 
@@ -142,7 +146,7 @@ combo_v1 <- lter_v1 %>%
     shared_ct != 0 ~ "Shared",
     library == "lter" & shared_ct == 0 ~ "LTER only",
     library == "neon" & shared_ct == 0 ~ "NEON only"),
-    .after = type) %>% 
+    .after = pub_year) %>% 
   # Mess with the factor order
   dplyr::mutate(category = factor(category,
                                   levels = c("LTER only", "Shared", "NEON only")))
