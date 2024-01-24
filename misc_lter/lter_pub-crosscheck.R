@@ -184,6 +184,23 @@ dplyr::glimpse(combo_v2)
 # Make a version for shared only (LTER focal)
 shared_only <- dplyr::filter(combo_v2, category == "Shared")
 
+# Check structure
+dplyr::glimpse(shared_only)
+
+# Make a version where the *proportion* shared is calculation
+shared_prop <- combo_v2 %>% 
+  # Drop NEON pubs
+  dplyr::filter(category != "NEON only") %>% 
+  # Pivot wider
+  tidyr::pivot_wider(names_from = category, values_from = pub_ct, values_fill = 0) %>% 
+  # Calculate proportion shared
+  dplyr::mutate(prop = Shared / `LTER only`, .after = pub_year) %>% 
+  # Drop unwanted columns (implicitly)
+  dplyr::select(pub_year, prop)
+
+# Check structure
+dplyr::glimpse(shared_prop)
+
 ## ------------------------------ ##
             # Visuals ----
 ## ------------------------------ ##
@@ -203,17 +220,17 @@ ggplot(shared_only, aes(x = pub_year, y = pub_ct)) +
 ggsave(filename = file.path("graphs", "lter-neon-pubs_shared-ct.png"),
        height = 4, width = 6, units = "in")
 
-# # Graph 2 - Shared paper *proportion* over time
-# ggplot(shared_only, aes(x = pub_year, y = shared_prop)) +
-#   geom_smooth(method = "loess", formula = "y ~ x", se = F, color = 'black') +
-#   geom_point(aes(fill = shared_prop), shape = 21, size = 3) +
-#   labs(y = "Shared Publication Proportion", x = "Publication Year") +
-#   supportR::theme_lyon() +
-#   theme(legend.position = "none")
-# 
-# # Export
-# ggsave(filename = file.path("graphs", "lter-neon-pubs_shared-prop.png"),
-#        height = 4, width = 6, units = "in")
+# Graph 2 - Shared paper *proportion* over time
+ggplot(shared_prop, aes(x = pub_year, y = prop)) +
+  geom_smooth(method = "loess", formula = "y ~ x", se = F, color = 'black') +
+  geom_point(aes(fill = prop), shape = 21, size = 3) +
+  labs(y = "Shared Publication Proportion", x = "Publication Year") +
+  supportR::theme_lyon() +
+  theme(legend.position = "none")
+
+# Export
+ggsave(filename = file.path("graphs", "lter-neon-pubs_shared-prop.png"),
+       height = 4, width = 6, units = "in")
 
 # Graph 3 - Stacked bar plot of LTER only, NEON only, and shared
 ggplot(combo_v2, aes(x = pub_year, y = pub_ct)) +
