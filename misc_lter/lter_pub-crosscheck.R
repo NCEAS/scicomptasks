@@ -112,26 +112,43 @@ neon_v1 <- neon_v0 %>%
 dplyr::glimpse(neon_v1)
 
 ## ------------------------------ ##
+    # Shared Pub Counting ----
+## ------------------------------ ##
+# Identify whether a given LTER pub is in the NEON list too
+lter_v2 <- lter_v1 %>% 
+  # Do counting conditionally
+  dplyr::mutate(shared = dplyr::case_when(
+    !is.na(Title) & Title %in% neon_v1$Title ~ 1,
+    !is.na(ISBN) & ISBN %in% neon_v1$ISBN ~ 1,
+    !is.na(ISSN) & ISSN %in% neon_v1$ISSN ~ 1,
+    !is.na(DOI) & DOI %in% neon_v1$DOI ~ 1,
+    T ~ 0))
+
+# Check structure
+dplyr::glimpse(lter_v2)
+## view(lter_v2)
+
+# Do the same counting for NEON
+neon_v2 <- neon_v1 %>% 
+  # Do counting conditionally
+  dplyr::mutate(shared = dplyr::case_when(
+    !is.na(Title) & Title %in% lter_v1$Title ~ 1,
+    !is.na(ISBN) & ISBN %in% lter_v1$ISBN ~ 1,
+    !is.na(ISSN) & ISSN %in% lter_v1$ISSN ~ 1,
+    !is.na(DOI) & DOI %in% lter_v1$DOI ~ 1,
+    T ~ 0)) %>% 
+  # Drop shared pubs (they're already in the LTER object)
+  dplyr::filter(shared != 1)
+
+# Check structure
+dplyr::glimpse(neon_v2)
+
+## ------------------------------ ##
     # Library Integration ----
 ## ------------------------------ ##
 
-# Stack the publications into a single object
-combo_v1 <- lter_v1 %>% 
-  dplyr::bind_rows(neon_v1) %>% 
-  # Identify whether each was in the other
-  dplyr::mutate(shared = dplyr::case_when(
-    # LTER pubs in NEON
-    library == "lter" & !is.na(Title) & Title %in% neon_v1$Title ~ 1,
-    library == "lter" & !is.na(ISBN) & ISBN %in% neon_v1$ISBN ~ 1,
-    library == "lter" & !is.na(ISSN) & ISSN %in% neon_v1$ISSN ~ 1,
-    library == "lter" & !is.na(DOI) & DOI %in% neon_v1$DOI ~ 1,
-    # NEON pubs in LTER
-    library == "neon" & !is.na(Title) & Title %in% lter_v1$Title ~ 1,
-    library == "neon" & !is.na(ISBN) & ISBN %in% lter_v1$ISBN ~ 1,
-    library == "neon" & !is.na(ISSN) & ISSN %in% lter_v1$ISSN ~ 1,
-    library == "neon" & !is.na(DOI) & DOI %in% lter_v1$DOI ~ 1,
-    # Otherwise, assume not in publication list
-    T ~ NA)) %>% 
+# Actual integration across datasets
+combo_v1 <- dplyr::bind_rows(lter_v2, neon_v2) %>% 
   # Tweak the name of columns with overly long names
   dplyr::rename(pub_year = Publication.Year) %>% 
   # Count instances per year and publication type
@@ -140,7 +157,7 @@ combo_v1 <- lter_v1 %>%
                    shared_ct = sum(shared, na.rm = T)) %>% 
   dplyr::ungroup() %>% 
   # Calculate proportion shared
-  dplyr::mutate(shared_prop = shared_ct / total_ct) %>% 
+  dplyr::mutate(shared_prop = shared_ct / total_ct) %>%
   # Identify counts based on whether they are library specific or shared
   dplyr::mutate(category = dplyr::case_when(
     shared_ct != 0 ~ "Shared",
@@ -148,8 +165,7 @@ combo_v1 <- lter_v1 %>%
     library == "neon" & shared_ct == 0 ~ "NEON only"),
     .after = pub_year) %>% 
   # Mess with the factor order
-  dplyr::mutate(category = factor(category,
-                                  levels = c("LTER only", "Shared", "NEON only")))
+  dplyr::mutate(category = factor(category, levels = c("LTER only", "Shared", "NEON only")))
 
 # Check structure
 dplyr::glimpse(combo_v1)
