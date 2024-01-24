@@ -155,30 +155,34 @@ combo_v1 <- dplyr::bind_rows(lter_v2, neon_v2) %>%
   dplyr::group_by(library, pub_year) %>% 
   dplyr::summarize(total_ct = dplyr::n(),
                    shared_ct = sum(shared, na.rm = T)) %>% 
-  dplyr::ungroup() %>% 
-  # Calculate proportion shared
-  dplyr::mutate(shared_prop = shared_ct / total_ct) %>%
-  # Identify counts based on whether they are library specific or shared
-  dplyr::mutate(category = dplyr::case_when(
-    shared_ct != 0 ~ "Shared",
-    library == "lter" & shared_ct == 0 ~ "LTER only",
-    library == "neon" & shared_ct == 0 ~ "NEON only"),
-    .after = pub_year) %>% 
-  # Mess with the factor order
-  dplyr::mutate(category = factor(category, levels = c("LTER only", "Shared", "NEON only")))
+  dplyr::ungroup()
 
 # Check structure
 dplyr::glimpse(combo_v1)
 
-# Make a version for shared only (LTER focal)
-shared_only <- combo_v1 %>% 
-  dplyr::filter(library == "lter" & shared_ct != 0)
+# Pre-visualization needed wrangling
+combo_v2 <- combo_v1 %>% 
+  # Pivot to long format
+  tidyr::pivot_longer(cols = dplyr::ends_with("_ct"),
+                      values_to = "pub_ct") %>% 
+  # Filter out instances where no shared publications were present
+  dplyr::filter(!(name == "shared_ct" & pub_ct == 0)) %>% 
+  # Generate useful categories
+  dplyr::mutate(category = dplyr::case_when(
+    library == "lter" & name != "shared_ct" ~ "LTER only",
+    library == "lter" & name == "shared_ct" ~ "Shared",
+    library == "neon" & name != "shared_ct" ~ "NEON only"),
+    .before = dplyr::everything()) %>% 
+  # Mess with the factor order
+  dplyr::mutate(category = factor(category, levels = c("LTER only", "Shared", "NEON only"))) %>% 
+  # Drop unwanted columns
+  dplyr::select(-library, -name)
 
-# Make a simpler count per 'category'
-cat_sums <- combo_v1 %>% 
-  dplyr::group_by(category, pub_year) %>% 
-  dplyr::summarize(pub_ct = sum(total_ct, na.rm = T)) %>% 
-  dplyr::ungroup()
+# Check structure
+dplyr::glimpse(combo_v2)
+
+# Make a version for shared only (LTER focal)
+shared_only <- dplyr::filter(combo_v2, category != "NEON only")
 
 ## ------------------------------ ##
             # Visuals ----
@@ -188,9 +192,9 @@ cat_sums <- combo_v1 %>%
 dir.create(path = file.path("graphs"), showWarnings = F)
 
 # Graph 1 - Shared paper *count* over time
-ggplot(shared_only, aes(x = pub_year, y = shared_ct)) +
+ggplot(shared_only, aes(x = pub_year, y = pub_ct)) +
   geom_smooth(method = "loess", formula = "y ~ x", se = F, color = 'black') +
-  geom_point(aes(fill = shared_ct), shape = 21, size = 3) +
+  geom_point(aes(fill = pub_ct), shape = 21, size = 3) +
   labs(y = "Shared Publication Count", x = "Publication Year") +
   supportR::theme_lyon() +
   theme(legend.position = "none")
@@ -199,20 +203,20 @@ ggplot(shared_only, aes(x = pub_year, y = shared_ct)) +
 ggsave(filename = file.path("graphs", "lter-neon-pubs_shared-ct.png"),
        height = 4, width = 6, units = "in")
 
-# Graph 2 - Shared paper *proportion* over time
-ggplot(shared_only, aes(x = pub_year, y = shared_prop)) +
-  geom_smooth(method = "loess", formula = "y ~ x", se = F, color = 'black') +
-  geom_point(aes(fill = shared_prop), shape = 21, size = 3) +
-  labs(y = "Shared Publication Proportion", x = "Publication Year") +
-  supportR::theme_lyon() +
-  theme(legend.position = "none")
-
-# Export
-ggsave(filename = file.path("graphs", "lter-neon-pubs_shared-prop.png"),
-       height = 4, width = 6, units = "in")
+# # Graph 2 - Shared paper *proportion* over time
+# ggplot(shared_only, aes(x = pub_year, y = shared_prop)) +
+#   geom_smooth(method = "loess", formula = "y ~ x", se = F, color = 'black') +
+#   geom_point(aes(fill = shared_prop), shape = 21, size = 3) +
+#   labs(y = "Shared Publication Proportion", x = "Publication Year") +
+#   supportR::theme_lyon() +
+#   theme(legend.position = "none")
+# 
+# # Export
+# ggsave(filename = file.path("graphs", "lter-neon-pubs_shared-prop.png"),
+#        height = 4, width = 6, units = "in")
 
 # Graph 3 - Stacked bar plot of LTER only, NEON only, and shared
-ggplot(cat_sums, aes(x = pub_year, y = pub_ct)) +
+ggplot(combo_v2, aes(x = pub_year, y = pub_ct)) +
   geom_bar(aes(fill = category), color = "black", stat = "identity") +
   labs(y = "Publication Count", x = "Publication Year") +
   scale_fill_manual(values = c("LTER only" = "#97AE3F", 
