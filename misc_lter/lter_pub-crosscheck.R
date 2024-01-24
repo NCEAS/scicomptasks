@@ -82,7 +82,7 @@ lter_v1 <- lter_v0 %>%
   # Drop any publications before LTER was founded
   dplyr::filter(Publication.Year >= 1980) %>% 
   # Filter to only journal articles or theses (and drop that column after)
-  dplyr::filter(Item.Type %in% c("journalArticle", "thesis")) %>% 
+  dplyr::filter(Item.Type %in% c("journalarticle", "thesis")) %>% 
   dplyr::select(-Item.Type) %>% 
   # Drop non-unique rows
   dplyr::distinct()
@@ -104,7 +104,7 @@ neon_v1 <- neon_v0 %>%
   dplyr::mutate(Publication.Year = as.numeric(Publication.Year)) %>% 
   dplyr::filter(!is.na(Publication.Year)) %>% 
   dplyr::filter(Publication.Year >= 1980) %>% 
-  dplyr::filter(Item.Type %in% c("journalArticle", "thesis")) %>% 
+  dplyr::filter(Item.Type %in% c("journalarticle", "thesis")) %>% 
   dplyr::select(-Item.Type) %>% 
   dplyr::distinct()
 
