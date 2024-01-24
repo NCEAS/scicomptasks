@@ -182,7 +182,7 @@ combo_v2 <- combo_v1 %>%
 dplyr::glimpse(combo_v2)
 
 # Make a version for shared only (LTER focal)
-shared_only <- dplyr::filter(combo_v2, category != "NEON only")
+shared_only <- dplyr::filter(combo_v2, category == "Shared")
 
 ## ------------------------------ ##
             # Visuals ----
