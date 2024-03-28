@@ -23,7 +23,7 @@ state_borders <- sf::st_as_sf(maps::map(database = "state", plot = F, fill = T))
 borders <- dplyr::bind_rows(global_borders, state_borders)
 
 ## ------------------------------ ##
- # 2024 Consolidation Effort ----
+    # Initial Exploration ----
 ## ------------------------------ ##
 
 # Read in 2017 shapefiles
@@ -38,7 +38,11 @@ sort(unique(lter_v1$SITE)); length(unique(lter_v1$SITE))
 # Check CRS
 sf::st_crs(lter_v1)
 
-# And new 2019 BLE polygons
+## ------------------------------ ##
+        # BLE Inclusion ----
+## ------------------------------ ##
+
+# Check out 2019 BLE polygons
 ble_v1 <- sf::st_read(dsn = file.path("data", "ble_lagoons_polygons.shp"))
 
 # Check contents
@@ -61,21 +65,43 @@ dplyr::glimpse(ble_v2)
 # Attach BLE to the rest of the network
 lter_v2 <- dplyr::bind_rows(lter_v1, ble_v2)
 
+
+## ------------------------------ ##
+    # Exploratory Graphing ----
+## ------------------------------ ##
+
 # Exploratory base plot 
 plot(lter_v2["SITE"], axes = T)
 
-# Exploratory ggplot
+# Plot Continental US
 ggplot() +
   # Add relevant country/state borders
   geom_sf(data = global_borders, fill = "white") +
   # Add site polygons
   geom_sf(data = lter_v2, aes(fill = SITE)) +
   # Define borders
-  coord_sf(xlim = c(-150, -30), ylim = c(80, -80), expand = F) +
+  coord_sf(xlim = c(-140, -50), ylim = c(60, 20), expand = F) +
   # Customize legend / axis elements
   labs(x = "Longitude", y = "Latitude") +
   supportR::theme_lyon() + 
   theme(legend.position = "none")
 
+# Plot Alaska
+ggplot() +
+  geom_sf(data = global_borders, fill = "white") +
+  geom_sf(data = lter_v2, aes(fill = SITE)) +
+  coord_sf(xlim = c(-180, -130), ylim = c(80, 50), expand = F) +
+  labs(x = "Longitude", y = "Latitude") +
+  supportR::theme_lyon() + 
+  theme(legend.position = "none")
+
+# Plot Antarctica
+ggplot() +
+  geom_sf(data = global_borders, fill = "white") +
+  geom_sf(data = lter_v2, aes(fill = SITE)) +
+  coord_sf(xlim = c(-180, 180), ylim = c(-55, -80), expand = F) +
+  labs(x = "Longitude", y = "Latitude") +
+  supportR::theme_lyon() + 
+  theme(legend.position = "none")
 
 # End ----
