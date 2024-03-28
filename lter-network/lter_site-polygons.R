@@ -12,10 +12,14 @@
 
 # Load libraries
 # install.packages("librarian")
-librarian::shelf(tidyverse, googledrive, sf)
+librarian::shelf(tidyverse, googledrive, sf, maps)
 
 # Clear environment
 rm(list = ls())
+
+# Get country & US state borders
+borders <- sf::st_as_sf(maps::map(database = "world", plot = F, fill = T)) %>%
+  dplyr::bind_rows(sf::st_as_sf(maps::map(database = "state", plot = F, fill = T)))
 
 ## ------------------------------ ##
  # 2024 Consolidation Effort ----
@@ -30,11 +34,17 @@ dplyr::glimpse(lter_v1)
 # How many sites are included / which of them?
 sort(unique(lter_v1$SITE)); length(unique(lter_v1$SITE))
 
+# Check CRS
+sf::st_crs(lter_v1)
+
 # And new 2019 BLE polygons
 ble_v1 <- sf::st_read(dsn = file.path("data", "ble_lagoons_polygons.shp"))
 
 # Check contents
 dplyr::glimpse(ble_v1)
+
+# Check CRS
+sf::st_crs(ble_v1)
 
 # Wrangle BLE polygons for consistency with other polygons
 ble_v2 <- ble_v1 %>% 
