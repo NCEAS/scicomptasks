@@ -12,14 +12,15 @@
 
 # Load libraries
 # install.packages("librarian")
-librarian::shelf(tidyverse, googledrive, sf, maps)
+librarian::shelf(tidyverse, googledrive, sf, maps, supportR)
 
 # Clear environment
 rm(list = ls())
 
-# Get country & US state borders
-borders <- sf::st_as_sf(maps::map(database = "world", plot = F, fill = T)) %>%
-  dplyr::bind_rows(sf::st_as_sf(maps::map(database = "state", plot = F, fill = T)))
+# Get state / country borders
+global_borders <- sf::st_as_sf(maps::map(database = "world", plot = F, fill = T))
+state_borders <- sf::st_as_sf(maps::map(database = "state", plot = F, fill = T))
+borders <- dplyr::bind_rows(global_borders, state_borders)
 
 ## ------------------------------ ##
  # 2024 Consolidation Effort ----
@@ -60,8 +61,21 @@ dplyr::glimpse(ble_v2)
 # Attach BLE to the rest of the network
 lter_v2 <- dplyr::bind_rows(lter_v1, ble_v2)
 
-# Exploratory plot 
+# Exploratory base plot 
 plot(lter_v2["SITE"], axes = T)
+
+# Exploratory ggplot
+ggplot() +
+  # Add relevant country/state borders
+  geom_sf(data = global_borders, fill = "white") +
+  # Add site polygons
+  geom_sf(data = lter_v2, aes(fill = SITE)) +
+  # Define borders
+  coord_sf(xlim = c(-150, -30), ylim = c(80, -80), expand = F) +
+  # Customize legend / axis elements
+  labs(x = "Longitude", y = "Latitude") +
+  supportR::theme_lyon() + 
+  theme(legend.position = "none")
 
 
 # End ----
