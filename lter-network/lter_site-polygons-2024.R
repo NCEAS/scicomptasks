@@ -18,9 +18,8 @@ librarian::shelf(tidyverse, googledrive, sf, maps, supportR)
 rm(list = ls())
 
 # Get state / country borders
-global_borders <- sf::st_as_sf(maps::map(database = "world", plot = F, fill = T))
-state_borders <- sf::st_as_sf(maps::map(database = "state", plot = F, fill = T))
-borders <- dplyr::bind_rows(global_borders, state_borders)
+borders <- dplyr::bind_rows(sf::st_as_sf(maps::map(database = "world", plot = F, fill = T)),
+                            sf::st_as_sf(maps::map(database = "state", plot = F, fill = T)))
 
 ## ------------------------------ ##
     # Initial Exploration ----
@@ -39,7 +38,7 @@ sort(unique(lter_v1$SITE)); length(unique(lter_v1$SITE))
 sf::st_crs(lter_v1)
 
 ## ------------------------------ ##
-        # BLE Inclusion ----
+        # BLE Wrangling ----
 ## ------------------------------ ##
 
 # Check out 2019 BLE polygons
@@ -62,21 +61,25 @@ ble_v2 <- ble_v1 %>%
 # Re-check
 dplyr::glimpse(ble_v2)
 
+## ------------------------------ ##
+      # New Site Inclusion ----
+## ------------------------------ ##
+
 # Attach BLE to the rest of the network
 lter_v2 <- dplyr::bind_rows(lter_v1, ble_v2)
 
+# Exploratory base plot 
+plot(lter_v2["SITE"], axes = T)
 
 ## ------------------------------ ##
     # Exploratory Graphing ----
 ## ------------------------------ ##
 
-# Exploratory base plot 
-plot(lter_v2["SITE"], axes = T)
 
 # Plot Continental US
 ggplot() +
   # Add relevant country/state borders
-  geom_sf(data = global_borders, fill = "white") +
+  geom_sf(data = borders, fill = "white") +
   # Add site polygons
   geom_sf(data = lter_v2, aes(fill = SITE)) +
   # Define borders
