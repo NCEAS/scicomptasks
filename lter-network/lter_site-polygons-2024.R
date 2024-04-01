@@ -83,7 +83,7 @@ poly_name <- file.path("data", "site-polys_2024", "lter_site-boundaries_2024.shp
 sf::st_write(obj = lter_final, dsn = poly_name, delete_layer = T)
 
 ## ------------------------------ ##
-    # Exploratory Graphing ----
+    # Per-Site Map Making ----
 ## ------------------------------ ##
 
 # Clear environment of everything that is not needed
@@ -150,11 +150,19 @@ for(one_name in sort(unique(lter_final$SITE))){
           axis.text.x = element_text(angle = 35, hjust = 1))
   
   # Assemble file name / path
-  one_file <- file.path("graphs", paste0("lter-site-polygon_", one_name, ".png"))
+  one_file <- file.path("graphs", paste0("lter-site-polygon_", one_name, "_2024.png"))
   
   # Export
   ggsave(filename = one_file, width = 5, height = 5, units = "in")
   
-}
+} # Close loop
+
+# Identify exported map file names
+lter_maps <- dir(path = file.path("graphs"), pattern = "lter-site-polygon_")
+
+# Send these files to the Google Drive
+purrr::walk(.x = lter_maps, 
+            .f = ~ googledrive::drive_upload(media = file.path("graphs", .x), overwrite = T,
+                                             path = googledrive::as_id("https://drive.google.com/drive/u/0/folders/1mqhSuYgun-OA_50ET2vD-u9niCb9f6-R")))
 
 # End ----
