@@ -16,6 +16,8 @@ librarian::shelf(tidyverse, googledrive, sf, maps, supportR)
 
 # Make needed folder(s)
 dir.create(path = file.path("graphs"), showWarnings = F)
+dir.create(path = file.path("data"), showWarnings = F)
+dir.create(path = file.path("data", "site-polys_2024"), showWarnings = F)
 
 # Clear environment
 rm(list = ls())
@@ -65,14 +67,20 @@ ble_v2 <- ble_v1 %>%
 dplyr::glimpse(ble_v2)
 
 ## ------------------------------ ##
-      # New Site Inclusion ----
+    # Integration & Export ----
 ## ------------------------------ ##
 
 # Attach BLE to the rest of the network
 lter_v2 <- dplyr::bind_rows(lter_v1, ble_v2)
 
-# Exploratory base plot 
-plot(lter_v2["SITE"], axes = T)
+# Pick a final object name for the site boundaries
+lter_final <- lter_v2
+
+# Generate a file name / path
+poly_name <- file.path("data", "site-polys_2024", "lter_site-boundaries_2024.shp")
+
+# Export locally
+sf::st_write(obj = lter_final, dsn = poly_name)
 
 ## ------------------------------ ##
     # Exploratory Graphing ----
@@ -82,13 +90,13 @@ plot(lter_v2["SITE"], axes = T)
 coord_cutoff <- 2
 
 # Loop across sites
-for(one_name in unique(lter_v2$SITE)){
+for(one_name in unique(lter_final$SITE)){
   
   # Processing message
   message("Creating map for LTER site: ", one_name)
   
   # Subset to a single site
-  one_site <- dplyr::filter(lter_v2, SITE == one_name)
+  one_site <- dplyr::filter(lter_final, SITE == one_name)
   
   # Cast to "POINT" type
   one_pts <- suppressWarnings(sf::st_cast(x = one_site, to = "POINT"))
