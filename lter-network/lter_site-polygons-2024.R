@@ -78,7 +78,8 @@ plot(lter_v2["SITE"], axes = T)
     # Exploratory Graphing ----
 ## ------------------------------ ##
 
-
+# Define a coordinate cutoff (in degrees)
+coord_cutoff <- 2
 
 # Loop across sites
 for(one_name in unique(lter_v2$SITE)){
@@ -102,8 +103,10 @@ for(one_name in unique(lter_v2$SITE)){
     dplyr::mutate(rng_lat = abs(max_lat - min_lat),
                   rng_lon = abs(max_lon - min_lon)) %>% 
     # Bump up those values if they're beneath a threshold
-    dplyr::mutate(rng_lat = ifelse(rng_lat < 1, yes = 2, no = rng_lat),
-                  rng_lon = ifelse(rng_lon < 1, yes = 2, no = rng_lon)) %>% 
+    dplyr::mutate(rng_lat = ifelse(rng_lat < coord_cutoff, 
+                                   yes = coord_cutoff, no = rng_lat),
+                  rng_lon = ifelse(rng_lon < coord_cutoff, 
+                                   yes = coord_cutoff, no = rng_lon)) %>% 
     # Now use it to identify more reasonable limits
     dplyr::mutate(top = ifelse(max_lat > 0, 
                                yes = max_lat + rng_lat, 
@@ -128,7 +131,8 @@ for(one_name in unique(lter_v2$SITE)){
     coord_sf(xlim = c(one_box$left, one_box$right), 
              ylim = c(one_box$top, one_box$bottom)) +
     # Customize legend / axis elements
-    labs(x = "Longitude", y = "Latitude") +
+    labs(x = "Longitude", y = "Latitude",
+         title = paste0(one_name, " Boundary")) +
     supportR::theme_lyon() + 
     theme(legend.position = "none")
   
