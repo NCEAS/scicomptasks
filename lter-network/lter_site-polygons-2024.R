@@ -126,7 +126,7 @@ for(one_name in unique(lter_v2$SITE)){
     # Add country/state borders
     geom_sf(data = borders, fill = "white") +
     # Add site polygons
-    geom_sf(data = one_site, aes(fill = SITE)) +
+    geom_sf(data = one_site, aes(fill = SITE), alpha = 0.7) +
     # Define borders
     coord_sf(xlim = c(one_box$left, one_box$right), 
              ylim = c(one_box$top, one_box$bottom)) +
@@ -134,7 +134,8 @@ for(one_name in unique(lter_v2$SITE)){
     labs(x = "Longitude", y = "Latitude",
          title = paste0(one_name, " Boundary")) +
     supportR::theme_lyon() + 
-    theme(legend.position = "none")
+    theme(legend.position = "none",
+          axis.text.x = element_text(angle = 35, hjust = 1))
   
   # Assemble file name / path
   one_file <- file.path("graphs", paste0("lter-site-polygon_", one_name, ".png"))
