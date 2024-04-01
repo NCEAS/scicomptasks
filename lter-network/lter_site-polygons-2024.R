@@ -12,7 +12,7 @@
 
 # Load libraries
 # install.packages("librarian")
-librarian::shelf(tidyverse, googledrive, sf, maps, supportR)
+librarian::shelf(tidyverse, googledrive, sf, maps, geojsonio, supportR)
 
 # Make needed folder(s)
 dir.create(path = file.path("graphs"), showWarnings = F)
@@ -67,14 +67,44 @@ ble_v2 <- ble_v1 %>%
 dplyr::glimpse(ble_v2)
 
 ## ------------------------------ ##
+# NGA Wrangling ----
+## ------------------------------ ##
+
+# Read in NGA GeoJSON and transform to sf
+nga_v1 <- geojsonio::geojson_read(x = file.path("data", "nga_bb.geojson"), what = "sp") %>%
+  sf::st_as_sf(x = .)
+
+# Glimpse it
+dplyr::glimpse(nga_v1)
+
+# Wrangle NGA polygons for consistency with other polygons
+nga_v2 <- nga_v1 %>% 
+  # Drop unwanted column(s)
+  dplyr::select(-FID) %>% 
+  # Add in desired columns
+  dplyr::mutate(SITE = "NGA",
+                NAME = "Northern Gulf of Alaska",
+                .before = dplyr::everything())
+
+# Check the structure of that
+dplyr::glimpse(nga_v2)
+
+## ------------------------------ ##
     # Integration & Export ----
 ## ------------------------------ ##
 
-# Attach BLE to the rest of the network
-lter_v2 <- dplyr::bind_rows(lter_v1, ble_v2)
+# Combine the previously missing sites into the rest of the network's polygons
+lter_v2 <- lter_v1 %>% 
+  # Beaufort Lagoon Ecosystem
+  dplyr::bind_rows(ble_v2) %>% 
+  # Northern Gulf of Alaska
+  dplyr::bind_rows(nga_v2)
 
 # Pick a final object name for the site boundaries
 lter_final <- lter_v2
+
+# Check new sites
+supportR::diff_check(old = unique(lter_v1$SITE), new = unique(lter_final$SITE))
 
 # Generate a file name / path
 poly_name <- file.path("data", "site-polys_2024", "lter_site-boundaries_2024.shp")
