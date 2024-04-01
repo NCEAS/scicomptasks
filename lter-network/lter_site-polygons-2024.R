@@ -80,7 +80,7 @@ lter_final <- lter_v2
 poly_name <- file.path("data", "site-polys_2024", "lter_site-boundaries_2024.shp")
 
 # Export locally
-sf::st_write(obj = lter_final, dsn = poly_name)
+sf::st_write(obj = lter_final, dsn = poly_name, delete_layer = T)
 
 ## ------------------------------ ##
     # Exploratory Graphing ----
