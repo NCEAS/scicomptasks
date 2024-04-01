@@ -140,42 +140,4 @@ for(one_name in unique(lter_v2$SITE)){
   
 }
 
-# BASEMENT ----
-
-
-
-
-
-
-# Plot Continental US
-ggplot() +
-  # Add relevant country/state borders
-  geom_sf(data = borders, fill = "white") +
-  # Add site polygons
-  geom_sf(data = lter_v2, aes(fill = SITE)) +
-  # Define borders
-  coord_sf(xlim = c(-140, -50), ylim = c(60, 20), expand = F) +
-  # Customize legend / axis elements
-  labs(x = "Longitude", y = "Latitude") +
-  supportR::theme_lyon() + 
-  theme(legend.position = "none")
-
-# Plot Alaska
-ggplot() +
-  geom_sf(data = global_borders, fill = "white") +
-  geom_sf(data = lter_v2, aes(fill = SITE)) +
-  coord_sf(xlim = c(-180, -130), ylim = c(80, 50), expand = F) +
-  labs(x = "Longitude", y = "Latitude") +
-  supportR::theme_lyon() + 
-  theme(legend.position = "none")
-
-# Plot Antarctica
-ggplot() +
-  geom_sf(data = global_borders, fill = "white") +
-  geom_sf(data = lter_v2, aes(fill = SITE)) +
-  coord_sf(xlim = c(-180, 180), ylim = c(-55, -80), expand = F) +
-  labs(x = "Longitude", y = "Latitude") +
-  supportR::theme_lyon() + 
-  theme(legend.position = "none")
-
 # End ----
