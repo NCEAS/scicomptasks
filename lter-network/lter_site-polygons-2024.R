@@ -86,11 +86,15 @@ sf::st_write(obj = lter_final, dsn = poly_name, delete_layer = T)
     # Exploratory Graphing ----
 ## ------------------------------ ##
 
+# Clear environment of everything that is not needed
+rm(list = setdiff(ls(), c("borders", "lter_final")))
+
 # Define a coordinate cutoff (in degrees)
-coord_cutoff <- 2
+coord_cutoff_lat <- 2.25
+coord_cutoff_lon <- 3.5
 
 # Loop across sites
-for(one_name in unique(lter_final$SITE)){
+for(one_name in sort(unique(lter_final$SITE))){
   
   # Processing message
   message("Creating map for LTER site: ", one_name)
@@ -111,10 +115,10 @@ for(one_name in unique(lter_final$SITE)){
     dplyr::mutate(rng_lat = abs(max_lat - min_lat),
                   rng_lon = abs(max_lon - min_lon)) %>% 
     # Bump up those values if they're beneath a threshold
-    dplyr::mutate(rng_lat = ifelse(rng_lat < coord_cutoff, 
-                                   yes = coord_cutoff, no = rng_lat),
-                  rng_lon = ifelse(rng_lon < coord_cutoff, 
-                                   yes = coord_cutoff, no = rng_lon)) %>% 
+    dplyr::mutate(rng_lat = ifelse(rng_lat < coord_cutoff_lat, 
+                                   yes = coord_cutoff_lat, no = rng_lat),
+                  rng_lon = ifelse(rng_lon < coord_cutoff_lon, 
+                                   yes = coord_cutoff_lon, no = rng_lon)) %>% 
     # Now use it to identify more reasonable limits
     dplyr::mutate(top = ifelse(max_lat > 0, 
                                yes = max_lat + rng_lat, 
