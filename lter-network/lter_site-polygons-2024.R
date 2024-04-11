@@ -67,7 +67,32 @@ ble_v2 <- ble_v1 %>%
 dplyr::glimpse(ble_v2)
 
 ## ------------------------------ ##
-# NGA Wrangling ----
+        # MSP Wrangling ----
+## ------------------------------ ##
+# Available here: https://deims.org/dc6949fb-2771-4e31-8279-cdb0489842f0
+
+# Check out 2022 MSP polygons
+msp_v1 <- sf::st_read(dsn = file.path("data", "msp_deims_sites_boundariesPolygon.shp"))
+
+# Check contents
+dplyr::glimpse(msp_v1)
+
+# Check CRS
+sf::st_crs(msp_v1)
+
+# Wrangle polygons for consistency with other polygons
+msp_v2 <- msp_v1 %>% 
+  # Create desired column(s)
+  dplyr::mutate(SITE = "MSP",
+                NAME = "Minneapolis-St.Paul") %>% 
+  # Pare down to just those columns
+  dplyr::select(SITE, NAME)
+
+# Re-check
+dplyr::glimpse(msp_v2)
+
+## ------------------------------ ##
+      # NGA Wrangling ----
 ## ------------------------------ ##
 
 # Read in NGA GeoJSON and transform to sf
@@ -96,7 +121,9 @@ dplyr::glimpse(nga_v2)
 # Combine the previously missing sites into the rest of the network's polygons
 lter_v2 <- lter_v1 %>% 
   # Beaufort Lagoon Ecosystem
-  dplyr::bind_rows(ble_v2) %>% 
+  dplyr::bind_rows(ble_v2) %>%
+  # Minneapolis-St. Paul
+  dplyr::bind_rows(msp_v2) %>% 
   # Northern Gulf of Alaska
   dplyr::bind_rows(nga_v2)
 
