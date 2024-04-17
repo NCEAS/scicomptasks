@@ -19,6 +19,9 @@ dir.create(path = file.path("graphs"), showWarnings = F)
 dir.create(path = file.path("data"), showWarnings = F)
 dir.create(path = file.path("data", "site-polys_2024"), showWarnings = F)
 
+# Turn off S2 Processing
+sf::sf_use_s2(FALSE)
+
 # Clear environment
 rm(list = ls())
 
@@ -57,6 +60,8 @@ sf::st_crs(ble_v1)
 
 # Wrangle BLE polygons for consistency with other polygons
 ble_v2 <- ble_v1 %>% 
+  # Transform CRS (is already right but better safe than sorry)
+  sf::st_transform(x = ., crs = sf::st_crs(lter_v1)) %>% 
   # Drop unwanted column(s)
   dplyr::select(-Id) %>% 
   # Rename desired but inconsistent ones
@@ -82,6 +87,8 @@ sf::st_crs(msp_v1)
 
 # Wrangle polygons for consistency with other polygons
 msp_v2 <- msp_v1 %>% 
+  # Transform CRS (is already right but better safe than sorry)
+  sf::st_transform(x = ., crs = sf::st_crs(lter_v1)) %>% 
   # Create desired column(s)
   dplyr::mutate(SITE = "MSP",
                 NAME = "Minneapolis-St.Paul") %>% 
@@ -90,6 +97,34 @@ msp_v2 <- msp_v1 %>%
 
 # Re-check
 dplyr::glimpse(msp_v2)
+
+## ------------------------------ ##
+        # NES Wrangling ----
+## ------------------------------ ##
+
+# Check out NES polygons
+nes_v1 <- sf::st_read(dsn = file.path("data", "EPU_extended.shp"))
+
+# Check contents
+dplyr::glimpse(nes_v1)
+
+# Check CRS
+sf::st_crs(nes_v1)
+
+# Wrangle polygons for consistency with other polygons
+nes_v2 <- nes_v1 %>% 
+  # Transform to desired CRS
+  sf::st_transform(crs = sf::st_crs(lter_v1)) %>% 
+  # Combine sub-polygons to make just one shape for the whole site
+  sf::st_union(x = .) %>% 
+  # Create desired column(s)
+  merge(x = ., y = data.frame("SITE" = "NES",
+                              "NAME" = "Northeast U.S. Shelf")) %>% 
+  # Reorder (slightly)
+  dplyr::relocate(SITE:NAME, .before = dplyr::everything())
+
+# Re-check
+dplyr::glimpse(nes_v2)
 
 ## ------------------------------ ##
       # NGA Wrangling ----
@@ -104,6 +139,8 @@ dplyr::glimpse(nga_v1)
 
 # Wrangle NGA polygons for consistency with other polygons
 nga_v2 <- nga_v1 %>% 
+  # Transform CRS (is already right but better safe than sorry)
+  sf::st_transform(x = ., crs = sf::st_crs(lter_v1)) %>% 
   # Drop unwanted column(s)
   dplyr::select(-FID) %>% 
   # Add in desired columns
@@ -125,7 +162,9 @@ lter_v2 <- lter_v1 %>%
   # Minneapolis-St. Paul
   dplyr::bind_rows(msp_v2) %>% 
   # Northern Gulf of Alaska
-  dplyr::bind_rows(nga_v2)
+  dplyr::bind_rows(nga_v2) %>% 
+  # Northeast US Shelf
+  dplyr::bind_rows(nes_v2)
 
 # Pick a final object name for the site boundaries
 lter_final <- lter_v2
