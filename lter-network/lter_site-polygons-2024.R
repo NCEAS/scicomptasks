@@ -169,6 +169,9 @@ lter_v2 <- lter_v1 %>%
 # Pick a final object name for the site boundaries
 lter_final <- lter_v2
 
+# Check the final spatial extent
+sf::st_bbox(lter_final)
+
 # Check new sites
 supportR::diff_check(old = unique(lter_v1$SITE), new = unique(lter_final$SITE))
 
