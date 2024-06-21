@@ -182,7 +182,7 @@ poly_name <- file.path("data", "site-polys_2024", "lter_site-boundaries.shp")
 sf::st_write(obj = lter_final, dsn = poly_name, delete_layer = T)
 
 # Generate a CSV name
-poly_csv <- gsub(pattern = "\\.shp", replacement = ".csv", x = poly_name)
+poly_csv <- gsub(pattern = "boundaries.shp", replacement = "names.csv", x = poly_name)
 
 # Drop the geometry information
 lter_csv <- sf::st_drop_geometry(x = lter_final)
