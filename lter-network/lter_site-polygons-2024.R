@@ -181,6 +181,18 @@ poly_name <- file.path("data", "site-polys_2024", "lter_site-boundaries.shp")
 # Export locally
 sf::st_write(obj = lter_final, dsn = poly_name, delete_layer = T)
 
+# Generate a CSV name
+poly_csv <- gsub(pattern = "\\.shp", replacement = ".csv", x = poly_name)
+
+# Drop the geometry information
+lter_csv <- sf::st_drop_geometry(x = lter_final)
+
+# Check structure
+dplyr::glimpse(lter_csv)
+
+# Export that too
+write.csv(x = lter_csv, file = poly_csv, row.names = F, na = '')
+
 ## ------------------------------ ##
     # Per-Site Map Making ----
 ## ------------------------------ ##
