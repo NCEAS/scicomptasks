@@ -176,7 +176,7 @@ sf::st_bbox(lter_final)
 supportR::diff_check(old = unique(lter_v1$SITE), new = unique(lter_final$SITE))
 
 # Generate a file name / path
-poly_name <- file.path("data", "site-polys_2024", "lter_site-boundaries_2024.shp")
+poly_name <- file.path("data", "site-polys_2024", "lter_site-boundaries.shp")
 
 # Export locally
 sf::st_write(obj = lter_final, dsn = poly_name, delete_layer = T)
