@@ -152,13 +152,83 @@ nga_v2 <- nga_v1 %>%
 dplyr::glimpse(nga_v2)
 
 ## ------------------------------ ##
+# FCE Update ----
+## ------------------------------ ##
+
+# Read in new boundary
+fce_v1 <- sf::st_read(dsn = file.path("data", "FCE_study_area_2022.shp"))
+
+# Check contents
+dplyr::glimpse(fce_v1)
+
+# Check CRS
+sf::st_crs(fce_v1)
+
+# Wrangle polygons for consistency with other polygons
+fce_v2 <- fce_v1 %>% 
+  # Transform to desired CRS
+  sf::st_transform(crs = sf::st_crs(lter_v1)) %>% 
+  # Create desired column(s)
+  dplyr::mutate(SITE = "FCE",
+                NAME = "Florida Coastal Everglades") %>% 
+  # Drop unwanted columns
+  dplyr::select(SITE, NAME) %>% 
+  # Reorder (slightly)
+  dplyr::relocate(SITE:NAME, .before = dplyr::everything())
+
+# Re-check
+dplyr::glimpse(fce_v2)
+
+# Visual demo
+plot(fce_v2["SITE"], axes = T)
+
+## ------------------------------ ##
+# CDR Update ----
+## ------------------------------ ##
+
+# Read in new boundary
+cdr_v1 <- sf::st_read(dsn = file.path("data", "CDR_Border.shp"))
+
+# Check contents
+dplyr::glimpse(cdr_v1)
+
+# Check CRS
+sf::st_crs(cdr_v1)
+
+# Wrangle polygons for consistency with other polygons
+cdr_v2 <- cdr_v1 %>% 
+  # Transform to desired CRS
+  sf::st_transform(crs = sf::st_crs(lter_v1)) %>% 
+  # Create desired column(s)
+  dplyr::mutate(SITE = "CDR",
+                NAME = "Cedar Creek") %>% 
+  # Drop unwanted columns
+  dplyr::select(SITE, NAME) %>% 
+  # Reorder (slightly)
+  dplyr::relocate(SITE:NAME, .before = dplyr::everything()) %>% 
+  # Make it the right polygon shape
+  sf::st_polygonize()
+
+# Re-check
+dplyr::glimpse(cdr_v2)
+
+# Visual demo
+plot(cdr_v2["SITE"], axes = T)
+
+## ------------------------------ ##
     # Integration & Export ----
 ## ------------------------------ ##
 
 # Combine the previously missing sites into the rest of the network's polygons
 lter_v2 <- lter_v1 %>% 
+  # Remove outdated polygons
+  dplyr::filter(!SITE %in% c("FCE", "CDR")) %>% 
   # Beaufort Lagoon Ecosystem
   dplyr::bind_rows(ble_v2) %>%
+  # Cedar Creek
+  dplyr::bind_rows(fce_v2) %>% 
+  # Florida Coastal Everglades
+  dplyr::bind_rows(cdr_v2) %>% 
   # Minneapolis-St. Paul
   dplyr::bind_rows(msp_v2) %>% 
   # Northern Gulf of Alaska
