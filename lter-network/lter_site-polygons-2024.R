@@ -71,119 +71,11 @@ ble_v2 <- ble_v1 %>%
 # Re-check
 dplyr::glimpse(ble_v2)
 
-## ------------------------------ ##
-        # MSP Wrangling ----
-## ------------------------------ ##
-# Available here: https://deims.org/dc6949fb-2771-4e31-8279-cdb0489842f0
-
-# Check out 2022 MSP polygons
-msp_v1 <- sf::st_read(dsn = file.path("data", "msp_deims_sites_boundariesPolygon.shp"))
-
-# Check contents
-dplyr::glimpse(msp_v1)
-
-# Check CRS
-sf::st_crs(msp_v1)
-
-# Wrangle polygons for consistency with other polygons
-msp_v2 <- msp_v1 %>% 
-  # Transform CRS (is already right but better safe than sorry)
-  sf::st_transform(x = ., crs = sf::st_crs(lter_v1)) %>% 
-  # Create desired column(s)
-  dplyr::mutate(SITE = "MSP",
-                NAME = "Minneapolis-St.Paul") %>% 
-  # Pare down to just those columns
-  dplyr::select(SITE, NAME)
-
-# Re-check
-dplyr::glimpse(msp_v2)
-
-## ------------------------------ ##
-        # NES Wrangling ----
-## ------------------------------ ##
-
-# Check out NES polygons
-nes_v1 <- sf::st_read(dsn = file.path("data", "EPU_extended.shp"))
-
-# Check contents
-dplyr::glimpse(nes_v1)
-
-# Check CRS
-sf::st_crs(nes_v1)
-
-# Wrangle polygons for consistency with other polygons
-nes_v2 <- nes_v1 %>% 
-  # Transform to desired CRS
-  sf::st_transform(crs = sf::st_crs(lter_v1)) %>% 
-  # Combine sub-polygons to make just one shape for the whole site
-  sf::st_union(x = .) %>% 
-  # Create desired column(s)
-  merge(x = ., y = data.frame("SITE" = "NES",
-                              "NAME" = "Northeast U.S. Shelf")) %>% 
-  # Reorder (slightly)
-  dplyr::relocate(SITE:NAME, .before = dplyr::everything())
-
-# Re-check
-dplyr::glimpse(nes_v2)
-
-## ------------------------------ ##
-      # NGA Wrangling ----
-## ------------------------------ ##
-
-# Read in NGA GeoJSON and transform to sf
-nga_v1 <- geojsonio::geojson_read(x = file.path("data", "nga_bb.geojson"), what = "sp") %>%
-  sf::st_as_sf(x = .)
-
-# Glimpse it
-dplyr::glimpse(nga_v1)
-
-# Wrangle NGA polygons for consistency with other polygons
-nga_v2 <- nga_v1 %>% 
-  # Transform CRS (is already right but better safe than sorry)
-  sf::st_transform(x = ., crs = sf::st_crs(lter_v1)) %>% 
-  # Drop unwanted column(s)
-  dplyr::select(-FID) %>% 
-  # Add in desired columns
-  dplyr::mutate(SITE = "NGA",
-                NAME = "Northern Gulf of Alaska",
-                .before = dplyr::everything())
-
-# Check the structure of that
-dplyr::glimpse(nga_v2)
-
-## ------------------------------ ##
-# FCE Update ----
-## ------------------------------ ##
-
-# Read in new boundary
-fce_v1 <- sf::st_read(dsn = file.path("data", "FCE_study_area_2022.shp"))
-
-# Check contents
-dplyr::glimpse(fce_v1)
-
-# Check CRS
-sf::st_crs(fce_v1)
-
-# Wrangle polygons for consistency with other polygons
-fce_v2 <- fce_v1 %>% 
-  # Transform to desired CRS
-  sf::st_transform(crs = sf::st_crs(lter_v1)) %>% 
-  # Create desired column(s)
-  dplyr::mutate(SITE = "FCE",
-                NAME = "Florida Coastal Everglades") %>% 
-  # Drop unwanted columns
-  dplyr::select(SITE, NAME) %>% 
-  # Reorder (slightly)
-  dplyr::relocate(SITE:NAME, .before = dplyr::everything())
-
-# Re-check
-dplyr::glimpse(fce_v2)
-
 # Visual demo
-plot(fce_v2["SITE"], axes = T)
+plot(ble_v2["SITE"], axes = T)
 
 ## ------------------------------ ##
-# CDR Update ----
+          # CDR Update ----
 ## ------------------------------ ##
 
 # Read in new boundary
@@ -214,6 +106,126 @@ dplyr::glimpse(cdr_v2)
 
 # Visual demo
 plot(cdr_v2["SITE"], axes = T)
+
+## ------------------------------ ##
+          # FCE Update ----
+## ------------------------------ ##
+
+# Read in new boundary
+fce_v1 <- sf::st_read(dsn = file.path("data", "FCE_study_area_2022.shp"))
+
+# Check contents
+dplyr::glimpse(fce_v1)
+
+# Check CRS
+sf::st_crs(fce_v1)
+
+# Wrangle polygons for consistency with other polygons
+fce_v2 <- fce_v1 %>% 
+  # Transform to desired CRS
+  sf::st_transform(crs = sf::st_crs(lter_v1)) %>% 
+  # Create desired column(s)
+  dplyr::mutate(SITE = "FCE",
+                NAME = "Florida Coastal Everglades") %>% 
+  # Drop unwanted columns
+  dplyr::select(SITE, NAME) %>% 
+  # Reorder (slightly)
+  dplyr::relocate(SITE:NAME, .before = dplyr::everything())
+
+# Re-check
+dplyr::glimpse(fce_v2)
+
+# Visual demo
+plot(fce_v2["SITE"], axes = T)
+
+## ------------------------------ ##
+        # MSP Wrangling ----
+## ------------------------------ ##
+# Available here: https://deims.org/dc6949fb-2771-4e31-8279-cdb0489842f0
+
+# Check out 2022 MSP polygons
+msp_v1 <- sf::st_read(dsn = file.path("data", "msp_deims_sites_boundariesPolygon.shp"))
+
+# Check contents
+dplyr::glimpse(msp_v1)
+
+# Check CRS
+sf::st_crs(msp_v1)
+
+# Wrangle polygons for consistency with other polygons
+msp_v2 <- msp_v1 %>% 
+  # Transform CRS (is already right but better safe than sorry)
+  sf::st_transform(x = ., crs = sf::st_crs(lter_v1)) %>% 
+  # Create desired column(s)
+  dplyr::mutate(SITE = "MSP",
+                NAME = "Minneapolis-St.Paul") %>% 
+  # Pare down to just those columns
+  dplyr::select(SITE, NAME)
+
+# Re-check
+dplyr::glimpse(msp_v2)
+
+# Visual demo
+plot(msp_v2["SITE"], axes = T)
+
+## ------------------------------ ##
+        # NES Wrangling ----
+## ------------------------------ ##
+
+# Check out NES polygons
+nes_v1 <- sf::st_read(dsn = file.path("data", "EPU_extended.shp"))
+
+# Check contents
+dplyr::glimpse(nes_v1)
+
+# Check CRS
+sf::st_crs(nes_v1)
+
+# Wrangle polygons for consistency with other polygons
+nes_v2 <- nes_v1 %>% 
+  # Transform to desired CRS
+  sf::st_transform(crs = sf::st_crs(lter_v1)) %>% 
+  # Combine sub-polygons to make just one shape for the whole site
+  sf::st_union(x = .) %>% 
+  # Create desired column(s)
+  merge(x = ., y = data.frame("SITE" = "NES",
+                              "NAME" = "Northeast U.S. Shelf")) %>% 
+  # Reorder (slightly)
+  dplyr::relocate(SITE:NAME, .before = dplyr::everything())
+
+# Re-check
+dplyr::glimpse(nes_v2)
+
+# Visual demo
+plot(nes_v2["SITE"], axes = T)
+
+## ------------------------------ ##
+      # NGA Wrangling ----
+## ------------------------------ ##
+
+# Read in NGA GeoJSON and transform to sf
+nga_v1 <- geojsonio::geojson_read(x = file.path("data", "nga_bb.geojson"), what = "sp") %>%
+  sf::st_as_sf(x = .)
+
+# Glimpse it
+dplyr::glimpse(nga_v1)
+
+# Wrangle NGA polygons for consistency with other polygons
+nga_v2 <- nga_v1 %>% 
+  # Transform CRS (is already right but better safe than sorry)
+  sf::st_transform(x = ., crs = sf::st_crs(lter_v1)) %>% 
+  # Drop unwanted column(s)
+  dplyr::select(-FID) %>% 
+  # Add in desired columns
+  dplyr::mutate(SITE = "NGA",
+                NAME = "Northern Gulf of Alaska",
+                .before = dplyr::everything())
+
+# Check the structure of that
+dplyr::glimpse(nga_v2)
+
+# Visual demo
+plot(nga_v2["SITE"], axes = T)
 
 ## ------------------------------ ##
     # Integration & Export ----
