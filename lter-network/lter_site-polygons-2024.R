@@ -196,9 +196,6 @@ nes_v2 <- nes_v1 %>%
 # Re-check
 dplyr::glimpse(nes_v2)
 
-# Visual demo
-plot(nes_v2["SITE"], axes = T)
-
 ## ------------------------------ ##
       # NGA Wrangling ----
 ## ------------------------------ ##
@@ -235,18 +232,15 @@ plot(nga_v2["SITE"], axes = T)
 lter_v2 <- lter_v1 %>% 
   # Remove outdated polygons
   dplyr::filter(!SITE %in% c("FCE", "CDR")) %>% 
-  # Beaufort Lagoon Ecosystem
+  # Add in new / updated polygons
+  ## Totally new
   dplyr::bind_rows(ble_v2) %>%
-  # Cedar Creek
-  dplyr::bind_rows(fce_v2) %>% 
-  # Florida Coastal Everglades
-  dplyr::bind_rows(cdr_v2) %>% 
-  # Minneapolis-St. Paul
   dplyr::bind_rows(msp_v2) %>% 
-  # Northern Gulf of Alaska
   dplyr::bind_rows(nga_v2) %>% 
-  # Northeast US Shelf
-  dplyr::bind_rows(nes_v2)
+  dplyr::bind_rows(nes_v2) %>% 
+  ## Updated
+  dplyr::bind_rows(cdr_v2) %>% 
+  dplyr::bind_rows(fce_v2)
 
 # Pick a final object name for the site boundaries
 lter_final <- lter_v2
