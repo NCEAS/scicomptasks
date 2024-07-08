@@ -11,6 +11,22 @@ source(file.path("exploratory", "misc_aret", "coding_demo_partA.R"))
 # Check structure of starting data
 str(vert_categories)
 
+## ---------------------------------------- ##
+              # Demo Graphs ----
+## ---------------------------------------- ##
+
+# Make a boxplot
+ggplot(data = vert_categories, mapping = aes(x = species, y = length_1_mm, fill = species)) +
+  geom_boxplot()
+
+# Make violin plots with the same aesthetics
+ggplot(data = vert_categories, mapping = aes(x = species, y = length_1_mm, fill = species)) +
+  geom_violin()
+
+## ---------------------------------------- ##
+            # Basement ----
+## ---------------------------------------- ##
+
 # indicate variables of interest in my plot
 ggplot(data = vert_categories_count,
        mapping = aes(x = species, y = count, fill = length_category)) +
