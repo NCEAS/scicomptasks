@@ -19,13 +19,15 @@ summary(and_vertebrates)
 unique(and_vertebrates$species)
 
 # opens data frame in its own tab to see each row and column of the data (do in console)
-# View(catch_original)
+# View(and_vertebrates)
 
 ## ------------------------------------------------------- ##
 #                    Data Wrangling ----
 ## ------------------------------------------------------- ##
 
 vert_categories <- and_vertebrates %>%
+  # filter out rows that contain Cascade torrent salamander
+  filter(species != "Cascade torrent salamander") %>%
   # create a new column called "length_category" according to the conditions below
   mutate(length_category = case_when(
     # if species is "Cascade torrent salamander" and length is less than 32.5mm, categorize it as "Short"
@@ -84,7 +86,7 @@ ggplot(data = vert_categories_count,
 # How about checking the correlation between vertebrate length and weight?
 
 # indicate variables of interest in my plot
-ggplot(data = and_vertebrates,
+ggplot(data = vert_categories,
        mapping = aes(x = length_1_mm, y = weight_g, color = species)) +
   # make it into a scatter plot
   geom_point() +
