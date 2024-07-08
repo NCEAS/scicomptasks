@@ -30,14 +30,11 @@ vert_categories <- and_vertebrates %>%
   filter(species != "Cascade torrent salamander") %>%
   # create a new column called "length_category" according to the conditions below
   mutate(length_category = case_when(
-    # if species is "Cascade torrent salamander" and length is less than 32.5mm, categorize it as "Short"
-    species == "Cascade torrent salamander" & length_1_mm < 32.5 ~ "Short",
-    # if species is "Cascade torrent salamander" and length between 32.5mm and 39.5mm, categorize it as "Medium"
-    species == "Cascade torrent salamander" & length_1_mm >= 32.5 & length_1_mm < 39.5 ~ "Medium",
-    # etc ...
-    species == "Cascade torrent salamander" & length_1_mm >= 39.5 ~ "Long",
+    # if species is "Coastal giant salamander" and length is less than 42mm, categorize it as "Short"
     species == "Coastal giant salamander" & length_1_mm < 42 ~ "Short",
+    # if species is "Coastal giant salamander" and length between 42mm and 67mm, categorize it as "Medium"
     species == "Coastal giant salamander" & length_1_mm >= 42 & length_1_mm < 67 ~ "Medium",
+    # etc ...
     species == "Coastal giant salamander" & length_1_mm >= 67 ~ "Long",
     species == "Cutthroat trout" & length_1_mm < 49 ~ "Short",
     species == "Cutthroat trout" & length_1_mm >= 49 & length_1_mm < 110~ "Medium",
