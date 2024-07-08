@@ -11,9 +11,6 @@ source(file.path("exploratory", "misc_aret", "coding_demo_partA.R"))
 # Check structure of starting data
 str(vert_categories)
 
-
-
-
 # indicate variables of interest in my plot
 ggplot(data = vert_categories_count,
        mapping = aes(x = species, y = count, fill = length_category)) +
@@ -45,3 +42,6 @@ ggplot(data = vert_categories,
        y = "Weight",
        fill = "Species",
        title = "Vertebrate length versus weight")
+
+# End ----
+
