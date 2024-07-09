@@ -46,6 +46,14 @@ sort(unique(lter_v1$SITE)); length(unique(lter_v1$SITE))
 sf::st_crs(lter_v1)
 
 ## ------------------------------ ##
+# ARC Update ----
+## ------------------------------ ##
+
+# Read in file
+# arc_v1 <- terra::rast(x = file.path("data", "ARCLTER_boundary_2024.lyr"))
+
+
+## ------------------------------ ##
         # BLE Wrangling ----
 ## ------------------------------ ##
 
