@@ -12,7 +12,7 @@
 
 # Load libraries
 # install.packages("librarian")
-librarian::shelf(tidyverse, googledrive, sf, maps, geojsonio, supportR)
+librarian::shelf(tidyverse, magrittr, googledrive, sf, maps, geojsonio, supportR)
 
 # Make needed folder(s)
 dir.create(path = file.path("graphs"), showWarnings = F)
@@ -52,8 +52,13 @@ sf::st_crs(lter_v1)
 ## Lets subsequent wrangling be a flexible loop
 site_faq <- as.data.frame(rbind(
   c("ARC", "Arctic", "ARCLTER_bounday_2024.geojson"),
-  c("BLE", "Beaufort Lagoons Ecosystems", "ble_lagoons_polygons.shp")
-  
+  c("BLE", "Beaufort Lagoons Ecosystems", "ble_lagoons_polygons.shp"),
+  c("CDR", "Cedar Creek", "CDR_Border.shp"),
+  c("FCE", "Florida Coastal Everglades", "FCE_study_area_2022.shp"),
+  ## MSP available here: https://deims.org/dc6949fb-2771-4e31-8279-cdb0489842f0
+  c("MSP", "Minneapolis-St.Paul", "msp_deims_sites_boundariesPolygon.shp"),
+  c("NES", "Northeast U.S. Shelf", "EPU_extended.shp"),
+  c("NGA", "Northern Gulf of Alaska", "nga_bb.geojson")
   # c("", "", ""),
 )) %>% 
   # Rename columns more informatively
@@ -65,7 +70,7 @@ site_faq <- as.data.frame(rbind(
 head(site_faq)
 
 ## ------------------------------ ##
-# Site Wrangling ----
+      # Site Wrangling ----
 ## ------------------------------ ##
 
 # Make a variant of the Network-wide object to avoid damaging the original version
@@ -106,6 +111,13 @@ for(k in 1:nrow(site_faq)){
                       code = focal_info$site_code, name = focal_info$site_name, 
                       plot = F)
   
+  # Handle special site-specific wrangling
+  ## CDR -- wrong type of polygon
+  if(focal_info$site_code == "CDR"){
+    site_v2 %<>%
+      sf::st_polygonize()
+  }
+  
   # Wrangle the network-wide polygon
   lter_v2 %<>%
     # Remove the old version of this site
@@ -123,163 +135,28 @@ supportR::diff_check(old = unique(lter_v1$SITE),
 dplyr::glimpse(lter_v2)
 
 ## ------------------------------ ##
-        # ARC Update ----
-## ------------------------------ ##
-
-# Read in ARC GeoJSON and transform to sf
-arc_v1 <- geojsonio::geojson_read(x = file.path("data", "ARCLTER_bounday_2024.geojson"),
-                                  what = "sp") %>%
-  sf::st_as_sf(x = .)
-
-# Glimpse it
-dplyr::glimpse(arc_v1)
-
-# Invoke special custom function for tidying
-arc_v2 <- poly_tidy(site_sf = arc_v1, network_sf = lter_v1,
-                    code = "ARC", name = "Arctic", 
-                    plot = T)
-
-# Check structure again
-dplyr::glimpse(arc_v2)
-
-## ------------------------------ ##
-        # BLE Wrangling ----
-## ------------------------------ ##
-
-# Check out 2019 BLE polygons
-ble_v1 <- sf::st_read(dsn = file.path("data", "ble_lagoons_polygons.shp"))
-
-# Check contents
-dplyr::glimpse(ble_v1)
-
-# Invoke special custom function for tidying
-ble_v2 <- poly_tidy(site_sf = ble_v1, network_sf = lter_v1,
-                    code = "BLE", name = "Beaufort Lagoons Ecosystems", 
-                    plot = T)
-
-# Re-check
-dplyr::glimpse(ble_v2)
-
-## ------------------------------ ##
-          # CDR Update ----
-## ------------------------------ ##
-
-# Read in new boundary
-cdr_v1 <- sf::st_read(dsn = file.path("data", "CDR_Border.shp"))
-
-# Check contents
-dplyr::glimpse(cdr_v1)
-
-# Invoke special custom function for tidying
-cdr_v2 <- poly_tidy(site_sf = cdr_v1, network_sf = lter_v1,
-                    code = "CDR", name = "Cedar Creek") %>% 
-  # Make it the right polygon shape
-  sf::st_polygonize()
-
-# Demo plot
-plot(cdr_v2["SITE"], axes = T, main = "Cedar Creek")
-
-## ------------------------------ ##
-          # FCE Update ----
-## ------------------------------ ##
-
-# Read in new boundary
-fce_v1 <- sf::st_read(dsn = file.path("data", "FCE_study_area_2022.shp"))
-
-# Check contents
-dplyr::glimpse(fce_v1)
-
-# Invoke special custom function for tidying
-fce_v2 <- poly_tidy(site_sf = fce_v1, network_sf = lter_v1,
-                    code = "FCE", name = "Florida Coastal Everglades", 
-                    plot = T)
-
-# Re-check
-dplyr::glimpse(fce_v2)
-
-## ------------------------------ ##
-        # MSP Wrangling ----
-## ------------------------------ ##
-# Available here: https://deims.org/dc6949fb-2771-4e31-8279-cdb0489842f0
-
-# Check out 2022 MSP polygons
-msp_v1 <- sf::st_read(dsn = file.path("data", "msp_deims_sites_boundariesPolygon.shp"))
-
-# Check contents
-dplyr::glimpse(msp_v1)
-
-# Invoke special custom function for tidying
-msp_v2 <- poly_tidy(site_sf = msp_v1, network_sf = lter_v1,
-                    code = "MSP", name = "Minneapolis-St.Paul", 
-                    plot = T)
-
-# Re-check
-dplyr::glimpse(msp_v2)
-
-## ------------------------------ ##
-        # NES Wrangling ----
-## ------------------------------ ##
-
-# Check out NES polygons
-nes_v1 <- sf::st_read(dsn = file.path("data", "EPU_extended.shp"))
-
-# Check contents
-dplyr::glimpse(nes_v1)
-
-# Invoke special custom function for tidying
-nes_v2 <- poly_tidy(site_sf = nes_v1, network_sf = lter_v1,
-                    code = "NES", name = "Northeast U.S. Shelf", 
-                    plot = T)
-
-# Re-check
-dplyr::glimpse(nes_v2)
-
-## ------------------------------ ##
-      # NGA Wrangling ----
-## ------------------------------ ##
-
-# Read in NGA GeoJSON and transform to sf
-nga_v1 <- geojsonio::geojson_read(x = file.path("data", "nga_bb.geojson"), what = "sp") %>%
-  sf::st_as_sf(x = .)
-
-# Glimpse it
-dplyr::glimpse(nga_v1)
-
-# Invoke special custom function for tidying
-nga_v2 <- poly_tidy(site_sf = nga_v1, network_sf = lter_v1,
-                    code = "NGA", name = "Northern Gulf of Alaska", 
-                    plot = T)
-
-# Re-check
-dplyr::glimpse(nga_v2)
-
-## ------------------------------ ##
     # Integration & Export ----
 ## ------------------------------ ##
 
-# Combine the previously missing sites into the rest of the network's polygons
-lter_v2 <- lter_v1 %>% 
-  # Remove outdated polygons
-  dplyr::filter(!SITE %in% c("ARC", "CDR", "FCE")) %>% 
-  # Add in new / updated polygons
-  ## Totally new
-  dplyr::bind_rows(ble_v2) %>%
-  dplyr::bind_rows(msp_v2) %>% 
-  dplyr::bind_rows(nga_v2) %>% 
-  dplyr::bind_rows(nes_v2) %>% 
-  ## Updated
-  dplyr::bind_rows(arc_v2) %>% 
-  dplyr::bind_rows(cdr_v2) %>% 
-  dplyr::bind_rows(fce_v2)
+# Final tidying
+lter_final <- lter_v2 %>% 
+  # Order alphabetically
+  dplyr::arrange(SITE) %>% 
+  # Fix some incorrect full site names
+  dplyr::mutate(NAME = dplyr::case_when(
+    SITE == "BES" ~ "Baltimore Ecosystem Study",
+    SITE == "BNZ" ~ "Bonanza Creek",
+    SITE == "JRN" ~ "Jornada Basin",
+    SITE == "NTL" ~ "North Temperate Lakes",
+    # SITE == "" ~ "",
+    T ~ NAME))
 
-# Pick a final object name for the site boundaries
-lter_final <- lter_v2
+# Check structure
+dplyr::glimpse(lter_final)
+## View(lter_final)
 
 # Check the final spatial extent
 sf::st_bbox(lter_final)
-
-# Check new sites
-supportR::diff_check(old = unique(lter_v1$SITE), new = unique(lter_final$SITE))
 
 # Generate a file name / path
 poly_name <- file.path("data", "site-polys_2024", "lter_site-boundaries.shp")
