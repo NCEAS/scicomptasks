@@ -12,7 +12,7 @@
 
 # Load libraries
 # install.packages("librarian")
-librarian::shelf(tidyverse, googledrive, sf, maps, geojsonio, supportR)
+librarian::shelf(tidyverse, magrittr, googledrive, sf, maps, geojsonio, supportR)
 
 # Make needed folder(s)
 dir.create(path = file.path("graphs"), showWarnings = F)
@@ -25,9 +25,8 @@ sf::sf_use_s2(FALSE)
 # Clear environment
 rm(list = ls())
 
-# Get state / country borders
-borders <- dplyr::bind_rows(sf::st_as_sf(maps::map(database = "world", plot = F, fill = T)),
-                            sf::st_as_sf(maps::map(database = "state", plot = F, fill = T)))
+# Load needed utilities
+source(file.path("tools", "lter_site-poly-utils.R"))
 
 ## ------------------------------ ##
     # Initial Exploration ----
@@ -46,218 +45,126 @@ sort(unique(lter_v1$SITE)); length(unique(lter_v1$SITE))
 sf::st_crs(lter_v1)
 
 ## ------------------------------ ##
-# ARC Update ----
+          # Site Prep ----
 ## ------------------------------ ##
 
-# Read in file
-# arc_v1 <- terra::rast(x = file.path("data", "ARCLTER_boundary_2024.lyr"))
+# Assemble a dataframe of site-specific information
+## Lets subsequent wrangling be a flexible loop
+site_faq <- as.data.frame(rbind(
+  c("ARC", "Arctic", "ARCLTER_bounday_2024.geojson"),
+  c("BLE", "Beaufort Lagoons Ecosystems", "ble_lagoons_polygons.shp"),
+  c("CDR", "Cedar Creek", "CDR_Border.shp"),
+  c("FCE", "Florida Coastal Everglades", "FCE_study_area_2022.shp"),
+  ## MSP available here: https://deims.org/dc6949fb-2771-4e31-8279-cdb0489842f0
+  c("MSP", "Minneapolis-St.Paul", "msp_deims_sites_boundariesPolygon.shp"),
+  c("NES", "Northeast U.S. Shelf", "EPU_extended.shp"),
+  c("NGA", "Northern Gulf of Alaska", "nga_bb.geojson")
+  # c("", "", ""),
+)) %>% 
+  # Rename columns more informatively
+  dplyr::rename(site_code = V1,
+                site_name = V2,
+                file_name = V3)
 
-
-## ------------------------------ ##
-        # BLE Wrangling ----
-## ------------------------------ ##
-
-# Check out 2019 BLE polygons
-ble_v1 <- sf::st_read(dsn = file.path("data", "ble_lagoons_polygons.shp"))
-
-# Check contents
-dplyr::glimpse(ble_v1)
-
-# Check CRS
-sf::st_crs(ble_v1)
-
-# Wrangle BLE polygons for consistency with other polygons
-ble_v2 <- ble_v1 %>% 
-  # Transform CRS (is already right but better safe than sorry)
-  sf::st_transform(x = ., crs = sf::st_crs(lter_v1)) %>% 
-  # Drop unwanted column(s)
-  dplyr::select(-Id) %>% 
-  # Rename desired but inconsistent ones
-  dplyr::rename(SITE = Site,
-                NAME = Name)
-
-# Re-check
-dplyr::glimpse(ble_v2)
-
-# Visual demo
-plot(ble_v2["SITE"], axes = T)
+# Check that out
+head(site_faq)
 
 ## ------------------------------ ##
-          # CDR Update ----
+      # Site Wrangling ----
 ## ------------------------------ ##
 
-# Read in new boundary
-cdr_v1 <- sf::st_read(dsn = file.path("data", "CDR_Border.shp"))
+# Make a variant of the Network-wide object to avoid damaging the original version
+lter_v2 <- lter_v1
 
-# Check contents
-dplyr::glimpse(cdr_v1)
+# Loop across sites in the site FAQ object assembled above
+for(k in 1:nrow(site_faq)){
+  
+  # Identify focal row of site FAQ
+  focal_info <- site_faq[k, ]
+  
+  # Processing message
+  message("Processing begun for ", focal_info$site_code, " boundary")
+  
+  # Read in the data (conditional depending on file extension)
+  ## Shapefiles
+  if(stringr::str_detect(string = focal_info$file_name, 
+                         pattern = "\\.shp") == TRUE){
+    
+    # Read in shapefile
+    site_v1 <- sf::st_read(dsn = file.path("data", focal_info$file_name))
+    
+    ## GeoJSONs
+  } else if(stringr::str_detect(string = focal_info$file_name, 
+                              pattern = "\\.geojson") == TRUE){
+    
+    # Read in GeoJSON
+    site_v1 <- geojsonio::geojson_read(x = file.path("data", focal_info$file_name),
+                            what = "sp") %>%
+      # Transform into simple features object
+      sf::st_as_sf(x = .)
+    
+    ## Unrecognized file (need to build into this conditional framework!)
+  } else { stop("Error: unrecognized input file type!") }
+  
+  # Do wrangling
+  site_v2 <- poly_tidy(site_sf = site_v1, network_sf = lter_v1,
+                      code = focal_info$site_code, name = focal_info$site_name, 
+                      plot = F)
+  
+  # Handle special site-specific wrangling
+  ## CDR -- wrong type of polygon
+  if(focal_info$site_code == "CDR"){
+    site_v2 %<>%
+      sf::st_polygonize()
+  }
+  
+  # Wrangle the network-wide polygon
+  lter_v2 %<>%
+    # Remove the old version of this site
+    dplyr::filter(!SITE %in% focal_info$site_code) %>% 
+    # Attach the newly wrangled version of this site
+    dplyr::bind_rows(site_v2)
+  
+}
 
-# Check CRS
-sf::st_crs(cdr_v1)
+# Check for lost/gained sites
+supportR::diff_check(old = unique(lter_v1$SITE), 
+                     new = unique(lter_v2$SITE))
 
-# Wrangle polygons for consistency with other polygons
-cdr_v2 <- cdr_v1 %>% 
-  # Transform to desired CRS
-  sf::st_transform(crs = sf::st_crs(lter_v1)) %>% 
-  # Create desired column(s)
-  dplyr::mutate(SITE = "CDR",
-                NAME = "Cedar Creek") %>% 
-  # Drop unwanted columns
-  dplyr::select(SITE, NAME) %>% 
-  # Reorder (slightly)
-  dplyr::relocate(SITE:NAME, .before = dplyr::everything()) %>% 
-  # Make it the right polygon shape
-  sf::st_polygonize()
-
-# Re-check
-dplyr::glimpse(cdr_v2)
-
-# Visual demo
-plot(cdr_v2["SITE"], axes = T)
-
-## ------------------------------ ##
-          # FCE Update ----
-## ------------------------------ ##
-
-# Read in new boundary
-fce_v1 <- sf::st_read(dsn = file.path("data", "FCE_study_area_2022.shp"))
-
-# Check contents
-dplyr::glimpse(fce_v1)
-
-# Check CRS
-sf::st_crs(fce_v1)
-
-# Wrangle polygons for consistency with other polygons
-fce_v2 <- fce_v1 %>% 
-  # Transform to desired CRS
-  sf::st_transform(crs = sf::st_crs(lter_v1)) %>% 
-  # Create desired column(s)
-  dplyr::mutate(SITE = "FCE",
-                NAME = "Florida Coastal Everglades") %>% 
-  # Drop unwanted columns
-  dplyr::select(SITE, NAME) %>% 
-  # Reorder (slightly)
-  dplyr::relocate(SITE:NAME, .before = dplyr::everything())
-
-# Re-check
-dplyr::glimpse(fce_v2)
-
-# Visual demo
-plot(fce_v2["SITE"], axes = T)
-
-## ------------------------------ ##
-        # MSP Wrangling ----
-## ------------------------------ ##
-# Available here: https://deims.org/dc6949fb-2771-4e31-8279-cdb0489842f0
-
-# Check out 2022 MSP polygons
-msp_v1 <- sf::st_read(dsn = file.path("data", "msp_deims_sites_boundariesPolygon.shp"))
-
-# Check contents
-dplyr::glimpse(msp_v1)
-
-# Check CRS
-sf::st_crs(msp_v1)
-
-# Wrangle polygons for consistency with other polygons
-msp_v2 <- msp_v1 %>% 
-  # Transform CRS (is already right but better safe than sorry)
-  sf::st_transform(x = ., crs = sf::st_crs(lter_v1)) %>% 
-  # Create desired column(s)
-  dplyr::mutate(SITE = "MSP",
-                NAME = "Minneapolis-St.Paul") %>% 
-  # Pare down to just those columns
-  dplyr::select(SITE, NAME)
-
-# Re-check
-dplyr::glimpse(msp_v2)
-
-# Visual demo
-plot(msp_v2["SITE"], axes = T)
+# Check structure generally
+dplyr::glimpse(lter_v2)
 
 ## ------------------------------ ##
-        # NES Wrangling ----
+      # Final Processing ----
 ## ------------------------------ ##
 
-# Check out NES polygons
-nes_v1 <- sf::st_read(dsn = file.path("data", "EPU_extended.shp"))
+# Final (actual) tidying
+lter_final <- lter_v2 %>% 
+  # Fix some incorrect full site names
+  dplyr::mutate(NAME = dplyr::case_when(
+    SITE == "BES" ~ "Baltimore Ecosystem Study",
+    SITE == "BNZ" ~ "Bonanza Creek",
+    SITE == "JRN" ~ "Jornada Basin",
+    SITE == "NTL" ~ "North Temperate Lakes",
+    # SITE == "" ~ "",
+    T ~ NAME)) %>% 
+  # Summarize geometry info
+  dplyr::group_by(SITE, NAME) %>% 
+  dplyr::summarize(geometry = sf::st_union(geometry)) %>% 
+  dplyr::ungroup() %>% 
+  # Order alphabetically
+  dplyr::arrange(SITE)
 
-# Check contents
-dplyr::glimpse(nes_v1)
-
-# Check CRS
-sf::st_crs(nes_v1)
-
-# Wrangle polygons for consistency with other polygons
-nes_v2 <- nes_v1 %>% 
-  # Transform to desired CRS
-  sf::st_transform(crs = sf::st_crs(lter_v1)) %>% 
-  # Combine sub-polygons to make just one shape for the whole site
-  sf::st_union(x = .) %>% 
-  # Create desired column(s)
-  merge(x = ., y = data.frame("SITE" = "NES",
-                              "NAME" = "Northeast U.S. Shelf")) %>% 
-  # Reorder (slightly)
-  dplyr::relocate(SITE:NAME, .before = dplyr::everything())
-
-# Re-check
-dplyr::glimpse(nes_v2)
-
-## ------------------------------ ##
-      # NGA Wrangling ----
-## ------------------------------ ##
-
-# Read in NGA GeoJSON and transform to sf
-nga_v1 <- geojsonio::geojson_read(x = file.path("data", "nga_bb.geojson"), what = "sp") %>%
-  sf::st_as_sf(x = .)
-
-# Glimpse it
-dplyr::glimpse(nga_v1)
-
-# Wrangle NGA polygons for consistency with other polygons
-nga_v2 <- nga_v1 %>% 
-  # Transform CRS (is already right but better safe than sorry)
-  sf::st_transform(x = ., crs = sf::st_crs(lter_v1)) %>% 
-  # Drop unwanted column(s)
-  dplyr::select(-FID) %>% 
-  # Add in desired columns
-  dplyr::mutate(SITE = "NGA",
-                NAME = "Northern Gulf of Alaska",
-                .before = dplyr::everything())
-
-# Check the structure of that
-dplyr::glimpse(nga_v2)
-
-# Visual demo
-plot(nga_v2["SITE"], axes = T)
-
-## ------------------------------ ##
-    # Integration & Export ----
-## ------------------------------ ##
-
-# Combine the previously missing sites into the rest of the network's polygons
-lter_v2 <- lter_v1 %>% 
-  # Remove outdated polygons
-  dplyr::filter(!SITE %in% c("FCE", "CDR")) %>% 
-  # Add in new / updated polygons
-  ## Totally new
-  dplyr::bind_rows(ble_v2) %>%
-  dplyr::bind_rows(msp_v2) %>% 
-  dplyr::bind_rows(nga_v2) %>% 
-  dplyr::bind_rows(nes_v2) %>% 
-  ## Updated
-  dplyr::bind_rows(cdr_v2) %>% 
-  dplyr::bind_rows(fce_v2)
-
-# Pick a final object name for the site boundaries
-lter_final <- lter_v2
+# Check structure
+dplyr::glimpse(lter_final)
+## View(lter_final)
 
 # Check the final spatial extent
 sf::st_bbox(lter_final)
 
-# Check new sites
-supportR::diff_check(old = unique(lter_v1$SITE), new = unique(lter_final$SITE))
+## ------------------------------ ##
+            # Export ----
+## ------------------------------ ##
 
 # Generate a file name / path
 poly_name <- file.path("data", "site-polys_2024", "lter_site-boundaries.shp")
@@ -282,7 +189,11 @@ write.csv(x = lter_csv, file = poly_csv, row.names = F, na = '')
 ## ------------------------------ ##
 
 # Clear environment of everything that is not needed
-rm(list = setdiff(ls(), c("borders", "lter_final")))
+rm(list = setdiff(ls(), c("lter_final")))
+
+# Get state / country borders
+borders <- dplyr::bind_rows(sf::st_as_sf(maps::map(database = "world", plot = F, fill = T)),
+                            sf::st_as_sf(maps::map(database = "state", plot = F, fill = T)))
 
 # Define a coordinate cutoff (in degrees)
 coord_cutoff_lat <- 2.25
