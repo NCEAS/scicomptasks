@@ -115,39 +115,12 @@ for(k in 1:nrow(site_faq)){
   
 }
 
-supportR::diff_check(old = unique(lter_v1$SITE), new = unique(lter_v2$SITE))
+# Check for lost/gained sites
+supportR::diff_check(old = unique(lter_v1$SITE), 
+                     new = unique(lter_v2$SITE))
 
-
-plot(new_poly_list[["ARC"]], axes = T)
-
-plot(lter_v1["SITE"], axes = T)
-
-test <- new_polys %>% 
-  sf::st_as_sf() %>% 
-  dplyr::filter(sf::st_is_empty(x = .) != TRUE)
-
-ggplot() +
-  # Add country/state borders
-  geom_sf(data = borders, fill = "white") +
-  # Add site polygons
-  geom_sf(data = test, aes(fill = SITE), alpha = 0.7)
-
-for(xxx in unique(new_polys$SITE)){
-  
-  test <- subset(new_polys, SITE == xxx)
-  
-  plot(test["SITE"], axes = T)
-}
-
-
-# Unlist the list
-new_polys <- purrr::list_rbind(x = new_poly_list)
-
-# Check the structure
-dplyr::glimpse(new_polys)
-
-plot(as.factor(new_polys["SITE"]), axes = T, y = range(new_polys))
-plot(site_v2["SITE"], axes = T)
+# Check structure generally
+dplyr::glimpse(lter_v2)
 
 ## ------------------------------ ##
         # ARC Update ----
