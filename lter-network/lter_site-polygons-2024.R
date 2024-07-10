@@ -25,10 +25,6 @@ sf::sf_use_s2(FALSE)
 # Clear environment
 rm(list = ls())
 
-# Get state / country borders
-borders <- dplyr::bind_rows(sf::st_as_sf(maps::map(database = "world", plot = F, fill = T)),
-                            sf::st_as_sf(maps::map(database = "state", plot = F, fill = T)))
-
 # Load needed utilities
 source(file.path("tools", "lter_site-poly-utils.R"))
 
@@ -49,7 +45,7 @@ sort(unique(lter_v1$SITE)); length(unique(lter_v1$SITE))
 sf::st_crs(lter_v1)
 
 ## ------------------------------ ##
-# ARC Update ----
+        # ARC Update ----
 ## ------------------------------ ##
 
 # Read in ARC GeoJSON and transform to sf
@@ -62,7 +58,8 @@ dplyr::glimpse(arc_v1)
 
 # Invoke special custom function for tidying
 arc_v2 <- poly_tidy(site_sf = arc_v1, network_sf = lter_v1,
-                    code = "ARC", name = "Arctic", plot = T)
+                    code = "ARC", name = "Arctic", 
+                    plot = T)
 
 # Check structure again
 dplyr::glimpse(arc_v2)
@@ -77,24 +74,13 @@ ble_v1 <- sf::st_read(dsn = file.path("data", "ble_lagoons_polygons.shp"))
 # Check contents
 dplyr::glimpse(ble_v1)
 
-# Check CRS
-sf::st_crs(ble_v1)
-
-# Wrangle BLE polygons for consistency with other polygons
-ble_v2 <- ble_v1 %>% 
-  # Transform CRS (is already right but better safe than sorry)
-  sf::st_transform(x = ., crs = sf::st_crs(lter_v1)) %>% 
-  # Drop unwanted column(s)
-  dplyr::select(-Id) %>% 
-  # Rename desired but inconsistent ones
-  dplyr::rename(SITE = Site,
-                NAME = Name)
+# Invoke special custom function for tidying
+ble_v2 <- poly_tidy(site_sf = ble_v1, network_sf = lter_v1,
+                    code = "BLE", name = "Beaufort Lagoons Ecosystems", 
+                    plot = T)
 
 # Re-check
 dplyr::glimpse(ble_v2)
-
-# Visual demo
-plot(ble_v2["SITE"], axes = T)
 
 ## ------------------------------ ##
           # CDR Update ----
@@ -106,28 +92,14 @@ cdr_v1 <- sf::st_read(dsn = file.path("data", "CDR_Border.shp"))
 # Check contents
 dplyr::glimpse(cdr_v1)
 
-# Check CRS
-sf::st_crs(cdr_v1)
-
-# Wrangle polygons for consistency with other polygons
-cdr_v2 <- cdr_v1 %>% 
-  # Transform to desired CRS
-  sf::st_transform(crs = sf::st_crs(lter_v1)) %>% 
-  # Create desired column(s)
-  dplyr::mutate(SITE = "CDR",
-                NAME = "Cedar Creek") %>% 
-  # Drop unwanted columns
-  dplyr::select(SITE, NAME) %>% 
-  # Reorder (slightly)
-  dplyr::relocate(SITE:NAME, .before = dplyr::everything()) %>% 
+# Invoke special custom function for tidying
+cdr_v2 <- poly_tidy(site_sf = cdr_v1, network_sf = lter_v1,
+                    code = "CDR", name = "Cedar Creek") %>% 
   # Make it the right polygon shape
   sf::st_polygonize()
 
-# Re-check
-dplyr::glimpse(cdr_v2)
-
-# Visual demo
-plot(cdr_v2["SITE"], axes = T)
+# Demo plot
+plot(cdr_v2["SITE"], axes = T, main = "Cedar Creek")
 
 ## ------------------------------ ##
           # FCE Update ----
@@ -139,26 +111,13 @@ fce_v1 <- sf::st_read(dsn = file.path("data", "FCE_study_area_2022.shp"))
 # Check contents
 dplyr::glimpse(fce_v1)
 
-# Check CRS
-sf::st_crs(fce_v1)
-
-# Wrangle polygons for consistency with other polygons
-fce_v2 <- fce_v1 %>% 
-  # Transform to desired CRS
-  sf::st_transform(crs = sf::st_crs(lter_v1)) %>% 
-  # Create desired column(s)
-  dplyr::mutate(SITE = "FCE",
-                NAME = "Florida Coastal Everglades") %>% 
-  # Drop unwanted columns
-  dplyr::select(SITE, NAME) %>% 
-  # Reorder (slightly)
-  dplyr::relocate(SITE:NAME, .before = dplyr::everything())
+# Invoke special custom function for tidying
+fce_v2 <- poly_tidy(site_sf = fce_v1, network_sf = lter_v1,
+                    code = "FCE", name = "Florida Coastal Everglades", 
+                    plot = T)
 
 # Re-check
 dplyr::glimpse(fce_v2)
-
-# Visual demo
-plot(fce_v2["SITE"], axes = T)
 
 ## ------------------------------ ##
         # MSP Wrangling ----
@@ -171,24 +130,13 @@ msp_v1 <- sf::st_read(dsn = file.path("data", "msp_deims_sites_boundariesPolygon
 # Check contents
 dplyr::glimpse(msp_v1)
 
-# Check CRS
-sf::st_crs(msp_v1)
-
-# Wrangle polygons for consistency with other polygons
-msp_v2 <- msp_v1 %>% 
-  # Transform CRS (is already right but better safe than sorry)
-  sf::st_transform(x = ., crs = sf::st_crs(lter_v1)) %>% 
-  # Create desired column(s)
-  dplyr::mutate(SITE = "MSP",
-                NAME = "Minneapolis-St.Paul") %>% 
-  # Pare down to just those columns
-  dplyr::select(SITE, NAME)
+# Invoke special custom function for tidying
+msp_v2 <- poly_tidy(site_sf = msp_v1, network_sf = lter_v1,
+                    code = "MSP", name = "Minneapolis-St.Paul", 
+                    plot = T)
 
 # Re-check
 dplyr::glimpse(msp_v2)
-
-# Visual demo
-plot(msp_v2["SITE"], axes = T)
 
 ## ------------------------------ ##
         # NES Wrangling ----
@@ -200,20 +148,10 @@ nes_v1 <- sf::st_read(dsn = file.path("data", "EPU_extended.shp"))
 # Check contents
 dplyr::glimpse(nes_v1)
 
-# Check CRS
-sf::st_crs(nes_v1)
-
-# Wrangle polygons for consistency with other polygons
-nes_v2 <- nes_v1 %>% 
-  # Transform to desired CRS
-  sf::st_transform(crs = sf::st_crs(lter_v1)) %>% 
-  # Combine sub-polygons to make just one shape for the whole site
-  sf::st_union(x = .) %>% 
-  # Create desired column(s)
-  merge(x = ., y = data.frame("SITE" = "NES",
-                              "NAME" = "Northeast U.S. Shelf")) %>% 
-  # Reorder (slightly)
-  dplyr::relocate(SITE:NAME, .before = dplyr::everything())
+# Invoke special custom function for tidying
+nes_v2 <- poly_tidy(site_sf = nes_v1, network_sf = lter_v1,
+                    code = "NES", name = "Northeast U.S. Shelf", 
+                    plot = T)
 
 # Re-check
 dplyr::glimpse(nes_v2)
@@ -229,22 +167,13 @@ nga_v1 <- geojsonio::geojson_read(x = file.path("data", "nga_bb.geojson"), what 
 # Glimpse it
 dplyr::glimpse(nga_v1)
 
-# Wrangle NGA polygons for consistency with other polygons
-nga_v2 <- nga_v1 %>% 
-  # Transform CRS (is already right but better safe than sorry)
-  sf::st_transform(x = ., crs = sf::st_crs(lter_v1)) %>% 
-  # Drop unwanted column(s)
-  dplyr::select(-FID) %>% 
-  # Add in desired columns
-  dplyr::mutate(SITE = "NGA",
-                NAME = "Northern Gulf of Alaska",
-                .before = dplyr::everything())
+# Invoke special custom function for tidying
+nga_v2 <- poly_tidy(site_sf = nga_v1, network_sf = lter_v1,
+                    code = "NGA", name = "Northern Gulf of Alaska", 
+                    plot = T)
 
-# Check the structure of that
+# Re-check
 dplyr::glimpse(nga_v2)
-
-# Visual demo
-plot(nga_v2["SITE"], axes = T)
 
 ## ------------------------------ ##
     # Integration & Export ----
@@ -297,7 +226,11 @@ write.csv(x = lter_csv, file = poly_csv, row.names = F, na = '')
 ## ------------------------------ ##
 
 # Clear environment of everything that is not needed
-rm(list = setdiff(ls(), c("borders", "lter_final")))
+rm(list = setdiff(ls(), c("lter_final")))
+
+# Get state / country borders
+borders <- dplyr::bind_rows(sf::st_as_sf(maps::map(database = "world", plot = F, fill = T)),
+                            sf::st_as_sf(maps::map(database = "state", plot = F, fill = T)))
 
 # Define a coordinate cutoff (in degrees)
 coord_cutoff_lat <- 2.25
