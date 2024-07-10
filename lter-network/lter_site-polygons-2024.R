@@ -49,9 +49,30 @@ sf::st_crs(lter_v1)
 # ARC Update ----
 ## ------------------------------ ##
 
-# Read in file
-# arc_v1 <- terra::rast(x = file.path("data", "ARCLTER_boundary_2024.lyr"))
+# Read in NGA GeoJSON and transform to sf
+arc_v1 <- geojsonio::geojson_read(x = file.path("data", "ARCLTER_bounday_2024.geojson"),
+                                  what = "sp") %>%
+  sf::st_as_sf(x = .)
 
+# Glimpse it
+dplyr::glimpse(arc_v1)
+
+# Wrangle NGA polygons for consistency with other polygons
+arc_v2 <- arc_v1 %>% 
+  # Transform CRS (is already right but better safe than sorry)
+  sf::st_transform(x = ., crs = sf::st_crs(lter_v1)) %>% 
+  # Add in desired columns
+  dplyr::mutate(SITE = "ARC",
+                NAME = "Arctic",
+                .before = dplyr::everything()) %>% 
+  # Pare down to just the desired columns
+  dplyr::select(SITE, NAME)
+
+# Check the structure of that
+dplyr::glimpse(arc_v2)
+
+# Visual demo
+plot(arc_v2["SITE"], axes = T)
 
 ## ------------------------------ ##
         # BLE Wrangling ----
@@ -239,7 +260,7 @@ plot(nga_v2["SITE"], axes = T)
 # Combine the previously missing sites into the rest of the network's polygons
 lter_v2 <- lter_v1 %>% 
   # Remove outdated polygons
-  dplyr::filter(!SITE %in% c("FCE", "CDR")) %>% 
+  dplyr::filter(!SITE %in% c("ARC", "CDR", "FCE")) %>% 
   # Add in new / updated polygons
   ## Totally new
   dplyr::bind_rows(ble_v2) %>%
@@ -247,6 +268,7 @@ lter_v2 <- lter_v1 %>%
   dplyr::bind_rows(nga_v2) %>% 
   dplyr::bind_rows(nes_v2) %>% 
   ## Updated
+  dplyr::bind_rows(arc_v2) %>% 
   dplyr::bind_rows(cdr_v2) %>% 
   dplyr::bind_rows(fce_v2)
 
