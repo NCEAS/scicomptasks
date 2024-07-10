@@ -25,6 +25,12 @@ unique(and_vertebrates$species)
 #                    Data Wrangling ----
 ## ------------------------------------------------------- ##
 
+# We're going to sort these vertebrates into categories based on their lengths
+
+# If the species length is below the first quartile -> short
+# If the species length is between first and third quartile -> medium
+# If the species length is over the third quartile -> long
+
 vert_categories <- and_vertebrates %>%
   # filter out rows that contain Cascade torrent salamander
   filter(species != "Cascade torrent salamander") %>%
@@ -37,9 +43,9 @@ vert_categories <- and_vertebrates %>%
     # etc ...
     species == "Coastal giant salamander" & length_1_mm >= 67 ~ "Long",
     species == "Cutthroat trout" & length_1_mm < 49 ~ "Short",
-    species == "Cutthroat trout" & length_1_mm >= 49 & length_1_mm < 110~ "Medium",
+    species == "Cutthroat trout" & length_1_mm >= 49 & length_1_mm < 110 ~ "Medium",
     species == "Cutthroat trout" & length_1_mm >= 110 ~ "Long",
-    T ~ NA
+    TRUE ~ NA
   )) 
 
 # check dataframe
