@@ -135,13 +135,11 @@ supportR::diff_check(old = unique(lter_v1$SITE),
 dplyr::glimpse(lter_v2)
 
 ## ------------------------------ ##
-    # Integration & Export ----
+      # Final Processing ----
 ## ------------------------------ ##
 
-# Final tidying
+# Final (actual) tidying
 lter_final <- lter_v2 %>% 
-  # Order alphabetically
-  dplyr::arrange(SITE) %>% 
   # Fix some incorrect full site names
   dplyr::mutate(NAME = dplyr::case_when(
     SITE == "BES" ~ "Baltimore Ecosystem Study",
@@ -149,7 +147,13 @@ lter_final <- lter_v2 %>%
     SITE == "JRN" ~ "Jornada Basin",
     SITE == "NTL" ~ "North Temperate Lakes",
     # SITE == "" ~ "",
-    T ~ NAME))
+    T ~ NAME)) %>% 
+  # Summarize geometry info
+  dplyr::group_by(SITE, NAME) %>% 
+  dplyr::summarize(geometry = sf::st_union(geometry)) %>% 
+  dplyr::ungroup() %>% 
+  # Order alphabetically
+  dplyr::arrange(SITE)
 
 # Check structure
 dplyr::glimpse(lter_final)
@@ -157,6 +161,10 @@ dplyr::glimpse(lter_final)
 
 # Check the final spatial extent
 sf::st_bbox(lter_final)
+
+## ------------------------------ ##
+            # Export ----
+## ------------------------------ ##
 
 # Generate a file name / path
 poly_name <- file.path("data", "site-polys_2024", "lter_site-boundaries.shp")
