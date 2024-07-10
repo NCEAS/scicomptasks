@@ -45,6 +45,104 @@ sort(unique(lter_v1$SITE)); length(unique(lter_v1$SITE))
 sf::st_crs(lter_v1)
 
 ## ------------------------------ ##
+          # Site Prep ----
+## ------------------------------ ##
+
+# Assemble a dataframe of site-specific information
+## Lets subsequent wrangling be a flexible loop
+site_faq <- as.data.frame(rbind(
+  c("ARC", "Arctic", "ARCLTER_bounday_2024.geojson"),
+  c("BLE", "Beaufort Lagoons Ecosystems", "ble_lagoons_polygons.shp")
+  
+  # c("", "", ""),
+)) %>% 
+  # Rename columns more informatively
+  dplyr::rename(site_code = V1,
+                site_name = V2,
+                file_name = V3)
+
+# Check that out
+head(site_faq)
+
+## ------------------------------ ##
+# Site Wrangling ----
+## ------------------------------ ##
+
+# Make an empty list
+new_poly_list <- list()
+
+# Loop across sites in the site FAQ object assembled above
+for(k in 1:nrow(site_faq)){
+  
+  # Identify focal row of site FAQ
+  focal_info <- site_faq[k, ]
+  
+  # Processing message
+  message("Processing begun for ", focal_info$site_code, " boundary")
+  
+  # Read in the data (conditional depending on file extension)
+  ## Shapefiles
+  if(stringr::str_detect(string = focal_info$file_name, 
+                         pattern = "\\.shp") == TRUE){
+    
+    # Read in shapefile
+    site_v1 <- sf::st_read(dsn = file.path("data", focal_info$file_name))
+    
+    ## GeoJSONs
+  } else if(stringr::str_detect(string = focal_info$file_name, 
+                              pattern = "\\.geojson") == TRUE){
+    
+    # Read in GeoJSON
+    site_v1 <- geojsonio::geojson_read(x = file.path("data", focal_info$file_name),
+                            what = "sp") %>%
+      # Transform into simple features object
+      sf::st_as_sf(x = .)
+    
+    ## Unrecognized file (need to build into this conditional framework!)
+  } else { stop("Error: unrecognized input file type!") }
+  
+  # Do wrangling
+  site_v2 <- poly_tidy(site_sf = site_v1, network_sf = lter_v1,
+                      code = focal_info$site_code, name = focal_info$site_name, 
+                      plot = F)
+  
+  # Add to list
+  new_poly_list[[focal_info$site_code]] <- site_v2
+  
+}
+
+
+plot(new_poly_list[["ARC"]], axes = T)
+
+
+test <- new_polys %>% 
+  sf::st_as_sf() %>% 
+  dplyr::filter(sf::st_is_empty(x = .) != TRUE)
+
+ggplot() +
+  # Add country/state borders
+  geom_sf(data = borders, fill = "white") +
+  # Add site polygons
+  geom_sf(data = test, aes(fill = SITE), alpha = 0.7)
+
+for(xxx in unique(new_polys$SITE)){
+  
+  test <- subset(new_polys, SITE == xxx)
+  
+  plot(test["SITE"], axes = T)
+}
+
+
+# Unlist the list
+new_polys <- purrr::list_rbind(x = new_poly_list)
+
+# Check the structure
+dplyr::glimpse(new_polys)
+
+plot(as.factor(new_polys["SITE"]), axes = T, y = range(new_polys))
+plot(site_v2["SITE"], axes = T)
+
+## ------------------------------ ##
         # ARC Update ----
 ## ------------------------------ ##
 
