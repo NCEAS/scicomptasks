@@ -44,7 +44,7 @@ poly_tidy <- function(site_sf = NULL, network_sf = NULL,
   
   # If plotting is desired, make a simple plot
   if(plot == TRUE){
-    plot(site_actual["SITE"], axes = TRUE)
+    plot(site_actual["SITE"], main = name, axes = TRUE)
   }
   
   # Return the sf object
