@@ -68,8 +68,8 @@ head(site_faq)
 # Site Wrangling ----
 ## ------------------------------ ##
 
-# Make an empty list
-new_poly_list <- list()
+# Make a variant of the Network-wide object to avoid damaging the original version
+lter_v2 <- lter_v1
 
 # Loop across sites in the site FAQ object assembled above
 for(k in 1:nrow(site_faq)){
@@ -106,14 +106,21 @@ for(k in 1:nrow(site_faq)){
                       code = focal_info$site_code, name = focal_info$site_name, 
                       plot = F)
   
-  # Add to list
-  new_poly_list[[focal_info$site_code]] <- site_v2
+  # Wrangle the network-wide polygon
+  lter_v2 %<>%
+    # Remove the old version of this site
+    dplyr::filter(!SITE %in% focal_info$site_code) %>% 
+    # Attach the newly wrangled version of this site
+    dplyr::bind_rows(site_v2)
   
 }
+
+supportR::diff_check(old = unique(lter_v1$SITE), new = unique(lter_v2$SITE))
 
 
 plot(new_poly_list[["ARC"]], axes = T)
 
+plot(lter_v1["SITE"], axes = T)
 
 test <- new_polys %>% 
   sf::st_as_sf() %>% 
