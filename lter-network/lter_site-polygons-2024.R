@@ -29,6 +29,9 @@ rm(list = ls())
 borders <- dplyr::bind_rows(sf::st_as_sf(maps::map(database = "world", plot = F, fill = T)),
                             sf::st_as_sf(maps::map(database = "state", plot = F, fill = T)))
 
+# Load needed utilities
+source(file.path("tools", "lter_site-poly-utils.R"))
+
 ## ------------------------------ ##
     # Initial Exploration ----
 ## ------------------------------ ##
@@ -49,7 +52,7 @@ sf::st_crs(lter_v1)
 # ARC Update ----
 ## ------------------------------ ##
 
-# Read in NGA GeoJSON and transform to sf
+# Read in ARC GeoJSON and transform to sf
 arc_v1 <- geojsonio::geojson_read(x = file.path("data", "ARCLTER_bounday_2024.geojson"),
                                   what = "sp") %>%
   sf::st_as_sf(x = .)
@@ -57,22 +60,12 @@ arc_v1 <- geojsonio::geojson_read(x = file.path("data", "ARCLTER_bounday_2024.ge
 # Glimpse it
 dplyr::glimpse(arc_v1)
 
-# Wrangle NGA polygons for consistency with other polygons
-arc_v2 <- arc_v1 %>% 
-  # Transform CRS (is already right but better safe than sorry)
-  sf::st_transform(x = ., crs = sf::st_crs(lter_v1)) %>% 
-  # Add in desired columns
-  dplyr::mutate(SITE = "ARC",
-                NAME = "Arctic",
-                .before = dplyr::everything()) %>% 
-  # Pare down to just the desired columns
-  dplyr::select(SITE, NAME)
+# Invoke special custom function for tidying
+arc_v2 <- poly_tidy(site_sf = arc_v1, network_sf = lter_v1,
+                    code = "ARC", name = "Arctic", plot = T)
 
-# Check the structure of that
+# Check structure again
 dplyr::glimpse(arc_v2)
-
-# Visual demo
-plot(arc_v2["SITE"], axes = T)
 
 ## ------------------------------ ##
         # BLE Wrangling ----
