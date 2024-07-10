@@ -42,14 +42,14 @@ poly_tidy <- function(site_sf = NULL, network_sf = NULL,
     # Drop all columns except those new ones
     dplyr::select(SITE, NAME)
   
-  # Return that object
-  return(site_actual)
-  
   # If plotting is desired, make a simple plot
   if(plot == TRUE){
     plot(site_actual["SITE"], axes = TRUE)
   }
-    
+  
+  # Return the sf object
+  return(site_actual)
+  
 } # Close function
 
 
