@@ -58,6 +58,7 @@ site_faq <- as.data.frame(rbind(
   c("HFR", "Harvard Forest", "HFR-bbox.geojson"),
   ## KNZ available here: https://maps-konza.hub.arcgis.com/datasets/53fdc788cabf445e887d719584a3fd43_0/explore?location=39.100986%2C-96.576658%2C12.59
   c("KNZ", "Konza Prairie", "Konza_Prairie_Biological_Station_boundary_from_1977_until_2021_(GIS002).shp"), 
+  c("MCM", "McMurdo Dry Valleys", "APAD_ID_75.shp"),
   c("MCR", "Moorea Coral Reef", "MCR-boundary.geojson"),
   ## MSP available here: https://deims.org/dc6949fb-2771-4e31-8279-cdb0489842f0
   c("MSP", "Minneapolis-St.Paul", "msp_deims_sites_boundariesPolygon.shp"),
